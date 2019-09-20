@@ -5,6 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BachelorProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="Black">
-    <Grid/>
+        Title="MainWindow" Height="450" Width="800" Background="Blue" x:Name="mainWindow">
+    <Border Padding="10">
+        <StackPanel>
+            <!--- Region -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="450"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Grid.Column="0" Width="75" Text="Region: " Foreground="White" FontFamily="Bold" FontSize="18"/>
+                    <ComboBox Width="175">
+                        <ComboBoxItem>Head</ComboBoxItem>
+                        <ComboBoxItem IsSelected="True">Neck</ComboBoxItem>
+                        <ComboBoxItem>Shouders</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                <!--ID-->
+                <TextBlock Grid.Column="1" Width="150" Text="ID: xxxxxxxx-xxxx" Foreground="White" FontFamily="Bold" FontSize="18"/>
+                <!--Info-->
+                <Button Grid.Column="2" Width="50" Content="i"  Foreground="White" Background="Yellow" FontFamily="Bold" FontSize="18" x:Name="ButtonInfo" Click="goToInfo" />
+            </Grid>
+            <!--Load CT-->
+            <Grid Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="450"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" >
+                    <Button Width="75" Margin="0 10 0 10" Content="Load CT" x:Name="ButtonLoadCT" Click="loadCT"/>
+                    <CheckBox  Margin="70 10 0 10" x:Name="checkBoxCT">
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="2" ScaleY="2" />
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
+                </StackPanel>
+            </Grid>
+            <!--Load CBCT-->
+            <Grid Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="450"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Button Width="75" Margin="0 10 0 10" Content="Load CBCT" x:Name="ButtonLoadCBCT" Click="loadCBCT"/>
+                    <CheckBox  Margin="70 10 0 10" x:Name="checkBoxCBCT">
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="2" ScaleY="2" />
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
+                    
+                </StackPanel>
+                
+                
+            </Grid>
+            
+        </StackPanel>
+        
+    </Border>
+
 </Window>
