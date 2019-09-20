@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">MainWindow{
+	background-color: #005194
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
@@ -22,6 +27,11 @@
       <width>801</width>
       <height>511</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">tabWidget{
+	background-color: #005194
+}</string>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -58,6 +68,15 @@
         <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
          <item>
           <widget class="QPushButton" name="btnLoadCT">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+           </property>
            <property name="text">
             <string>Load CT</string>
            </property>
@@ -67,6 +86,11 @@
           <widget class="QCheckBox" name="cbCT">
            <property name="autoFillBackground">
             <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QCheckBox{
+	color: #FF0000
+}</string>
            </property>
            <property name="text">
             <string/>
@@ -82,6 +106,15 @@
         <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
          <item>
           <widget class="QPushButton" name="btnLoadCBCT">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+           </property>
            <property name="text">
             <string>Load CBCT</string>
            </property>
@@ -89,6 +122,11 @@
          </item>
          <item>
           <widget class="QCheckBox" name="cbCBCT">
+           <property name="styleSheet">
+            <string notr="true">QCheckBox{
+	check-color: #FF0000;
+}</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -100,6 +138,15 @@
         <layout class="QHBoxLayout" name="horizontalLayoutSC">
          <item>
           <widget class="QPushButton" name="btnScatterCorrect">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+           </property>
            <property name="text">
             <string>Scatter Correct</string>
            </property>

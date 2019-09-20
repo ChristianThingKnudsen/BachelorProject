@@ -61,11 +61,17 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(932, 555);
+        MainWindow->setStyleSheet(QString::fromUtf8("MainWindow{\n"
+"	background-color: #005194\n"
+"}"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
         tabWidget->setGeometry(QRect(0, 0, 801, 511));
+        tabWidget->setStyleSheet(QString::fromUtf8("tabWidget{\n"
+"	background-color: #005194\n"
+"}"));
         SCUI = new QWidget();
         SCUI->setObjectName(QString::fromUtf8("SCUI"));
         verticalLayoutWidget = new QWidget(SCUI);
@@ -93,12 +99,22 @@ public:
         horizontalLayoutLoadCT->setObjectName(QString::fromUtf8("horizontalLayoutLoadCT"));
         btnLoadCT = new QPushButton(verticalLayoutWidget);
         btnLoadCT->setObjectName(QString::fromUtf8("btnLoadCT"));
+        btnLoadCT->setStyleSheet(QString::fromUtf8("QPushButton{\n"
+"	background-color: #1367AB;\n"
+"	color: #ffffff;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"	background-color: #E4A115\n"
+"}"));
 
         horizontalLayoutLoadCT->addWidget(btnLoadCT);
 
         cbCT = new QCheckBox(verticalLayoutWidget);
         cbCT->setObjectName(QString::fromUtf8("cbCT"));
         cbCT->setAutoFillBackground(false);
+        cbCT->setStyleSheet(QString::fromUtf8("QCheckBox{\n"
+"	color: #FF0000\n"
+"}"));
         cbCT->setChecked(false);
 
         horizontalLayoutLoadCT->addWidget(cbCT);
@@ -110,11 +126,21 @@ public:
         horizontalLayoutLoadCBCT->setObjectName(QString::fromUtf8("horizontalLayoutLoadCBCT"));
         btnLoadCBCT = new QPushButton(verticalLayoutWidget);
         btnLoadCBCT->setObjectName(QString::fromUtf8("btnLoadCBCT"));
+        btnLoadCBCT->setStyleSheet(QString::fromUtf8("QPushButton{\n"
+"	background-color: #1367AB;\n"
+"	color: #ffffff;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"	background-color: #E4A115\n"
+"}"));
 
         horizontalLayoutLoadCBCT->addWidget(btnLoadCBCT);
 
         cbCBCT = new QCheckBox(verticalLayoutWidget);
         cbCBCT->setObjectName(QString::fromUtf8("cbCBCT"));
+        cbCBCT->setStyleSheet(QString::fromUtf8("QCheckBox{\n"
+"	check-color: #FF0000;\n"
+"}"));
 
         horizontalLayoutLoadCBCT->addWidget(cbCBCT);
 
@@ -125,6 +151,13 @@ public:
         horizontalLayoutSC->setObjectName(QString::fromUtf8("horizontalLayoutSC"));
         btnScatterCorrect = new QPushButton(verticalLayoutWidget);
         btnScatterCorrect->setObjectName(QString::fromUtf8("btnScatterCorrect"));
+        btnScatterCorrect->setStyleSheet(QString::fromUtf8("QPushButton{\n"
+"	background-color: #1367AB;\n"
+"	color: #ffffff;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"	background-color: #E4A115\n"
+"}"));
 
         horizontalLayoutSC->addWidget(btnScatterCorrect);
 
