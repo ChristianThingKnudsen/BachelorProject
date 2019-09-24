@@ -10,18 +10,15 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -31,9 +28,7 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QTabWidget *tabWidget;
-    QWidget *SCUI;
-    QWidget *verticalLayoutWidget;
+    QGridLayout *gridLayout_2;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayoutRegion;
     QLabel *labelRegion;
@@ -46,48 +41,37 @@ public:
     QCheckBox *cbCBCT;
     QHBoxLayout *horizontalLayoutSC;
     QPushButton *btnScatterCorrect;
-    QWidget *verticalLayoutWidget_2;
-    QVBoxLayout *verticalLayoutImage;
-    QLabel *label_ID;
-    QLabel *labelImage;
+    QHBoxLayout *horizontalLayoutID;
+    QLabel *label_Id;
     QCheckBox *cbShowOrgans;
-    QWidget *Advanced;
-    QMenuBar *menubar;
-    QMenu *menuSCUI;
+    QPushButton *btnInfo;
+    QGridLayout *gridLayout;
+    QVBoxLayout *verticalLayout_2;
+    QPushButton *pushButton;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(932, 555);
+        MainWindow->resize(968, 557);
         MainWindow->setStyleSheet(QString::fromUtf8("MainWindow{\n"
 "	background-color: #005194\n"
 "}"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        tabWidget = new QTabWidget(centralwidget);
-        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 801, 511));
-        tabWidget->setStyleSheet(QString::fromUtf8("tabWidget{\n"
-"	background-color: #005194\n"
-"}"));
-        SCUI = new QWidget();
-        SCUI->setObjectName(QString::fromUtf8("SCUI"));
-        verticalLayoutWidget = new QWidget(SCUI);
-        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(0, 0, 231, 471));
-        verticalLayout = new QVBoxLayout(verticalLayoutWidget);
+        gridLayout_2 = new QGridLayout(centralwidget);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayoutRegion = new QHBoxLayout();
         horizontalLayoutRegion->setObjectName(QString::fromUtf8("horizontalLayoutRegion"));
-        labelRegion = new QLabel(verticalLayoutWidget);
+        labelRegion = new QLabel(centralwidget);
         labelRegion->setObjectName(QString::fromUtf8("labelRegion"));
 
         horizontalLayoutRegion->addWidget(labelRegion);
 
-        comboBox = new QComboBox(verticalLayoutWidget);
+        comboBox = new QComboBox(centralwidget);
         comboBox->setObjectName(QString::fromUtf8("comboBox"));
 
         horizontalLayoutRegion->addWidget(comboBox);
@@ -97,7 +81,7 @@ public:
 
         horizontalLayoutLoadCT = new QHBoxLayout();
         horizontalLayoutLoadCT->setObjectName(QString::fromUtf8("horizontalLayoutLoadCT"));
-        btnLoadCT = new QPushButton(verticalLayoutWidget);
+        btnLoadCT = new QPushButton(centralwidget);
         btnLoadCT->setObjectName(QString::fromUtf8("btnLoadCT"));
         btnLoadCT->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "	background-color: #1367AB;\n"
@@ -109,7 +93,7 @@ public:
 
         horizontalLayoutLoadCT->addWidget(btnLoadCT);
 
-        cbCT = new QCheckBox(verticalLayoutWidget);
+        cbCT = new QCheckBox(centralwidget);
         cbCT->setObjectName(QString::fromUtf8("cbCT"));
         cbCT->setAutoFillBackground(false);
         cbCT->setStyleSheet(QString::fromUtf8("QCheckBox{\n"
@@ -124,7 +108,7 @@ public:
 
         horizontalLayoutLoadCBCT = new QHBoxLayout();
         horizontalLayoutLoadCBCT->setObjectName(QString::fromUtf8("horizontalLayoutLoadCBCT"));
-        btnLoadCBCT = new QPushButton(verticalLayoutWidget);
+        btnLoadCBCT = new QPushButton(centralwidget);
         btnLoadCBCT->setObjectName(QString::fromUtf8("btnLoadCBCT"));
         btnLoadCBCT->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "	background-color: #1367AB;\n"
@@ -136,7 +120,7 @@ public:
 
         horizontalLayoutLoadCBCT->addWidget(btnLoadCBCT);
 
-        cbCBCT = new QCheckBox(verticalLayoutWidget);
+        cbCBCT = new QCheckBox(centralwidget);
         cbCBCT->setObjectName(QString::fromUtf8("cbCBCT"));
         cbCBCT->setStyleSheet(QString::fromUtf8("QCheckBox{\n"
 "	check-color: #FF0000;\n"
@@ -149,7 +133,7 @@ public:
 
         horizontalLayoutSC = new QHBoxLayout();
         horizontalLayoutSC->setObjectName(QString::fromUtf8("horizontalLayoutSC"));
-        btnScatterCorrect = new QPushButton(verticalLayoutWidget);
+        btnScatterCorrect = new QPushButton(centralwidget);
         btnScatterCorrect->setObjectName(QString::fromUtf8("btnScatterCorrect"));
         btnScatterCorrect->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "	background-color: #1367AB;\n"
@@ -164,47 +148,65 @@ public:
 
         verticalLayout->addLayout(horizontalLayoutSC);
 
-        verticalLayoutWidget_2 = new QWidget(SCUI);
-        verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
-        verticalLayoutWidget_2->setGeometry(QRect(230, 0, 451, 471));
-        verticalLayoutImage = new QVBoxLayout(verticalLayoutWidget_2);
-        verticalLayoutImage->setObjectName(QString::fromUtf8("verticalLayoutImage"));
-        verticalLayoutImage->setContentsMargins(0, 0, 0, 0);
-        label_ID = new QLabel(verticalLayoutWidget_2);
-        label_ID->setObjectName(QString::fromUtf8("label_ID"));
 
-        verticalLayoutImage->addWidget(label_ID);
+        gridLayout_2->addLayout(verticalLayout, 0, 0, 2, 1);
 
-        labelImage = new QLabel(verticalLayoutWidget_2);
-        labelImage->setObjectName(QString::fromUtf8("labelImage"));
-        labelImage->setMargin(10);
+        horizontalLayoutID = new QHBoxLayout();
+        horizontalLayoutID->setObjectName(QString::fromUtf8("horizontalLayoutID"));
+        label_Id = new QLabel(centralwidget);
+        label_Id->setObjectName(QString::fromUtf8("label_Id"));
 
-        verticalLayoutImage->addWidget(labelImage);
+        horizontalLayoutID->addWidget(label_Id);
 
-        cbShowOrgans = new QCheckBox(SCUI);
+        cbShowOrgans = new QCheckBox(centralwidget);
         cbShowOrgans->setObjectName(QString::fromUtf8("cbShowOrgans"));
-        cbShowOrgans->setGeometry(QRect(700, 240, 91, 20));
-        tabWidget->addTab(SCUI, QString());
-        Advanced = new QWidget();
-        Advanced->setObjectName(QString::fromUtf8("Advanced"));
-        tabWidget->addTab(Advanced, QString());
+
+        horizontalLayoutID->addWidget(cbShowOrgans);
+
+        btnInfo = new QPushButton(centralwidget);
+        btnInfo->setObjectName(QString::fromUtf8("btnInfo"));
+        btnInfo->setStyleSheet(QString::fromUtf8("QPushButton{\n"
+"	background-color:#E4A115; \n"
+"	color: #ffffff;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"	background-color:#1367AB;\n"
+"}"));
+
+        horizontalLayoutID->addWidget(btnInfo);
+
+
+        gridLayout_2->addLayout(horizontalLayoutID, 0, 1, 1, 1);
+
+        gridLayout = new QGridLayout();
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+
+        gridLayout_2->addLayout(gridLayout, 1, 1, 1, 1);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        pushButton = new QPushButton(centralwidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setStyleSheet(QString::fromUtf8("QPushButton{\n"
+"	background-color: #1367AB;\n"
+"	color: #ffffff;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"	background-color: #E4A115\n"
+"}"));
+
+        verticalLayout_2->addWidget(pushButton);
+
+
+        gridLayout_2->addLayout(verticalLayout_2, 1, 2, 1, 1);
+
         MainWindow->setCentralWidget(centralwidget);
-        menubar = new QMenuBar(MainWindow);
-        menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 932, 21));
-        menuSCUI = new QMenu(menubar);
-        menuSCUI->setObjectName(QString::fromUtf8("menuSCUI"));
-        MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWindow->setStatusBar(statusbar);
 
-        menubar->addAction(menuSCUI->menuAction());
-
         retranslateUi(MainWindow);
-
-        tabWidget->setCurrentIndex(0);
-
+        QObject::connect(btnLoadCBCT, SIGNAL(released()), MainWindow, SLOT(foo()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -218,12 +220,10 @@ public:
         btnLoadCBCT->setText(QCoreApplication::translate("MainWindow", "Load CBCT", nullptr));
         cbCBCT->setText(QString());
         btnScatterCorrect->setText(QCoreApplication::translate("MainWindow", "Scatter Correct", nullptr));
-        label_ID->setText(QCoreApplication::translate("MainWindow", "ID:xxxxxx-xxxx", nullptr));
-        labelImage->setText(QCoreApplication::translate("MainWindow", "This is going to be an image later", nullptr));
+        label_Id->setText(QCoreApplication::translate("MainWindow", "ID:xxxxxx-xxxx", nullptr));
         cbShowOrgans->setText(QCoreApplication::translate("MainWindow", "Show Organs", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(SCUI), QCoreApplication::translate("MainWindow", "SCUI", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(Advanced), QCoreApplication::translate("MainWindow", "Advanced", nullptr));
-        menuSCUI->setTitle(QCoreApplication::translate("MainWindow", "SCUI", nullptr));
+        btnInfo->setText(QCoreApplication::translate("MainWindow", "Information", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "Advanced mode", nullptr));
     } // retranslateUi
 
 };

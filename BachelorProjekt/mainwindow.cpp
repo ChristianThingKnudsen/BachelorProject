@@ -1,5 +1,7 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include "qyklabel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

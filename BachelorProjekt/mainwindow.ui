@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>932</width>
-    <height>555</height>
+    <width>968</width>
+    <height>557</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,211 +19,196 @@
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>801</width>
-      <height>511</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">tabWidget{
-	background-color: #005194
-}</string>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="SCUI">
-     <attribute name="title">
-      <string>SCUI</string>
-     </attribute>
-     <widget class="QWidget" name="verticalLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>231</width>
-        <height>471</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutRegion">
-         <item>
-          <widget class="QLabel" name="labelRegion">
-           <property name="text">
-            <string>Region:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBox"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
-         <item>
-          <widget class="QPushButton" name="btnLoadCT">
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0" rowspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayoutRegion">
+        <item>
+         <widget class="QLabel" name="labelRegion">
+          <property name="text">
+           <string>Region:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
+        <item>
+         <widget class="QPushButton" name="btnLoadCT">
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-           </property>
-           <property name="text">
-            <string>Load CT</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbCT">
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QCheckBox{
+          </property>
+          <property name="text">
+           <string>Load CT</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbCT">
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QCheckBox{
 	color: #FF0000
 }</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
-         <item>
-          <widget class="QPushButton" name="btnLoadCBCT">
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
+        <item>
+         <widget class="QPushButton" name="btnLoadCBCT">
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-           </property>
-           <property name="text">
-            <string>Load CBCT</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbCBCT">
-           <property name="styleSheet">
-            <string notr="true">QCheckBox{
+          </property>
+          <property name="text">
+           <string>Load CBCT</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbCBCT">
+          <property name="styleSheet">
+           <string notr="true">QCheckBox{
 	check-color: #FF0000;
 }</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutSC">
-         <item>
-          <widget class="QPushButton" name="btnScatterCorrect">
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayoutSC">
+        <item>
+         <widget class="QPushButton" name="btnScatterCorrect">
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-           </property>
-           <property name="text">
-            <string>Scatter Correct</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="verticalLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>230</x>
-        <y>0</y>
-        <width>451</width>
-        <height>471</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayoutImage">
-       <item>
-        <widget class="QLabel" name="label_ID">
-         <property name="text">
-          <string>ID:xxxxxx-xxxx</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelImage">
-         <property name="text">
-          <string>This is going to be an image later</string>
-         </property>
-         <property name="margin">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QCheckBox" name="cbShowOrgans">
-      <property name="geometry">
-       <rect>
-        <x>700</x>
-        <y>240</y>
-        <width>91</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Show Organs</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="Advanced">
-     <attribute name="title">
-      <string>Advanced</string>
-     </attribute>
-    </widget>
-   </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>932</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuSCUI">
-    <property name="title">
-     <string>SCUI</string>
-    </property>
-   </widget>
-   <addaction name="menuSCUI"/>
+          </property>
+          <property name="text">
+           <string>Scatter Correct</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayoutID">
+      <item>
+       <widget class="QLabel" name="label_Id">
+        <property name="text">
+         <string>ID:xxxxxx-xxxx</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbShowOrgans">
+        <property name="text">
+         <string>Show Organs</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnInfo">
+        <property name="styleSheet">
+         <string notr="true">QPushButton{
+	background-color:#E4A115; 
+	color: #ffffff;
+}
+QPushButton:pressed{
+	background-color:#1367AB;
+}</string>
+        </property>
+        <property name="text">
+         <string>Information</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="gridLayout"/>
+    </item>
+    <item row="1" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="styleSheet">
+         <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+        </property>
+        <property name="text">
+         <string>Advanced mode</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnLoadCBCT</sender>
+   <signal>released()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>foo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>332</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>483</x>
+     <y>278</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>foo()</slot>
+ </slots>
 </ui>
