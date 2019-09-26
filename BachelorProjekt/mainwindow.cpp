@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->comboBox->addItem("Head-Neck");
+    ui->comboBox->addItem("Prostata");
+    ui->comboBox->addItem("Thorax");
 }
 
 MainWindow::~MainWindow()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>968</width>
-    <height>557</height>
+    <width>979</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,200 +15,498 @@
   </property>
   <property name="styleSheet">
    <string notr="true">MainWindow{
-	background-color: #005194
+	background-color: #1367AB;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0" rowspan="2">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayoutRegion">
-        <item>
-         <widget class="QLabel" name="labelRegion">
-          <property name="text">
-           <string>Region:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
-        <item>
-         <widget class="QPushButton" name="btnLoadCT">
-          <property name="styleSheet">
-           <string notr="true">QPushButton{
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QWidget{
+	background-color: #0D3F64;
+	color: #ffffff;
+}</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutRegion">
+          <item>
+           <widget class="QLabel" name="labelRegion">
+            <property name="styleSheet">
+             <string notr="true">QLabel{
+	font-size: 20px;
+}</string>
+            </property>
+            <property name="text">
+             <string>Region:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox">
+            <property name="styleSheet">
+             <string notr="true">QComboBox{
+	font-weight: bold;
+	font-size: 15px;
+}</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	background-color: #0D3F64;
+	color: #ffffff;
+}</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
+          <item>
+           <widget class="QPushButton" name="btnLoadCT">
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
+	font-size: 20px;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-          </property>
-          <property name="text">
-           <string>Load CT</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbCT">
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QCheckBox{
-	color: #FF0000
+            </property>
+            <property name="text">
+             <string>Load CT</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cbCT">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QCheckBox{
+	background-color: #FF0000;
+}
+</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	background-color: #0D3F64;
+	color: #ffffff;
 }</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
-        <item>
-         <widget class="QPushButton" name="btnLoadCBCT">
-          <property name="styleSheet">
-           <string notr="true">QPushButton{
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
+          <item>
+           <widget class="QPushButton" name="btnLoadCBCT">
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
+	font-size: 20px;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-          </property>
-          <property name="text">
-           <string>Load CBCT</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbCBCT">
-          <property name="styleSheet">
-           <string notr="true">QCheckBox{
-	check-color: #FF0000;
+            </property>
+            <property name="text">
+             <string>Load CBCT</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cbCBCT">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QCheckBox{
+	background-color: #FF0000;
+}
+QCheckBox:checked{
+	background-color: #FFFFFF;
+}
+</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QWidget{
+	background-color: #0D3F64;
+	color: #ffffff;
 }</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayoutSC">
-        <item>
-         <widget class="QPushButton" name="btnScatterCorrect">
-          <property name="styleSheet">
-           <string notr="true">QPushButton{
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutSC">
+          <item>
+           <widget class="QPushButton" name="btnScatterCorrect">
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
+	font-size: 20px;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-          </property>
-          <property name="text">
-           <string>Scatter Correct</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+            </property>
+            <property name="text">
+             <string>Scatter Correct</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
     <item row="0" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayoutID">
-      <item>
-       <widget class="QLabel" name="label_Id">
-        <property name="text">
-         <string>ID:xxxxxx-xxxx</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbShowOrgans">
-        <property name="text">
-         <string>Show Organs</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnInfo">
-        <property name="styleSheet">
-         <string notr="true">QPushButton{
+     <widget class="QFrame" name="frame">
+      <property name="styleSheet">
+       <string notr="true">QFrame{
+	background-color: #0D3F64;
+	color: #ffffff;
+}</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayoutID">
+       <item>
+        <widget class="QLabel" name="label_Id">
+         <property name="styleSheet">
+          <string notr="true">QLabel{
+	font-size: 20px;
+}</string>
+         </property>
+         <property name="text">
+          <string>ID:xxxxxx-xxxx</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbShowOrgans">
+         <property name="styleSheet">
+          <string notr="true">QCheckBox{
+	font-size: 20px;
+	color: #ffffff;
+}</string>
+         </property>
+         <property name="text">
+          <string>Show Organs</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnInfo">
+         <property name="styleSheet">
+          <string notr="true">QPushButton{
 	background-color:#E4A115; 
 	color: #ffffff;
+	font-size: 20px;
 }
 QPushButton:pressed{
 	background-color:#1367AB;
 }</string>
-        </property>
-        <property name="text">
-         <string>Information</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+         </property>
+         <property name="text">
+          <string>Information</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
     <item row="1" column="1">
-     <layout class="QGridLayout" name="gridLayout"/>
+     <widget class="QFrame" name="frame">
+      <property name="styleSheet">
+       <string notr="true">QFrame{
+	background-color: #0D3F64;
+	color: #ffffff;
+}</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="qyklabel" name="labelImageRaw">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>256</width>
+           <height>256</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>1024</width>
+           <height>1024</height>
+          </size>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
-    <item row="1" column="2">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="styleSheet">
-         <string notr="true">QPushButton{
+    <item row="0" column="2">
+     <widget class="QFrame" name="frame">
+      <property name="styleSheet">
+       <string notr="true">QFrame{
+	background-color: #0D3F64;
+	color: #ffffff;
+}</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QPushButton" name="btnAdvanced">
+         <property name="styleSheet">
+          <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
+	font-size: 20px;
 }
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-        </property>
-        <property name="text">
-         <string>Advanced mode</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+         </property>
+         <property name="text">
+          <string>Advanced mode</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qyklabel</class>
+   <extends>QLabel</extends>
+   <header>qyklabel.h</header>
+   <slots>
+    <slot>SetDrawPointToggle(bool)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>btnLoadCBCT</sender>
-   <signal>released()</signal>
+   <sender>btnLoadCT</sender>
+   <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>foo()</slot>
+   <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
-     <y>332</y>
+     <x>100</x>
+     <y>197</y>
     </hint>
     <hint type="destinationlabel">
-     <x>483</x>
-     <y>278</y>
+     <x>489</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnLoadCBCT</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMinimized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnScatterCorrect</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>452</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnInfo</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMaximized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>696</x>
+     <y>34</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAdvanced</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMaximized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>886</x>
+     <y>34</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>271</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>foo()</slot>
+  <slot>SLT_LoadRawImages()</slot>
+  <slot>SLT_DrawRawImages()</slot>
+  <slot>SLT_FileNameHex2Dec()</slot>
+  <slot>SLT_MakeElektaXML()</slot>
+  <slot>SLT_ExportHis()</slot>
+  <slot>SLT_OpenOffsetFile()</slot>
+  <slot>SLT_OpenGainFile()</slot>
+  <slot>SLT_OpenBadpixelFile()</slot>
+  <slot>SLT_ApplyCalibration()</slot>
+  <slot>SLT_OpenElektaGeomFile()</slot>
+  <slot>SLT_SetOutputPath()</slot>
+  <slot>SLT_DoReconstruction()</slot>
+  <slot>SLT_DrawReconImage()</slot>
+  <slot>SLT_CopyTableToClipBoard()</slot>
+  <slot>SLT_SetHisDir()</slot>
+  <slot>SLT_LoadSelectedProjFiles()</slot>
+  <slot>SLT_ReloadProjections()</slot>
+  <slot>SLT_DrawProjImages()</slot>
+  <slot>SLT_DrawGraph()</slot>
+  <slot>SLT_InitializeGraphLim()</slot>
+  <slot>SLT_LoadPlanCT_mha()</slot>
+  <slot>SLT_GoForcedProbePos()</slot>
+  <slot>SLT_PostApplyFOVDispParam()</slot>
+  <slot>SLT_DoPostProcessing()</slot>
+  <slot>SLT_ExportReconUSHORT()</slot>
+  <slot>SLT_ExportReconSHORT_HU()</slot>
+  <slot>SLT_ExportALL_DCM_and_SHORT_HU_and_calc_WEPL()</slot>
+  <slot>SLT_UpdatePostProcDispObj()</slot>
+  <slot>SLT_DoBHC()</slot>
+  <slot>SLT_DoBowtieCorrection()</slot>
+  <slot>SLT_LoadImageFloat3D()</slot>
+  <slot>SLT_Export2DDose_TIF()</slot>
+  <slot>SLT_ViewRegistration()</slot>
+  <slot>SLT_ViewHistogram()</slot>
+  <slot>SLT_Load3DImageShort()</slot>
+  <slot>SLT_DoScatterCorrection_APRIORI()</slot>
+  <slot>SLT_TempAudit()</slot>
+  <slot>SLT_LoadPlanCT_USHORT()</slot>
+  <slot>SLT_CalcAndSaveAngularWEPL()</slot>
+  <slot>SLT_DoScatterCorrectionUniform()</slot>
+  <slot>SLT_FileExportShortDICOM_CurrentImg()</slot>
+  <slot>SLT_AddConstHUToCurImg()</slot>
+  <slot>SLT_CropSkinUsingRS()</slot>
+  <slot>SLT_CropSkinUsingThreshold()</slot>
+  <slot>SLT_ExportAngularWEPL_byFile()</slot>
+  <slot>SLT_LoadPOIData()</slot>
+  <slot>SLT_StartSyncFromSharedMem()</slot>
+  <slot>SLT_StopSyncFromSharedMem()</slot>
+  <slot>SLT_LoadNKIImage()</slot>
+  <slot>SLTM_ViewExternalCommand()</slot>
+  <slot>SLTM_LoadDICOMdir()</slot>
+  <slot>SLTM_LoadRTKoutput()</slot>
+  <slot>SLT_MedianFilterDoNow()</slot>
+  <slot>SLTM_Export2DDoseMapAsMHA()</slot>
+  <slot>SLTM_ExportProjGeometryTXT()</slot>
+  <slot>SLTM_ForwardProjection()</slot>
+  <slot>SLT_PostProcCropInv()</slot>
+  <slot>SLTM_FineResolScatterCorrectrionMacro()</slot>
+  <slot>SLTM_FullScatterCorrectionMacroAP()</slot>
+  <slot>SLTM_BatchScatterCorrectionMacroAP()</slot>
+  <slot>SLT_OpenPhaseData()</slot>
+  <slot>SLT_Export4DCBCT()</slot>
+  <slot>SLT_LoadCBCTcorrMHA()</slot>
+  <slot>SLT_LoadCTrigidMHA()</slot>
+  <slot>SLT_LoadCTdeformMHA()</slot>
+  <slot>SLT_DoCouchCorrection()</slot>
+  <slot>SLTM_WELPCalcMultipleFiles()</slot>
+  <slot>SLT_GeneratePOIData()</slot>
+  <slot>SLTM_LoadPerProjRefList()</slot>
+  <slot>SLTM_ScatterCorPerProjRef()</slot>
+  <slot>SLTM_CropMaskBatch()</slot>
+  <slot>SLT_SaveCurrentSetting()</slot>
+  <slot>SLT_CropSupInf()</slot>
+  <slot>SLT_OutPathEdited()</slot>
  </slots>
 </ui>
