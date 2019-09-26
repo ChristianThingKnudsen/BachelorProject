@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InformationWindow</class>
+ <widget class="QDialog" name="InformationWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>901</width>
+    <height>324</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{
+	background-color: #1367AB;
+}</string>
+  </property>
+  <widget class="QWidget" name="formLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1</x>
+     <y>0</y>
+     <width>901</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout">
+    <property name="horizontalSpacing">
+     <number>9</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>15</number>
+    </property>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLabel" name="label_13">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	text-decoration: underline;
+	font-size: 20px;
+	color:#E4A115; 
+	font-weight: bold;
+	alignment: center;
+}
+</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="text">
+       <string>SCUI Information </string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="labelRegion">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Region</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="labelLoadCT">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Load CT</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="label_2">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>This button allows the user to read in the taken CT image. The corresponding checkbox will light up green when the image has been loaded. </string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Load CBCT</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="label_4">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>This button allows the user to read in the taken CBCT image. The corresponding checkbox will light up green when the image has been loaded. </string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Scatter Correct</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="label_6">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>This button takes the CT and CBCT image and creates a scatter corrected CBCT image, which can be used for reviewing the dose plan</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_7">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLabel" name="label_8">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>This label shows the security number of the patient under treatment </string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_9">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Show Organs</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <widget class="QLabel" name="labelShowOrgansInfo">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>When this checkbox is checked the scatter corrected CBCT image, will then be superimposed by the organ image</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	font-size: 15px;
+	color:#E4A115; 
+	font-weight: bold;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Advanced mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1">
+     <widget class="QLabel" name="label_12">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>This button opens a new form where more values behind the scene can be accessed. This is only recommended for  physicists </string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="labelRegionInfo">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+      </property>
+      <property name="text">
+       <string>This option allows to choose which part of the body that is up for treatment. The program then selects the appropriate values based on the selected region. </string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

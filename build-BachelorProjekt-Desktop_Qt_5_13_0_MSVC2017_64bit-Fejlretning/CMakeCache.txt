@@ -30,8 +30,8 @@ CMAKE_BUILD_TYPE:STRING=Debug
 // detected when left empty
 CMAKE_CODEBLOCKS_COMPILER_ID:STRING=
 
-//The CodeBlocks executable
-CMAKE_CODEBLOCKS_EXECUTABLE:FILEPATH=CMAKE_CODEBLOCKS_EXECUTABLE-NOTFOUND
+//No help, variable specified on the command line.
+CMAKE_CODEBLOCKS_EXECUTABLE:FILEPATH=
 
 //Additional command line arguments when CodeBlocks invokes make.
 // Enter e.g. -j<some_number> to get parallel builds
@@ -163,10 +163,10 @@ CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //If set, runtime paths are not added when installing shared libraries,
 // but are added when building.
-CMAKE_SKIP_INSTALL_RPATH:BOOL=NO
+CMAKE_SKIP_INSTALL_RPATH:BOOL=OFF
 
 //If set, runtime paths are not added when using shared libraries.
-CMAKE_SKIP_RPATH:BOOL=NO
+CMAKE_SKIP_RPATH:BOOL=OFF
 
 //Flags used by the linker during the creation of static libraries
 // during all build types.
@@ -192,10 +192,157 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // .SILENT directive, and all commands will be echoed to the console
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
-CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
+CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
+
+//Path to configuration files of CbctReconLib
+CbctReconLib_BUILD_INCLUDE_DIR:PATH=C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib
+
+//Path to include files of CbctReconLib
+CbctReconLib_INCLUDE_DIR:PATH=C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib
+
+//No help, variable specified on the command line.
+DCMTK_DIR:PATH=C:/Users/ct-10/cbctrecon-build
+
+//Path to a file.
+DCMTK_config_INCLUDE_DIR:PATH=
+
+//Path to a file.
+DCMTK_dcmdata_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmdata_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmdata_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmimage_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmimage_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmimage_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmimgle_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmimgle_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmimgle_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmjpeg_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmjpeg_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmjpeg_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmjpls_INCLUDE_DIR:PATH=
+
+//Path to a file.
+DCMTK_dcmnet_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmnet_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmnet_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmpstat_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmpstat_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmpstat_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmqrdb_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmqrdb_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmqrdb_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmsign_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmsign_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmsign_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmsr_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmsr_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmsr_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_dcmtls_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_dcmtls_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_dcmtls_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a library.
+DCMTK_ijg12_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_ijg12_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a library.
+DCMTK_ijg16_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_ijg16_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a library.
+DCMTK_ijg8_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_ijg8_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_oflog_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_oflog_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_oflog_LIBRARY_RELEASE:FILEPATH=
+
+//Path to a file.
+DCMTK_ofstd_INCLUDE_DIR:PATH=
+
+//Path to a library.
+DCMTK_ofstd_LIBRARY_DEBUG:FILEPATH=
+
+//Path to a library.
+DCMTK_ofstd_LIBRARY_RELEASE:FILEPATH=
+
+//The directory containing a CMake configuration file for DCMTK_wrap.
+DCMTK_wrap_DIR:PATH=DCMTK_wrap_DIR-NOTFOUND
 
 //The directory containing a CMake configuration file for ITK.
 ITK_DIR:PATH=C:/Program Files (x86)/ITK/lib/cmake/ITK-5.1
+
+//No help, variable specified on the command line.
+Plastimatch_DIR:PATH=C:/Users/ct-10/cbctrecon-build/Plastimatch-build
 
 //No help, variable specified on the command line.
 QT_QMAKE_EXECUTABLE:STRING=C:/Qt/5.13.0/msvc2017_64/bin/qmake.exe
@@ -335,4 +482,92 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_config_INCLUDE_DIR
+DCMTK_config_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmdata_INCLUDE_DIR
+DCMTK_dcmdata_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmdata_LIBRARY_DEBUG
+DCMTK_dcmdata_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmdata_LIBRARY_RELEASE
+DCMTK_dcmdata_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmimage_INCLUDE_DIR
+DCMTK_dcmimage_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmimage_LIBRARY_DEBUG
+DCMTK_dcmimage_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmimage_LIBRARY_RELEASE
+DCMTK_dcmimage_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmimgle_INCLUDE_DIR
+DCMTK_dcmimgle_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmimgle_LIBRARY_DEBUG
+DCMTK_dcmimgle_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmimgle_LIBRARY_RELEASE
+DCMTK_dcmimgle_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmjpeg_INCLUDE_DIR
+DCMTK_dcmjpeg_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmjpeg_LIBRARY_DEBUG
+DCMTK_dcmjpeg_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmjpeg_LIBRARY_RELEASE
+DCMTK_dcmjpeg_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmjpls_INCLUDE_DIR
+DCMTK_dcmjpls_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmnet_INCLUDE_DIR
+DCMTK_dcmnet_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmnet_LIBRARY_DEBUG
+DCMTK_dcmnet_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmnet_LIBRARY_RELEASE
+DCMTK_dcmnet_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmpstat_INCLUDE_DIR
+DCMTK_dcmpstat_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmpstat_LIBRARY_DEBUG
+DCMTK_dcmpstat_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmpstat_LIBRARY_RELEASE
+DCMTK_dcmpstat_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmqrdb_INCLUDE_DIR
+DCMTK_dcmqrdb_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmqrdb_LIBRARY_DEBUG
+DCMTK_dcmqrdb_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmqrdb_LIBRARY_RELEASE
+DCMTK_dcmqrdb_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmsign_INCLUDE_DIR
+DCMTK_dcmsign_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmsign_LIBRARY_DEBUG
+DCMTK_dcmsign_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmsign_LIBRARY_RELEASE
+DCMTK_dcmsign_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmsr_INCLUDE_DIR
+DCMTK_dcmsr_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmsr_LIBRARY_DEBUG
+DCMTK_dcmsr_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmsr_LIBRARY_RELEASE
+DCMTK_dcmsr_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmtls_INCLUDE_DIR
+DCMTK_dcmtls_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmtls_LIBRARY_DEBUG
+DCMTK_dcmtls_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_dcmtls_LIBRARY_RELEASE
+DCMTK_dcmtls_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ijg12_LIBRARY_DEBUG
+DCMTK_ijg12_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ijg12_LIBRARY_RELEASE
+DCMTK_ijg12_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ijg16_LIBRARY_DEBUG
+DCMTK_ijg16_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ijg16_LIBRARY_RELEASE
+DCMTK_ijg16_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ijg8_LIBRARY_DEBUG
+DCMTK_ijg8_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ijg8_LIBRARY_RELEASE
+DCMTK_ijg8_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_oflog_INCLUDE_DIR
+DCMTK_oflog_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_oflog_LIBRARY_DEBUG
+DCMTK_oflog_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_oflog_LIBRARY_RELEASE
+DCMTK_oflog_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ofstd_INCLUDE_DIR
+DCMTK_ofstd_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ofstd_LIBRARY_DEBUG
+DCMTK_ofstd_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DCMTK_ofstd_LIBRARY_RELEASE
+DCMTK_ofstd_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 

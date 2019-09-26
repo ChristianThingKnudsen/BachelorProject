@@ -5,7 +5,7 @@
 		<Option title="BachelorProjekt"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="msvc8"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\Qt\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\Modules\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\..\Qt\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\..\..\..\..\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\;CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\Modules\;CMake Files\..\..\..\..\..\..\cbctrecon-build\;CMake Files\..\..\..\..\..\..\cbctrecon-build\Plastimatch-build\;CMake Files\cmake\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/build-BachelorProjekt-Desktop_Qt_5_13_0_MSVC2017_64bit-Fejlretning"/>
@@ -50,7 +50,6 @@
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve/bfp"/>
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve/shared"/>
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve"/>
-					<Add directory="C:/.hunter/_Base/7380b47/de587f1/aa7ea4c/Install/include"/>
 					<Add directory="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib"/>
 					<Add directory="C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib"/>
 					<Add directory="C:/Program Files (x86)/ITK/include/ITK-5.1"/>
@@ -60,9 +59,19 @@
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/include/QtANGLE"/>
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/include/QtCore"/>
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/./mkspecs/win32-msvc"/>
+					<Add directory="C:/Program Files (x86)/ITK/include/RTK/lpsolve"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-build"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/sys"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/base"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/util"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/../../libs/devillard"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/libs/dlib-19.1"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/register"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/../../libs/liblbfgs-1.9/include"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/segment"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/dose"/>
 					<Add directory="C:/Program Files (x86)/ITK/include/ITK-5.1/Utilities"/>
 					<Add directory="C:/Program Files (x86)/ITK/include"/>
-					<Add directory="C:/Program Files (x86)/ITK/include/RTK/lpsolve"/>
 					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
 					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.16.27023\include"/>
 					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"/>
@@ -102,7 +111,6 @@
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve/bfp"/>
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve/shared"/>
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve"/>
-					<Add directory="C:/.hunter/_Base/7380b47/de587f1/aa7ea4c/Install/include"/>
 					<Add directory="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib"/>
 					<Add directory="C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib"/>
 					<Add directory="C:/Program Files (x86)/ITK/include/ITK-5.1"/>
@@ -112,9 +120,19 @@
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/include/QtANGLE"/>
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/include/QtCore"/>
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/./mkspecs/win32-msvc"/>
+					<Add directory="C:/Program Files (x86)/ITK/include/RTK/lpsolve"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-build"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/sys"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/base"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/util"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/../../libs/devillard"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/libs/dlib-19.1"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/register"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/../../libs/liblbfgs-1.9/include"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/segment"/>
+					<Add directory="C:/Users/ct-10/cbctrecon-build/Plastimatch-src/src/plastimatch/dose"/>
 					<Add directory="C:/Program Files (x86)/ITK/include/ITK-5.1/Utilities"/>
 					<Add directory="C:/Program Files (x86)/ITK/include"/>
-					<Add directory="C:/Program Files (x86)/ITK/include/RTK/lpsolve"/>
 					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
 					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.16.27023\include"/>
 					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"/>
@@ -152,6 +170,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/informationwindow.cpp">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/informationwindow.h">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/informationwindow.ui">
+			<Option target="BachelorProjekt"/>
+		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/main.cpp">
 			<Option target="BachelorProjekt"/>
 		</Unit>
@@ -162,6 +189,15 @@
 			<Option target="BachelorProjekt"/>
 		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/mainwindow.ui">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/progressbar.cpp">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/progressbar.h">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/progressbar.ui">
 			<Option target="BachelorProjekt"/>
 		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/qyklabel.cpp">
@@ -285,12 +321,6 @@
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\"/>
 		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../../../Program Files (x86)/ITK/lib/cmake/ITK-5.1/itkImageIOFactoryRegisterManager.h.in">
-			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\"/>
-		</Unit>
-		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../../../Program Files (x86)/ITK/lib/cmake/ITK-5.1/itkMeshIOFactoryRegisterManager.h.in">
-			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\"/>
-		</Unit>
-		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../../../Program Files (x86)/ITK/lib/cmake/ITK-5.1/itkTransformIOFactoryRegisterManager.h.in">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\"/>
 		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../../../Program Files (x86)/ITK/lib/cmake/ITK-5.1/Modules/ITKAnisotropicSmoothing.cmake">
@@ -646,6 +676,24 @@
 		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../../../Program Files (x86)/ITK/lib/cmake/ITK-5.1/Modules/RTK.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\..\Program Files (x86)\ITK\lib\cmake\ITK-5.1\Modules\"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../cbctrecon-build/DCMTKConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\cbctrecon-build\"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../cbctrecon-build/DCMTKConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\cbctrecon-build\"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../cbctrecon-build/DCMTKTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\cbctrecon-build\"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../cbctrecon-build/Plastimatch-build/PlastimatchConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\cbctrecon-build\Plastimatch-build\"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/../../../../../../cbctrecon-build/Plastimatch-build/PlastimatchLibraryDepends.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\cbctrecon-build\Plastimatch-build\"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/cmake/FindDCMTK_wrap.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

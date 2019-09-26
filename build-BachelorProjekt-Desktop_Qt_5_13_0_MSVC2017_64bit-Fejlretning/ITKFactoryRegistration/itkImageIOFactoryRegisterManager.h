@@ -38,7 +38,7 @@ class ImageIOFactoryRegisterManager
 //  The following code is intended to be expanded at the end of the
 //  itkImageFileReader.h and itkImageFileWriter.h files.
 //
-void  BMPImageIOFactoryRegister__Private();void  BioRadImageIOFactoryRegister__Private();void  GDCMImageIOFactoryRegister__Private();void  GE4ImageIOFactoryRegister__Private();void  GE5ImageIOFactoryRegister__Private();void  GiplImageIOFactoryRegister__Private();void  JPEGImageIOFactoryRegister__Private();void  MetaImageIOFactoryRegister__Private();void  NiftiImageIOFactoryRegister__Private();void  NrrdImageIOFactoryRegister__Private();void  PNGImageIOFactoryRegister__Private();void  StimulateImageIOFactoryRegister__Private();void  TIFFImageIOFactoryRegister__Private();void  VTKImageIOFactoryRegister__Private();
+void  GDCMImageIOFactoryRegister__Private();void  MetaImageIOFactoryRegister__Private();void  TIFFImageIOFactoryRegister__Private();
 
 //
 // The code below registers available IO helpers using static initialization in
@@ -48,7 +48,7 @@ void  BMPImageIOFactoryRegister__Private();void  BioRadImageIOFactoryRegister__P
 namespace {
 
   void (*ImageIOFactoryRegisterRegisterList[])(void) = {
-    BMPImageIOFactoryRegister__Private,BioRadImageIOFactoryRegister__Private,GDCMImageIOFactoryRegister__Private,GE4ImageIOFactoryRegister__Private,GE5ImageIOFactoryRegister__Private,GiplImageIOFactoryRegister__Private,JPEGImageIOFactoryRegister__Private,MetaImageIOFactoryRegister__Private,NiftiImageIOFactoryRegister__Private,NrrdImageIOFactoryRegister__Private,PNGImageIOFactoryRegister__Private,StimulateImageIOFactoryRegister__Private,TIFFImageIOFactoryRegister__Private,VTKImageIOFactoryRegister__Private,
+    GDCMImageIOFactoryRegister__Private,MetaImageIOFactoryRegister__Private,TIFFImageIOFactoryRegister__Private,
     0};
   ImageIOFactoryRegisterManager ImageIOFactoryRegisterManagerInstance(ImageIOFactoryRegisterRegisterList);
 

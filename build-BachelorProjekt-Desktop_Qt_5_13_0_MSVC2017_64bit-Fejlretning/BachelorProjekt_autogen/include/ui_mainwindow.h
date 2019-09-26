@@ -313,11 +313,7 @@ public:
         MainWindow->setStatusBar(statusbar);
 
         retranslateUi(MainWindow);
-        QObject::connect(btnLoadCT, SIGNAL(pressed()), MainWindow, SLOT(hide()));
-        QObject::connect(btnLoadCBCT, SIGNAL(pressed()), MainWindow, SLOT(hide()));
-        QObject::connect(btnScatterCorrect, SIGNAL(pressed()), MainWindow, SLOT(hide()));
-        QObject::connect(btnInfo, SIGNAL(pressed()), MainWindow, SLOT(hide()));
-        QObject::connect(btnAdvanced, SIGNAL(pressed()), MainWindow, SLOT(hide()));
+        QObject::connect(btnLoadCT, SIGNAL(pressed()), MainWindow, SLOT(foo()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -335,7 +331,7 @@ public:
         cbShowOrgans->setText(QCoreApplication::translate("MainWindow", "Show Organs", nullptr));
         btnInfo->setText(QCoreApplication::translate("MainWindow", "Information", nullptr));
         labelImageRaw->setText(QString());
-        btnAdvanced->setText(QCoreApplication::translate("MainWindow", "Advanced mode", nullptr));
+        btnAdvanced->setText(QCoreApplication::translate("MainWindow", "Advanced Mode", nullptr));
     } // retranslateUi
 
 };

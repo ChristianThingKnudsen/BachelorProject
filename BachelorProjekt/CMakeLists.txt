@@ -4,17 +4,34 @@ project(BachelorProjekt LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
-find_package(ITK REQUIRED)
+find_package(DCMTK_wrap)
+
+find_package(ITK REQUIRED COMPONENTS RTK)
 
 include(${ITK_USE_FILE})
+
+find_package(Plastimatch REQUIRED)
+
+set(PLM_TARGETS
+  plmbase
+  plmutil
+  plmdose
+  plmbase
+  plmregister
+  plmreconstruct
+  # plmopencl
+  plmsegment
+)
 
 add_executable(BachelorProjekt
   main.cpp
@@ -23,6 +40,12 @@ add_executable(BachelorProjekt
   mainwindow.ui
   qyklabel.cpp
   qyklabel.h
+  progressbar.cpp
+  progressbar.h
+  progressbar.ui
+  informationwindow.cpp
+  informationwindow.h
+  informationwindow.ui
 )
 
 target_link_libraries(BachelorProjekt PRIVATE Qt5::Widgets)
@@ -31,9 +54,14 @@ target_link_libraries(BachelorProjekt PRIVATE ${ITK_LIBRARIES})
 find_library(CBCTRECON_LIB CbctReconLibd.lib)
 target_link_libraries(BachelorProjekt
     PRIVATE ${CBCTRECON_LIB}
+    PRIVATE ${PLM_TARGETS}
+    PRIVATE ${DCMTK_LIBRARIES}
     )
+
+set(CbctReconLib_INCLUDE_DIR "C:/Users/ct-10/OneDrive\ -\ Aarhus universitet/7\ Semester\ ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib/" CACHE PATH "Path to include files of CbctReconLib")
+set(CbctReconLib_BUILD_INCLUDE_DIR "C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib" CACHE PATH "Path to configuration files of CbctReconLib")
 include_directories(
-    "C:/Users/ct-10/OneDrive\ -\ Aarhus universitet/7\ Semester\ ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib/"
-    "C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib"
+    ${CbctReconLib_INCLUDE_DIR}
+    ${CbctReconLib_BUILD_INCLUDE_DIR}
     ${ITK_INCLUDE_DIRS}
     )

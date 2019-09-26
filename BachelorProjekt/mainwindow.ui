@@ -328,7 +328,7 @@ QPushButton:pressed{
 }</string>
          </property>
          <property name="text">
-          <string>Advanced mode</string>
+          <string>Advanced Mode</string>
          </property>
         </widget>
        </item>
@@ -355,75 +355,11 @@ QPushButton:pressed{
    <sender>btnLoadCT</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>hide()</slot>
+   <slot>foo()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>100</x>
      <y>197</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>489</x>
-     <y>271</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnLoadCBCT</sender>
-   <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>showMinimized()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>100</x>
-     <y>324</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>489</x>
-     <y>271</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnScatterCorrect</sender>
-   <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>110</x>
-     <y>452</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>489</x>
-     <y>271</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnInfo</sender>
-   <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>showMaximized()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>696</x>
-     <y>34</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>489</x>
-     <y>271</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnAdvanced</sender>
-   <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>showMaximized()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>886</x>
-     <y>34</y>
     </hint>
     <hint type="destinationlabel">
      <x>489</x>
