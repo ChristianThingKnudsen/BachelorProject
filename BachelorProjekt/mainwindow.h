@@ -8,7 +8,11 @@
 //CBCTRecon header files
 #include "cbctrecon.h"
 #include "cbctregistration.h"
+#include "cbctregistration_test.hpp"
+//#include "DlgRegistration.h"
 
+//Qt
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,7 +28,22 @@ public:
 
 public:
   std::unique_ptr<CbctRecon> m_cbctrecon;
-  CbctRegistration *m_cbctregistration; // just for convienience
+  std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
+  std::unique_ptr<QStandardItemModel> m_pTableModel;
+  std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
+  FDK_options getFDKoptions() const;
+  void UpdateReconImage(UShortImageType::Pointer &spNewImg, QString &fileName);
+  void init_DlgRegistration(QString &str_dcm_uid) const;
+  FilterReaderType::Pointer ReadBowtieFileWhileProbing(const QString &proj_path, std::tuple<bool, bool> &answers);
+  std::tuple<bool, bool> probeUser(const QString &guessDir);
+  void SelectComboExternal(const int idx, const enREGI_IMAGES iImage);
+  void UpdateListOfComboBox(const int idx) const;
+  void LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt);
+  void UpdateVOICombobox(const ctType ct_type) const;
+  UShortImageType::Pointer m_spFixed;  // pointer only, for display
+  UShortImageType::Pointer m_spMoving; // pointer only, for display
+  ctType get_ctType(const QString &selText);
+  void whenFixedImgLoaded() const;
 
 public slots:
     void foo();//void foo() {std::cerr << "hello world!\n";} // This is a test
@@ -43,7 +62,7 @@ public slots:
     void SLT_LoadCTrigidMHA(){};
     void SLT_LoadCTdeformMHA(){};
     void SLT_LoadNKIImage(){};
-    void SLT_LoadSelectedProjFiles(){}; // based on presetting values on GUI,
+    void SLT_LoadSelectedProjFiles(QString &path); // based on presetting values on GUI,
                                       // including geometry files
     void SLT_ReloadProjections(){};
     void SLT_ExportHis(){};
@@ -53,7 +72,7 @@ public slots:
     void SLTM_LoadRTKoutput(){};
 
     void SLT_DrawRawImages() const{}; // external *.his images
-    void SLT_DrawProjImages(){}; // draw images from HIS FILE READER or filtered
+    void SLT_DrawProjImages(); // draw images from HIS FILE READER or filtered
                                // image before going into recon.
     void SLT_DrawReconImage(){};
 
@@ -69,18 +88,18 @@ public slots:
 
     // Gain/ Offset correction
     void SLT_SetHisDir();
-    void SLT_OpenElektaGeomFile(){};
+    void SLT_OpenElektaGeomFile();
     void SLT_SetOutputPath(){};
-    void SLT_DoReconstruction(){};
+    void SLT_DoReconstruction();
     // Profile table
     // void SLT_GetProjectionProfile();
     // void SLT_GetReconImgProfile(){};
     void SLT_CopyTableToClipBoard() const{};
     void SLT_DataProbeProj() const{};
     void SLT_DataProbeRecon() const{};
-    void SLT_DrawGraph() const{};
-    void SLT_InitializeGraphLim() const{};
-    void SLT_UpdateTable(){};
+    void SLT_DrawGraph() const {};
+    void SLT_InitializeGraphLim() const;
+    void SLT_UpdateTable();
     void SLT_CalculateROI_Recon(){};
     void SLT_CalculateROI_Proj(){};
     void SLT_GoForcedProbePos(){};
@@ -91,10 +110,10 @@ public slots:
     void SLT_ExportReconSHORT_HU(){};
     void SLT_ExportALL_DCM_and_SHORT_HU_and_calc_WEPL(){};
     void SLT_DoBHC(){};
-    void SLT_DoBowtieCorrection(){};
+    void SLT_DoBowtieCorrection();
     void SLT_Export2DDose_TIF(){};
     void SLTM_Export2DDoseMapAsMHA(){};
-    void SLT_ViewRegistration() const{};
+    void SLT_ViewRegistration() const;
     void SLT_ViewHistogram() const{};
     void SLT_DoScatterCorrection_APRIORI(){};
     void SLT_CalcAndSaveAngularWEPL(){};
@@ -125,16 +144,32 @@ public slots:
     void SLTM_ScatterCorPerProjRef(){};
     void SLTM_LoadPerProjRefList(){};
     void SLTM_CropMaskBatch(){};
-    void SLT_OutPathEdited() const{};
+    void SLT_OutPathEdited() const{};  
     void SLT_SaveCurrentSetting() const{};
     void SLT_CropSupInf(){};
 
-private slots:
+    void SLT_DoRegistrationRigid();
+    void SLT_KeyMoving(const bool bChecked);
+    void SLT_FixedImageSelected(QString selText);
+    void SLT_MovingImageSelected(QString selText);
+    void SLT_DrawImageWhenSliceChange();
+
+
+private:
     void on_btnLoadCT_clicked();
 
     void on_btnInfo_clicked();
 
 private:
     Ui::MainWindow *ui;
+    int m_enViewArrange{};
+    YK16GrayImage *m_YKDisp;
+    YK16GrayImage *m_YKImgFixed;
+    YK16GrayImage *m_YKImgMoving;
+    UShortImageType::Pointer m_spFixedDose;  // pointer only, for display
+    UShortImageType::Pointer m_spMovingDose; // pointer only, for display
+    AG17RGBAImage *m_DoseImgFixed;
+    AG17RGBAImage *m_DoseImgMoving;
+    AG17RGBAImage *m_AGDisp_Overlay;
 };
 #endif // MAINWINDOW_H

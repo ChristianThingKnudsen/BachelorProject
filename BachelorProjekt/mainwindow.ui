@@ -98,7 +98,7 @@ QPushButton:pressed{
           <item>
            <widget class="QCheckBox" name="cbCT">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -111,12 +111,14 @@ QPushButton:pressed{
             </property>
             <property name="styleSheet">
              <string notr="true">QCheckBox{
-	background-color: #FF0000;
-}
-</string>
+background-color: #FF0000;
+}</string>
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
             <property name="autoExclusive">
              <bool>false</bool>
@@ -154,6 +156,9 @@ QPushButton:pressed{
           </item>
           <item>
            <widget class="QCheckBox" name="cbCBCT">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -171,6 +176,9 @@ QCheckBox:checked{
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -355,11 +363,27 @@ QPushButton:pressed{
    <sender>btnLoadCT</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>foo()</slot>
+   <slot>SLT_SetHisDir()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>100</x>
      <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnScatterCorrect</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SLT_DoRegistrationRigid()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>452</y>
     </hint>
     <hint type="destinationlabel">
      <x>489</x>
@@ -444,5 +468,10 @@ QPushButton:pressed{
   <slot>SLT_SaveCurrentSetting()</slot>
   <slot>SLT_CropSupInf()</slot>
   <slot>SLT_OutPathEdited()</slot>
+  <slot>SLT_DoRegistrationRigid()</slot>
+  <slot>SLT_KeyMoving()</slot>
+  <slot>SLT_FixedImageSelected()</slot>
+  <slot>SLT_MovingImageSelected()</slot>
+  <slot>SLT_DrawImageWhenSliceChange()</slot>
  </slots>
 </ui>

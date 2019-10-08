@@ -134,7 +134,7 @@ public:
 
         cbCT = new QCheckBox(frame2);
         cbCT->setObjectName(QString::fromUtf8("cbCT"));
-        cbCT->setEnabled(true);
+        cbCT->setEnabled(false);
         QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -142,9 +142,9 @@ public:
         cbCT->setSizePolicy(sizePolicy1);
         cbCT->setAutoFillBackground(false);
         cbCT->setStyleSheet(QString::fromUtf8("QCheckBox{\n"
-"	background-color: #FF0000;\n"
-"}\n"
-""));
+"background-color: #FF0000;\n"
+"}"));
+        cbCT->setCheckable(true);
         cbCT->setAutoExclusive(false);
 
         horizontalLayoutLoadCT->addWidget(cbCT);
@@ -175,6 +175,7 @@ public:
 
         cbCBCT = new QCheckBox(frame3);
         cbCBCT->setObjectName(QString::fromUtf8("cbCBCT"));
+        cbCBCT->setEnabled(false);
         sizePolicy1.setHeightForWidth(cbCBCT->sizePolicy().hasHeightForWidth());
         cbCBCT->setSizePolicy(sizePolicy1);
         cbCBCT->setStyleSheet(QString::fromUtf8("QCheckBox{\n"
@@ -184,6 +185,7 @@ public:
 "	background-color: #FFFFFF;\n"
 "}\n"
 ""));
+        cbCBCT->setCheckable(true);
 
         horizontalLayoutLoadCBCT->addWidget(cbCBCT);
 
@@ -313,7 +315,7 @@ public:
         MainWindow->setStatusBar(statusbar);
 
         retranslateUi(MainWindow);
-        QObject::connect(btnLoadCT, SIGNAL(pressed()), MainWindow, SLOT(foo()));
+        QObject::connect(btnLoadCT, SIGNAL(pressed()), MainWindow, SLOT(SLT_SetHisDir()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi

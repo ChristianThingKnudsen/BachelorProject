@@ -1,0 +1,3 @@
+C:/Users/ct-10/cbctrecon-build/ExternalData/Testing/Input/Alderson/CBCT/Acquisitions/746879825/Proj_00001.xim
+C:/Users/ct-10/cbctrecon-build/ExternalData/Testing/Input/Alderson/CBCT/Acquisitions/746879825/Proj_00002.xim
+C:/Users/ct-10/cbctrecon-build/ExternalData/Testing/Input/Alderson/CBCT/Acquisitions/746879825/Proj_00003.xim

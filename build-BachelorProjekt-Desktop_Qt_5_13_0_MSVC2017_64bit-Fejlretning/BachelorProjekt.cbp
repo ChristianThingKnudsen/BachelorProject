@@ -170,6 +170,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/MyQComboBox.hxx">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/cbctregistration_test.cpp">
+			<Option target="BachelorProjekt"/>
+		</Unit>
+		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/cbctregistration_test.hpp">
+			<Option target="BachelorProjekt"/>
+		</Unit>
 		<Unit filename="C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt/informationwindow.cpp">
 			<Option target="BachelorProjekt"/>
 		</Unit>

@@ -46,6 +46,9 @@ add_executable(BachelorProjekt
   informationwindow.cpp
   informationwindow.h
   informationwindow.ui
+  cbctregistration_test.cpp
+  cbctregistration_test.hpp
+  MyQComboBox.hxx
 )
 
 target_link_libraries(BachelorProjekt PRIVATE Qt5::Widgets)
