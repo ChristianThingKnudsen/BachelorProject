@@ -1,0 +1,13 @@
+# ninja log v5
+4	4673	0	CMakeFiles/BachelorProjekt_autogen	ef58e2c4871f97cc
+4	4673	0	BachelorProjekt_autogen/mocs_compilation.cpp	ef58e2c4871f97cc
+4691	7781	592418888	CMakeFiles/BachelorProjekt.dir/progressbar.cpp.obj	3de7489fff5abea6
+4710	7843	592418888	CMakeFiles/BachelorProjekt.dir/informationwindow.cpp.obj	d3920e52b71c546e
+4673	11841	592418892	CMakeFiles/BachelorProjekt.dir/qyklabel.cpp.obj	592c53a5b21b01a8
+4682	21512	592418902	CMakeFiles/BachelorProjekt.dir/main.cpp.obj	bff98fcc2a38208
+7784	23379	592418904	CMakeFiles/BachelorProjekt.dir/BachelorProjekt_autogen/mocs_compilation.cpp.obj	1ca60c541c158dcc
+4719	25729	592418906	CMakeFiles/BachelorProjekt.dir/cbctregistration_test.cpp.obj	cd5525635f932a97
+4701	50460	592418930	CMakeFiles/BachelorProjekt.dir/mainwindow.cpp.obj	5b9c51e03a63878c
+50461	60595	592418940	BachelorProjekt.exe	4ec072dc0c770066
+10	71	0	CMakeFiles/BachelorProjekt_autogen	ef58e2c4871f97cc
+10	71	0	BachelorProjekt_autogen/mocs_compilation.cpp	ef58e2c4871f97cc

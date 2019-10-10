@@ -16,6 +16,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(DCMTK_wrap)
 
+find_package(OpenCL)
+
 find_package(ITK REQUIRED COMPONENTS RTK)
 
 include(${ITK_USE_FILE})
@@ -29,7 +31,7 @@ set(PLM_TARGETS
   plmbase
   plmregister
   plmreconstruct
-  # plmopencl
+  plmopencl
   plmsegment
 )
 
@@ -54,15 +56,16 @@ add_executable(BachelorProjekt
 target_link_libraries(BachelorProjekt PRIVATE Qt5::Widgets)
 target_link_libraries(BachelorProjekt PRIVATE ${ITK_LIBRARIES})
 
-find_library(CBCTRECON_LIB CbctReconLibd.lib)
+find_library(CBCTRECON_LIB CbctReconLibd.lib REQUIRED)
 target_link_libraries(BachelorProjekt
     PRIVATE ${CBCTRECON_LIB}
     PRIVATE ${PLM_TARGETS}
     PRIVATE ${DCMTK_LIBRARIES}
+    PRIVATE OpenCL::OpenCL
     )
 
-set(CbctReconLib_INCLUDE_DIR "C:/Users/ct-10/OneDrive\ -\ Aarhus universitet/7\ Semester\ ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib/" CACHE PATH "Path to include files of CbctReconLib")
-set(CbctReconLib_BUILD_INCLUDE_DIR "C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib" CACHE PATH "Path to configuration files of CbctReconLib")
+set(CbctReconLib_INCLUDE_DIR "C:/Users/ct-10/CbctRecon/Library/CbctReconLib/" CACHE PATH "Path to include files of CbctReconLib")
+set(CbctReconLib_BUILD_INCLUDE_DIR "C:/Users/ct-10/CbctRecon/build-vs19-mt/Library/CbctReconLib" CACHE PATH "Path to configuration files of CbctReconLib")
 include_directories(
     ${CbctReconLib_INCLUDE_DIR}
     ${CbctReconLib_BUILD_INCLUDE_DIR}

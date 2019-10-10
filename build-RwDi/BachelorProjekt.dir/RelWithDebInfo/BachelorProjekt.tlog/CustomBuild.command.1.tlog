@@ -1,0 +1,10 @@
+^C:\USERS\CT-10\ONEDRIVE - AARHUS UNIVERSITET\7 SEMESTER ST\BACHELOR\UI_KODE\BACHELORPROJECT\BACHELORPROJEKT\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt" "-BC:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/build-RwDi" --check-stamp-file "C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/build-RwDi/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

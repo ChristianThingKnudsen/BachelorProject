@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QCOMBOBOX_H
-#define QCOMBOBOX_H
+#ifndef MYQCOMBOBOX_H
+#define MYQCOMBOBOX_H
 #include <qglobal.h>
 #include <qicon.h>
 #include <qvalidator.h>
@@ -244,4 +244,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QCOMBOBOX_H
+#endif // MYQCOMBOBOX_H

@@ -1,0 +1,3 @@
+C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/build-RwDi/CMakeFiles/BachelorProjekt.dir
+C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/build-RwDi/CMakeFiles/ALL_BUILD.dir
+C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/build-RwDi/CMakeFiles/ZERO_CHECK.dir

@@ -21,7 +21,7 @@ BachelorProjekt_BINARY_DIR:STATIC=C:/Users/ct-10/OneDrive - Aarhus universitet/7
 BachelorProjekt_SOURCE_DIR:STATIC=C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/UI_Kode/BachelorProject/BachelorProjekt
 
 //No help, variable specified on the command line.
-CBCTRECON_LIB:FILEPATH=C:/Users/ct-10/cbctrecon-build/lib/CbctReconLibd.lib
+CBCTRECON_LIB:FILEPATH=C:/Users/ct-10/CbctRecon/build-vs19-mt/lib/CbctReconLib.lib
 
 //No help, variable specified on the command line.
 CMAKE_BUILD_TYPE:STRING=Debug
@@ -194,14 +194,14 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
 
-//Path to configuration files of CbctReconLib
-CbctReconLib_BUILD_INCLUDE_DIR:PATH=C:/Users/ct-10/cbctrecon-build/Library/CbctReconLib
-
-//Path to include files of CbctReconLib
-CbctReconLib_INCLUDE_DIR:PATH=C:/Users/ct-10/OneDrive - Aarhus universitet/7 Semester ST/Bachelor/AndreasKildeKode/cbctrecon/Library/CbctReconLib
+//No help, variable specified on the command line.
+CbctReconLib_BUILD_INCLUDE_DIR:PATH=C:/Users/ct-10/CbctRecon/build-vs19-mt/Library/CbctReconLib
 
 //No help, variable specified on the command line.
-DCMTK_DIR:PATH=C:/Users/ct-10/cbctrecon-build
+CbctReconLib_INCLUDE_DIR:PATH=C:/Users/ct-10/CbctRecon/Library/CbctReconLib
+
+//No help, variable specified on the command line.
+DCMTK_DIR:PATH=C:/Program Files (x86)/DCMTK/cmake
 
 //Path to a file.
 DCMTK_config_INCLUDE_DIR:PATH=
@@ -341,8 +341,14 @@ DCMTK_wrap_DIR:PATH=DCMTK_wrap_DIR-NOTFOUND
 //The directory containing a CMake configuration file for ITK.
 ITK_DIR:PATH=C:/Program Files (x86)/ITK/lib/cmake/ITK-5.1
 
+//Path to a file.
+OpenCL_INCLUDE_DIR:PATH=C:/Program Files (x86)/IntelSWTools/OpenCL/sdk/include
+
+//Path to a library.
+OpenCL_LIBRARY:FILEPATH=C:/Program Files (x86)/IntelSWTools/OpenCL/sdk/lib/x64/OpenCL.lib
+
 //No help, variable specified on the command line.
-Plastimatch_DIR:PATH=C:/Users/ct-10/cbctrecon-build/Plastimatch-build
+Plastimatch_DIR:PATH=C:/Users/ct-10/Plastimatch/build-vs19-mt
 
 //No help, variable specified on the command line.
 QT_QMAKE_EXECUTABLE:STRING=C:/Qt/5.13.0/msvc2017_64/bin/qmake.exe
@@ -570,4 +576,14 @@ DCMTK_ofstd_INCLUDE_DIR-ADVANCED:INTERNAL=1
 DCMTK_ofstd_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DCMTK_ofstd_LIBRARY_RELEASE
 DCMTK_ofstd_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//Details about finding OpenCL
+FIND_PACKAGE_MESSAGE_DETAILS_OpenCL:INTERNAL=[C:/Program Files (x86)/IntelSWTools/OpenCL/sdk/lib/x64/OpenCL.lib][C:/Program Files (x86)/IntelSWTools/OpenCL/sdk/include][v2.1()]
+//Have symbol CL_VERSION_2_1
+OPENCL_VERSION_2_1:INTERNAL=1
+//Have symbol CL_VERSION_2_2
+OPENCL_VERSION_2_2:INTERNAL=
+//ADVANCED property for variable: OpenCL_INCLUDE_DIR
+OpenCL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenCL_LIBRARY
+OpenCL_LIBRARY-ADVANCED:INTERNAL=1
 

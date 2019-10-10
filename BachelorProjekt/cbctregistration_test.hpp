@@ -11,12 +11,12 @@
 class qyklabel;
 class QDialog;
 class QString;
-class CbctReconTest;
+class MainWindow;
 
 class CbctRegistrationTest {
 
 public:
-  CbctReconTest *m_pParent{}; // to pull 3D images
+  MainWindow *m_pParent{}; // to pull 3D images
   std::unique_ptr<CbctRegistration> m_cbctregistration;
   UShortImageType::Pointer m_spFixed;  // pointer only, for display
   UShortImageType::Pointer m_spMoving; // pointer only, for display
@@ -71,7 +71,7 @@ private: // Just pointers to m_cbctregistration members, for convienience
 
 public:
   CbctRegistrationTest();
-  explicit CbctRegistrationTest(CbctReconTest *parent);
+  explicit CbctRegistrationTest(MainWindow *parent);
   // ~CbctRegistrationTest() = default;
   void UpdateVOICombobox(ctType ct_type) const;
   void UpdateListOfComboBox(int idx) const;

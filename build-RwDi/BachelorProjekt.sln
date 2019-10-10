@@ -1,0 +1,34 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{E9233E36-20EB-3616-B4AB-50837B6060AD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{259BB453-F882-3918-8ED5-6A5AE3C7341B} = {259BB453-F882-3918-8ED5-6A5AE3C7341B}
+		{23AB5A96-5E5A-3312-9AF9-261583457D77} = {23AB5A96-5E5A-3312-9AF9-261583457D77}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BachelorProjekt", "BachelorProjekt.vcxproj", "{259BB453-F882-3918-8ED5-6A5AE3C7341B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{23AB5A96-5E5A-3312-9AF9-261583457D77} = {23AB5A96-5E5A-3312-9AF9-261583457D77}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{23AB5A96-5E5A-3312-9AF9-261583457D77}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		RelWithDebInfo|x64 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E9233E36-20EB-3616-B4AB-50837B6060AD}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{259BB453-F882-3918-8ED5-6A5AE3C7341B}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{259BB453-F882-3918-8ED5-6A5AE3C7341B}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{23AB5A96-5E5A-3312-9AF9-261583457D77}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{23AB5A96-5E5A-3312-9AF9-261583457D77}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7A09D895-9C28-3C95-8DBC-4018B0047BD8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

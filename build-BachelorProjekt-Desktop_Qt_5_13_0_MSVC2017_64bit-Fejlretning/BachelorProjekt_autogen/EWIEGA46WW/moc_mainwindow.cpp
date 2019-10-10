@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[94];
-    char stringdata0[1938];
+    QByteArrayData data[91];
+    char stringdata0[1901];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -116,16 +116,13 @@ QT_MOC_LITERAL(80, 1695, 18), // "SLTM_CropMaskBatch"
 QT_MOC_LITERAL(81, 1714, 17), // "SLT_OutPathEdited"
 QT_MOC_LITERAL(82, 1732, 22), // "SLT_SaveCurrentSetting"
 QT_MOC_LITERAL(83, 1755, 14), // "SLT_CropSupInf"
-QT_MOC_LITERAL(84, 1770, 20), // "init_DlgRegistration"
-QT_MOC_LITERAL(85, 1791, 11), // "str_dcm_uid"
-QT_MOC_LITERAL(86, 1803, 26), // "ReadBowtieFileWhileProbing"
-QT_MOC_LITERAL(87, 1830, 25), // "FilterReaderType::Pointer"
-QT_MOC_LITERAL(88, 1856, 9), // "proj_path"
-QT_MOC_LITERAL(89, 1866, 22), // "std::tuple<bool,bool>&"
-QT_MOC_LITERAL(90, 1889, 7), // "answers"
-QT_MOC_LITERAL(91, 1897, 9), // "probeUser"
-QT_MOC_LITERAL(92, 1907, 21), // "std::tuple<bool,bool>"
-QT_MOC_LITERAL(93, 1929, 8) // "guessDir"
+QT_MOC_LITERAL(84, 1770, 23), // "SLT_DoRegistrationRigid"
+QT_MOC_LITERAL(85, 1794, 13), // "SLT_KeyMoving"
+QT_MOC_LITERAL(86, 1808, 8), // "bChecked"
+QT_MOC_LITERAL(87, 1817, 22), // "SLT_FixedImageSelected"
+QT_MOC_LITERAL(88, 1840, 7), // "selText"
+QT_MOC_LITERAL(89, 1848, 23), // "SLT_MovingImageSelected"
+QT_MOC_LITERAL(90, 1872, 28) // "SLT_DrawImageWhenSliceChange"
 
     },
     "MainWindow\0foo\0\0SLT_LoadRawImages\0"
@@ -175,11 +172,10 @@ QT_MOC_LITERAL(93, 1929, 8) // "guessDir"
     "SLTM_ScatterCorPerProjRef\0"
     "SLTM_LoadPerProjRefList\0SLTM_CropMaskBatch\0"
     "SLT_OutPathEdited\0SLT_SaveCurrentSetting\0"
-    "SLT_CropSupInf\0init_DlgRegistration\0"
-    "str_dcm_uid\0ReadBowtieFileWhileProbing\0"
-    "FilterReaderType::Pointer\0proj_path\0"
-    "std::tuple<bool,bool>&\0answers\0probeUser\0"
-    "std::tuple<bool,bool>\0guessDir"
+    "SLT_CropSupInf\0SLT_DoRegistrationRigid\0"
+    "SLT_KeyMoving\0bChecked\0SLT_FixedImageSelected\0"
+    "selText\0SLT_MovingImageSelected\0"
+    "SLT_DrawImageWhenSliceChange"
 };
 #undef QT_MOC_LITERAL
 
@@ -189,7 +185,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      83,   14, // methods
+      85,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -197,89 +193,91 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,  429,    2, 0x0a /* Public */,
-       3,    0,  430,    2, 0x0a /* Public */,
-       4,    0,  431,    2, 0x0a /* Public */,
-       5,    0,  432,    2, 0x0a /* Public */,
-       6,    0,  433,    2, 0x0a /* Public */,
-       7,    0,  434,    2, 0x0a /* Public */,
-       8,    0,  435,    2, 0x0a /* Public */,
-       9,    0,  436,    2, 0x0a /* Public */,
-      10,    0,  437,    2, 0x0a /* Public */,
-      11,    0,  438,    2, 0x0a /* Public */,
-      12,    1,  439,    2, 0x0a /* Public */,
-      15,    0,  442,    2, 0x0a /* Public */,
-      16,    0,  443,    2, 0x0a /* Public */,
-      17,    0,  444,    2, 0x0a /* Public */,
-      18,    0,  445,    2, 0x0a /* Public */,
-      19,    0,  446,    2, 0x0a /* Public */,
-      20,    0,  447,    2, 0x0a /* Public */,
-      21,    0,  448,    2, 0x0a /* Public */,
-      22,    0,  449,    2, 0x0a /* Public */,
-      23,    0,  450,    2, 0x0a /* Public */,
-      24,    0,  451,    2, 0x0a /* Public */,
-      25,    0,  452,    2, 0x0a /* Public */,
-      26,    0,  453,    2, 0x0a /* Public */,
-      27,    0,  454,    2, 0x0a /* Public */,
-      28,    0,  455,    2, 0x0a /* Public */,
-      29,    0,  456,    2, 0x0a /* Public */,
-      30,    0,  457,    2, 0x0a /* Public */,
-      31,    0,  458,    2, 0x0a /* Public */,
-      32,    0,  459,    2, 0x0a /* Public */,
-      33,    0,  460,    2, 0x0a /* Public */,
-      34,    0,  461,    2, 0x0a /* Public */,
-      35,    0,  462,    2, 0x0a /* Public */,
-      36,    0,  463,    2, 0x0a /* Public */,
-      37,    0,  464,    2, 0x0a /* Public */,
-      38,    0,  465,    2, 0x0a /* Public */,
-      39,    0,  466,    2, 0x0a /* Public */,
-      40,    0,  467,    2, 0x0a /* Public */,
-      41,    0,  468,    2, 0x0a /* Public */,
-      42,    0,  469,    2, 0x0a /* Public */,
-      43,    0,  470,    2, 0x0a /* Public */,
-      44,    0,  471,    2, 0x0a /* Public */,
-      45,    0,  472,    2, 0x0a /* Public */,
-      46,    0,  473,    2, 0x0a /* Public */,
-      47,    0,  474,    2, 0x0a /* Public */,
-      48,    0,  475,    2, 0x0a /* Public */,
-      49,    0,  476,    2, 0x0a /* Public */,
-      50,    0,  477,    2, 0x0a /* Public */,
-      51,    0,  478,    2, 0x0a /* Public */,
-      52,    0,  479,    2, 0x0a /* Public */,
-      53,    0,  480,    2, 0x0a /* Public */,
-      54,    0,  481,    2, 0x0a /* Public */,
-      55,    0,  482,    2, 0x0a /* Public */,
-      56,    0,  483,    2, 0x0a /* Public */,
-      57,    0,  484,    2, 0x0a /* Public */,
-      58,    0,  485,    2, 0x0a /* Public */,
-      59,    0,  486,    2, 0x0a /* Public */,
-      60,    0,  487,    2, 0x0a /* Public */,
-      61,    0,  488,    2, 0x0a /* Public */,
-      62,    0,  489,    2, 0x0a /* Public */,
-      63,    0,  490,    2, 0x0a /* Public */,
-      64,    0,  491,    2, 0x0a /* Public */,
-      65,    0,  492,    2, 0x0a /* Public */,
-      66,    0,  493,    2, 0x0a /* Public */,
-      67,    0,  494,    2, 0x0a /* Public */,
-      68,    0,  495,    2, 0x0a /* Public */,
-      69,    0,  496,    2, 0x0a /* Public */,
-      70,    0,  497,    2, 0x0a /* Public */,
-      71,    0,  498,    2, 0x0a /* Public */,
-      72,    0,  499,    2, 0x0a /* Public */,
-      73,    0,  500,    2, 0x0a /* Public */,
-      74,    0,  501,    2, 0x0a /* Public */,
-      75,    0,  502,    2, 0x0a /* Public */,
-      76,    0,  503,    2, 0x0a /* Public */,
-      77,    0,  504,    2, 0x0a /* Public */,
-      78,    0,  505,    2, 0x0a /* Public */,
-      79,    0,  506,    2, 0x0a /* Public */,
-      80,    0,  507,    2, 0x0a /* Public */,
-      81,    0,  508,    2, 0x0a /* Public */,
-      82,    0,  509,    2, 0x0a /* Public */,
-      83,    0,  510,    2, 0x0a /* Public */,
-      84,    1,  511,    2, 0x0a /* Public */,
-      86,    2,  514,    2, 0x0a /* Public */,
-      91,    1,  519,    2, 0x0a /* Public */,
+       1,    0,  439,    2, 0x0a /* Public */,
+       3,    0,  440,    2, 0x0a /* Public */,
+       4,    0,  441,    2, 0x0a /* Public */,
+       5,    0,  442,    2, 0x0a /* Public */,
+       6,    0,  443,    2, 0x0a /* Public */,
+       7,    0,  444,    2, 0x0a /* Public */,
+       8,    0,  445,    2, 0x0a /* Public */,
+       9,    0,  446,    2, 0x0a /* Public */,
+      10,    0,  447,    2, 0x0a /* Public */,
+      11,    0,  448,    2, 0x0a /* Public */,
+      12,    1,  449,    2, 0x0a /* Public */,
+      15,    0,  452,    2, 0x0a /* Public */,
+      16,    0,  453,    2, 0x0a /* Public */,
+      17,    0,  454,    2, 0x0a /* Public */,
+      18,    0,  455,    2, 0x0a /* Public */,
+      19,    0,  456,    2, 0x0a /* Public */,
+      20,    0,  457,    2, 0x0a /* Public */,
+      21,    0,  458,    2, 0x0a /* Public */,
+      22,    0,  459,    2, 0x0a /* Public */,
+      23,    0,  460,    2, 0x0a /* Public */,
+      24,    0,  461,    2, 0x0a /* Public */,
+      25,    0,  462,    2, 0x0a /* Public */,
+      26,    0,  463,    2, 0x0a /* Public */,
+      27,    0,  464,    2, 0x0a /* Public */,
+      28,    0,  465,    2, 0x0a /* Public */,
+      29,    0,  466,    2, 0x0a /* Public */,
+      30,    0,  467,    2, 0x0a /* Public */,
+      31,    0,  468,    2, 0x0a /* Public */,
+      32,    0,  469,    2, 0x0a /* Public */,
+      33,    0,  470,    2, 0x0a /* Public */,
+      34,    0,  471,    2, 0x0a /* Public */,
+      35,    0,  472,    2, 0x0a /* Public */,
+      36,    0,  473,    2, 0x0a /* Public */,
+      37,    0,  474,    2, 0x0a /* Public */,
+      38,    0,  475,    2, 0x0a /* Public */,
+      39,    0,  476,    2, 0x0a /* Public */,
+      40,    0,  477,    2, 0x0a /* Public */,
+      41,    0,  478,    2, 0x0a /* Public */,
+      42,    0,  479,    2, 0x0a /* Public */,
+      43,    0,  480,    2, 0x0a /* Public */,
+      44,    0,  481,    2, 0x0a /* Public */,
+      45,    0,  482,    2, 0x0a /* Public */,
+      46,    0,  483,    2, 0x0a /* Public */,
+      47,    0,  484,    2, 0x0a /* Public */,
+      48,    0,  485,    2, 0x0a /* Public */,
+      49,    0,  486,    2, 0x0a /* Public */,
+      50,    0,  487,    2, 0x0a /* Public */,
+      51,    0,  488,    2, 0x0a /* Public */,
+      52,    0,  489,    2, 0x0a /* Public */,
+      53,    0,  490,    2, 0x0a /* Public */,
+      54,    0,  491,    2, 0x0a /* Public */,
+      55,    0,  492,    2, 0x0a /* Public */,
+      56,    0,  493,    2, 0x0a /* Public */,
+      57,    0,  494,    2, 0x0a /* Public */,
+      58,    0,  495,    2, 0x0a /* Public */,
+      59,    0,  496,    2, 0x0a /* Public */,
+      60,    0,  497,    2, 0x0a /* Public */,
+      61,    0,  498,    2, 0x0a /* Public */,
+      62,    0,  499,    2, 0x0a /* Public */,
+      63,    0,  500,    2, 0x0a /* Public */,
+      64,    0,  501,    2, 0x0a /* Public */,
+      65,    0,  502,    2, 0x0a /* Public */,
+      66,    0,  503,    2, 0x0a /* Public */,
+      67,    0,  504,    2, 0x0a /* Public */,
+      68,    0,  505,    2, 0x0a /* Public */,
+      69,    0,  506,    2, 0x0a /* Public */,
+      70,    0,  507,    2, 0x0a /* Public */,
+      71,    0,  508,    2, 0x0a /* Public */,
+      72,    0,  509,    2, 0x0a /* Public */,
+      73,    0,  510,    2, 0x0a /* Public */,
+      74,    0,  511,    2, 0x0a /* Public */,
+      75,    0,  512,    2, 0x0a /* Public */,
+      76,    0,  513,    2, 0x0a /* Public */,
+      77,    0,  514,    2, 0x0a /* Public */,
+      78,    0,  515,    2, 0x0a /* Public */,
+      79,    0,  516,    2, 0x0a /* Public */,
+      80,    0,  517,    2, 0x0a /* Public */,
+      81,    0,  518,    2, 0x0a /* Public */,
+      82,    0,  519,    2, 0x0a /* Public */,
+      83,    0,  520,    2, 0x0a /* Public */,
+      84,    0,  521,    2, 0x0a /* Public */,
+      85,    1,  522,    2, 0x0a /* Public */,
+      87,    1,  525,    2, 0x0a /* Public */,
+      89,    1,  528,    2, 0x0a /* Public */,
+      90,    0,  531,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -362,9 +360,11 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 13,   85,
-    0x80000000 | 87, QMetaType::QString, 0x80000000 | 89,   88,   90,
-    0x80000000 | 92, QMetaType::QString,   93,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   86,
+    QMetaType::Void, QMetaType::QString,   88,
+    QMetaType::Void, QMetaType::QString,   88,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -455,11 +455,11 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 77: _t->SLT_OutPathEdited(); break;
         case 78: _t->SLT_SaveCurrentSetting(); break;
         case 79: _t->SLT_CropSupInf(); break;
-        case 80: _t->init_DlgRegistration((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 81: { FilterReaderType::Pointer _r = _t->ReadBowtieFileWhileProbing((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< std::tuple<bool,bool>(*)>(_a[2])));
-            if (_a[0]) *reinterpret_cast< FilterReaderType::Pointer*>(_a[0]) = std::move(_r); }  break;
-        case 82: { std::tuple<bool,bool> _r = _t->probeUser((*reinterpret_cast< const QString(*)>(_a[1])));
-            if (_a[0]) *reinterpret_cast< std::tuple<bool,bool>*>(_a[0]) = std::move(_r); }  break;
+        case 80: _t->SLT_DoRegistrationRigid(); break;
+        case 81: _t->SLT_KeyMoving((*reinterpret_cast< const bool(*)>(_a[1]))); break;
+        case 82: _t->SLT_FixedImageSelected((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 83: _t->SLT_MovingImageSelected((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 84: _t->SLT_DrawImageWhenSliceChange(); break;
         default: ;
         }
     }
@@ -494,13 +494,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 83)
+        if (_id < 85)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 83;
+        _id -= 85;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 83)
+        if (_id < 85)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 83;
+        _id -= 85;
     }
     return _id;
 }

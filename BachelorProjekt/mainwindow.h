@@ -115,7 +115,7 @@ public slots:
     void SLTM_Export2DDoseMapAsMHA(){};
     void SLT_ViewRegistration() const;
     void SLT_ViewHistogram() const{};
-    void SLT_DoScatterCorrection_APRIORI(){};
+    void SLT_DoScatterCorrection_APRIORI();
     void SLT_CalcAndSaveAngularWEPL(){};
     void SLT_DoScatterCorrectionUniform(){};
     void SLT_FileExportShortDICOM_CurrentImg(){};
@@ -153,6 +153,9 @@ public slots:
     void SLT_FixedImageSelected(QString selText);
     void SLT_MovingImageSelected(QString selText);
     void SLT_DrawImageWhenSliceChange();
+    void SLT_DrawImageInFixedSlice() const;
+    void SLT_DoRegistrationDeform();
+    void SLT_IntensityNormCBCT();
 
 
 private:

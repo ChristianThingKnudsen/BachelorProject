@@ -4,7 +4,6 @@
 #include "qyklabel.h"
 #include "progressbar.h"
 #include "informationwindow.h"
-//#include <qcombobox.h>
 
 // QT
 #include <qfiledialog.h>
@@ -28,9 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
 {   
     ui->setupUi(this);
     //this->ui->cbCT->setStyleSheet("QCheckBox{background-color: #FF0000;}");
-    ui->comboBox->addItem("Head-Neck");
-    ui->comboBox->addItem("Pelvis");
-    ui->comboBox->addItem("Thorax");
+    ui->comboBox_region->addItem("Head-Neck");
+    ui->comboBox_region->addItem("Pelvis");
+    ui->comboBox_region->addItem("Thorax");
 
 
     this->m_cbctrecon = std::make_unique<CbctRecon>();
@@ -855,7 +854,7 @@ FDK_options MainWindow::getFDKoptions() const {
   // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
   fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();
 
-  fdk_options.outputFilePath = this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
+  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
 
   return fdk_options;
 }
@@ -911,7 +910,7 @@ void MainWindow::SLT_ViewRegistration() const
   m_dlgRegistration->UpdateListOfComboBox(0); // combo selection
                                               // signalis called
   m_dlgRegistration->UpdateListOfComboBox(1);
-  m_dlgRegistration->show();
+  //m_dlgRegistration->show();// Don't know if this should be used in the code
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -1110,6 +1109,8 @@ void MainWindow::SLT_KeyMoving(const bool bChecked) // Key Moving check box
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DoRegistrationRegid
 void MainWindow::UpdateListOfComboBox(const int idx) const {
+// In Andreases code he uses comboboxes, but we don't, therefore we outcomment these(comboBoxImgFixed, comboBoxImgMoving)
+    /*
 QComboBox *crntCombo;
 
   if (idx == 0) {
@@ -1120,6 +1121,8 @@ QComboBox *crntCombo;
 
   // remove all the list
   crntCombo->clear();
+  */
+  /*
   const auto p_parent = m_cbctregistration->m_pParent;
 
   if (p_parent->m_spRawReconImg != nullptr) {
@@ -1157,12 +1160,15 @@ QComboBox *crntCombo;
   if (p_parent->m_spScatCorrReconImg != nullptr) {
     crntCombo->addItem("COR_CBCT");
   }
+  */
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DoRegistrationRegid
 
 // externally change  combo box value
 void MainWindow::SelectComboExternal(const int idx, const enREGI_IMAGES iImage) {
+  // In Andreases code he uses comboboxes, but we don't, therefore we outcomment these(comboBoxImgFixed, comboBoxImgMoving)
+  /*
   QComboBox *crntCombo;
 
   if (idx == 0) {
@@ -1225,6 +1231,8 @@ void MainWindow::SelectComboExternal(const int idx, const enREGI_IMAGES iImage) 
     SLT_MovingImageSelected(crntStr);
   }
   // If it is called inside the Dlg, SLT seemed not to conneced
+  */
+  SLT_FixedImageSelected("RAW_CBCT");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SelectComboExternal
@@ -1333,6 +1341,80 @@ void MainWindow::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt
   SLT_DrawImageWhenSliceChange();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//Is called by set_points_by_slice()
+template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
+  switch (color) {
+  case RED:
+    return &window->m_vPt;
+  case GREEN:
+  default:
+    return &window->m_vPt_green;
+  }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//Is called by SLT_DrawImageWhenSliceChange()
+template <typename ImageBase, enPLANE plane, enCOLOR color>
+auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
+                         std::array<double, 3> curPhysPos,
+                         typename ImageBase::SpacingType imgSpacing,
+                         typename ImageBase::PointType imgOriginFixed,
+                         typename ImageBase::SizeType imgSize) {
+  auto *Wnd_contour = get_qtpoint_vector<color>(window);
+  Wnd_contour->clear();
+
+  auto wnd_size = window->size();
+  auto wnd_height = wnd_size.rheight();
+  const auto wnd_width = wnd_size.rwidth();
+  auto x_scale = 1.0 / static_cast<double>(wnd_width);
+  auto y_scale = 1.0 / static_cast<double>(wnd_height);
+  switch (plane) {
+  case PLANE_AXIAL:
+    x_scale *= imgSpacing[0] * imgSize[0];
+    y_scale *= imgSpacing[1] * imgSize[1];
+    break;
+  case PLANE_FRONTAL:
+    x_scale *= imgSpacing[0] * imgSize[0];
+    y_scale *= imgSpacing[2] * imgSize[2];
+    break;
+  case PLANE_SAGITTAL:
+    x_scale *= imgSpacing[1] * imgSize[1];
+    y_scale *= imgSpacing[2] * imgSize[2];
+  }
+
+  for (auto contour : voi->pslist) {
+    if (contour.coordinates.empty()) {
+      continue;
+    }
+    const auto first_point = contour.coordinates.at(0);
+    // Axial
+    if (first_point.z > curPhysPos[0] - imgSpacing[2] &&
+        first_point.z < curPhysPos[0] + imgSpacing[2] && plane == PLANE_AXIAL) {
+      for (auto point : contour.coordinates) {
+        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
+                                  (point.y - imgOriginFixed[1]) / y_scale);
+      }
+    }
+    for (auto &point : contour.coordinates) {
+      // Frontal
+      if (point.y > curPhysPos[1] - imgSpacing[1] &&
+          point.y < curPhysPos[1] + imgSpacing[1] && plane == PLANE_FRONTAL) {
+        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
+                                  wnd_height -
+                                      (point.z - imgOriginFixed[2]) / y_scale);
+      }
+      // Sagittal
+      if (point.x > curPhysPos[2] - imgSpacing[0] &&
+          point.x < curPhysPos[2] + imgSpacing[0] && plane == PLANE_SAGITTAL) {
+        Wnd_contour->emplace_back((point.y - imgOriginFixed[1]) / x_scale,
+                                  wnd_height -
+                                      (point.z - imgOriginFixed[2]) / y_scale);
+      }
+    }
+  }
+
+  window->m_bDrawPoints = true;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
 void MainWindow::SLT_DrawImageWhenSliceChange() {
   if (m_spFixed == nullptr) {
@@ -1340,30 +1422,28 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   }
 
   int sliderPosIdxZ, sliderPosIdxY, sliderPosIdxX;
-
+  // In Andreases code it's hard to tell what the slider values should be, and therefor will they be initialized as 0.
   switch (m_enViewArrange) {
   case AXIAL_FRONTAL_SAGITTAL:
-    sliderPosIdxZ = this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
-    sliderPosIdxY = this->ui.sliderPosDisp2->value();
-    sliderPosIdxX = this->ui.sliderPosDisp3->value();
+    sliderPosIdxZ = 0;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxY = 0;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxX = 0;//this->ui.sliderPosDisp3->value();
     break;
   case FRONTAL_SAGITTAL_AXIAL:
-    sliderPosIdxY = this->ui.sliderPosDisp1->value();
-    sliderPosIdxX = this->ui.sliderPosDisp2->value();
-    sliderPosIdxZ = this->ui.sliderPosDisp3->value();
+    sliderPosIdxY = 0;//this->ui.sliderPosDisp1->value();
+    sliderPosIdxX = 0;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxZ = 0;//this->ui.sliderPosDisp3->value();
 
     break;
   case SAGITTAL_AXIAL_FRONTAL:
-    sliderPosIdxX = this->ui.sliderPosDisp1->value();
-    sliderPosIdxZ = this->ui.sliderPosDisp2->value();
-    sliderPosIdxY = this->ui.sliderPosDisp3->value();
+    sliderPosIdxX = 0;//this->ui.sliderPosDisp1->value();
+    sliderPosIdxZ = 0;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxY = 0;//this->ui.sliderPosDisp3->value();
     break;
   default:
-    sliderPosIdxZ =
-        this->ui.sliderPosDisp1
-            ->value(); // Z corresponds to axial, Y to frontal, X to sagittal
-    sliderPosIdxY = this->ui.sliderPosDisp2->value();
-    sliderPosIdxX = this->ui.sliderPosDisp3->value();
+    sliderPosIdxZ = 0;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxY = 0;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxX = 0;//this->ui.sliderPosDisp3->value();
     break;
   }
 
@@ -1378,8 +1458,8 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   }};
 
   const auto refIdx = 3 - m_enViewArrange;
-
-  if (this->ui.checkBoxDrawCrosshair->isChecked()) {
+  // In Andreases code this checkbox was checked (checkBoxDrawCrosshair)
+  if (true){//this->ui.checkBoxDrawCrosshair->isChecked()) {
     m_YKDisp[refIdx % 3].m_bDrawCrosshair = true;
     m_YKDisp[(refIdx + 1) % 3].m_bDrawCrosshair = true;
     m_YKDisp[(refIdx + 2) % 3].m_bDrawCrosshair = true;
@@ -1472,29 +1552,34 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   strPos1.sprintf("%3.1f", curPhysPos[0]);
   strPos2.sprintf("%3.1f", curPhysPos[1]);
   strPos3.sprintf("%3.1f", curPhysPos[2]);
-
+  // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
+  /*
   this->ui.lineEditCurPosX->setText(strPos3);
   this->ui.lineEditCurPosY->setText(strPos2);
   this->ui.lineEditCurPosZ->setText(strPos1);
-
+  */
   ////Update Origin text box
   auto imgOriginFixed = m_spFixed->GetOrigin();
   QString strOriFixed;
-  strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0],
-                      imgOriginFixed[1], imgOriginFixed[2]);
-  this->ui.lineEditOriginFixed->setText(strOriFixed);
+  strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0], imgOriginFixed[1], imgOriginFixed[2]);
+  // In Andreases code he set the text on the ui. Therefore we outcomment this (lineEditOriginFixed)
+  //this->ui.lineEditOriginFixed->setText(strOriFixed);
 
   if (m_spMoving != nullptr) {
     const auto imgOriginMoving = m_spMoving->GetOrigin();
     QString strOriMoving;
     strOriMoving.sprintf("%3.4f, %3.4f, %3.4f", imgOriginMoving[0],
                          imgOriginMoving[1], imgOriginMoving[2]);
-    this->ui.lineEditOriginMoving->setText(strOriMoving);
+    // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
+    //this->ui.lineEditOriginMoving->setText(strOriMoving);
   }
-
+  // In Andreases code he have 3 labels on the registration ui, but we only have one. Therefor the below has been changed.
+  /*
   auto arr_wnd = std::array<qyklabel *, 3>{{this->ui.labelOverlapWnd1,
                                             this->ui.labelOverlapWnd2,
                                             this->ui.labelOverlapWnd3}};
+                                            */
+  auto arr_wnd = std::array<qyklabel *, 3>{{this->ui->labelImageRaw,nullptr,nullptr}};
 
   if (m_cbctregistration->cur_voi != nullptr) {
     const auto p_cur_voi = m_cbctregistration->cur_voi.get();
@@ -1532,77 +1617,108 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DrawImageWhenSliceChange()
-template <typename ImageBase, enPLANE plane, enCOLOR color>
-auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
-                         std::array<double, 3> curPhysPos,
-                         typename ImageBase::SpacingType imgSpacing,
-                         typename ImageBase::PointType imgOriginFixed,
-                         typename ImageBase::SizeType imgSize) {
-  auto *Wnd_contour = get_qtpoint_vector<color>(window);
-  Wnd_contour->clear();
+void MainWindow::SLT_DrawImageInFixedSlice() const
+// Display Swap here!
+{
+  // Constitute m_YKDisp from Fixed and Moving
+  // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
+  if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+    for (auto i = 0; i < 3; i++) {
+      auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
+      if (idxAdd + i >= 3) {
+        idxAdd = idxAdd - 3;
+      }
 
-  auto wnd_size = window->size();
-  auto wnd_height = wnd_size.rheight();
-  const auto wnd_width = wnd_size.rwidth();
-  auto x_scale = 1.0 / static_cast<double>(wnd_width);
-  auto y_scale = 1.0 / static_cast<double>(wnd_height);
-  switch (plane) {
-  case PLANE_AXIAL:
-    x_scale *= imgSpacing[0] * imgSize[0];
-    y_scale *= imgSpacing[1] * imgSize[1];
-    break;
-  case PLANE_FRONTAL:
-    x_scale *= imgSpacing[0] * imgSize[0];
-    y_scale *= imgSpacing[2] * imgSize[2];
-    break;
-  case PLANE_SAGITTAL:
-    x_scale *= imgSpacing[1] * imgSize[1];
-    y_scale *= imgSpacing[2] * imgSize[2];
-  }
+      m_YKDisp[i].SetSpacing(m_YKImgFixed[i + idxAdd].m_fSpacingX,
+                             m_YKImgFixed[i + idxAdd].m_fSpacingY);
 
-  for (auto contour : voi->pslist) {
-    if (contour.coordinates.empty()) {
-      continue;
-    }
-    const auto first_point = contour.coordinates.at(0);
-    // Axial
-    if (first_point.z > curPhysPos[0] - imgSpacing[2] &&
-        first_point.z < curPhysPos[0] + imgSpacing[2] && plane == PLANE_AXIAL) {
-      for (auto point : contour.coordinates) {
-        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
-                                  (point.y - imgOriginFixed[1]) / y_scale);
+      m_YKDisp[i].SetSplitOption(PRI_LEFT_TOP);
+      // m_YKDisp[i].SetSplitCenter(QPoint dataPt);//From mouse event
+      if (!m_YKDisp[i].ConstituteFromTwo(m_YKImgFixed[i + idxAdd],
+                                         m_YKImgMoving[i + idxAdd])) {
+        std::cout << "Image error " << i + 1 << " th view" << std::endl;
       }
     }
-    for (auto &point : contour.coordinates) {
-      // Frontal
-      if (point.y > curPhysPos[1] - imgSpacing[1] &&
-          point.y < curPhysPos[1] + imgSpacing[1] && plane == PLANE_FRONTAL) {
-        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
-                                  wnd_height -
-                                      (point.z - imgOriginFixed[2]) / y_scale);
+  } else {
+    for (auto i = 0; i < 3; i++) {
+      auto addedViewIdx = m_enViewArrange;
+      if (i + addedViewIdx >= 3) {
+        addedViewIdx = addedViewIdx - 3;
       }
-      // Sagittal
-      if (point.x > curPhysPos[2] - imgSpacing[0] &&
-          point.x < curPhysPos[2] + imgSpacing[0] && plane == PLANE_SAGITTAL) {
-        Wnd_contour->emplace_back((point.y - imgOriginFixed[1]) / x_scale,
-                                  wnd_height -
-                                      (point.z - imgOriginFixed[2]) / y_scale);
-      }
+
+      m_YKDisp[i].CloneImage(m_YKImgFixed[i + addedViewIdx]);
     }
   }
 
-  window->m_bDrawPoints = true;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by set_points_by_slice()
-template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
-  switch (color) {
-  case RED:
-    return &window->m_vPt;
-  case GREEN:
-  default:
-    return &window->m_vPt_green;
+  // For dose overlay
+  if (m_cbctregistration->dose_loaded) {
+      // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
+    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+      for (auto i = 0; i < 3; i++) {
+        auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
+        if (idxAdd + i >= 3) {
+          idxAdd = idxAdd - 3;
+        }
+
+        m_AGDisp_Overlay[i].SetSpacing(m_DoseImgFixed[i + idxAdd].m_fSpacingX,
+                                       m_DoseImgFixed[i + idxAdd].m_fSpacingY);
+
+        m_AGDisp_Overlay[i].SetSplitOption(PRI_LEFT_TOP);
+        if (!m_AGDisp_Overlay[i].ConstituteFromTwo(
+                m_DoseImgFixed[i + idxAdd], m_DoseImgMoving[i + idxAdd])) {
+          std::cout << "Dose Image error " << i + 1 << " th view" << std::endl;
+        }
+      }
+    } else {
+      for (auto i = 0; i < 3; i++) {
+        auto addedViewIdx = m_enViewArrange;
+        if (i + addedViewIdx >= 3) {
+          addedViewIdx = addedViewIdx - 3;
+        }
+
+        m_AGDisp_Overlay[i].CloneImage(m_DoseImgFixed[i + addedViewIdx]);
+      }
+    }
   }
+  // In Andreases code this is set to 2000 (sliderFixedW)
+  const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
+  // In Andreases code this is set to 2000 (sliderMovingW)
+  const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
+  // In Andreases code this is set to 1024 (sliderFixedL)
+  const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
+  // In Andreases code this is set to 1024 (sliderMovingL)
+  const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
+
+  m_YKDisp[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+  m_YKDisp[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+  m_YKDisp[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+
+  // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+  this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
+  /*
+  this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
+  this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
+  */
+
+  // here gPMC results could be checked for and displayed, possibly with
+  // modification to the qyklabel class /AGA 02/08/2017
+  if (m_cbctregistration->dose_loaded) {
+    m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+    this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[0]); //this->ui.labelOverlapWnd1->SetOverlayImage(&m_AGDisp_Overlay[0]);
+    /*
+    this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
+    this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
+    */
+  }
+  // In Andreases code he plots this on the registration ui, but we only have one window
+  this->ui->labelImageRaw->update();//this->ui.labelOverlapWnd1->update();
+  /*
+  this->ui.labelOverlapWnd2->update();
+  this->ui.labelOverlapWnd3->update();
+  */
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
@@ -1616,39 +1732,44 @@ void MainWindow::whenFixedImgLoaded() const {
   auto imgSize = m_spFixed->GetRequestedRegion().GetSize(); // 1016x1016 x z
 
   // to avoid first unnecessary action.
-  disconnect(this->ui.sliderPosDisp1, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageWhenSliceChange()));
-  disconnect(this->ui.sliderPosDisp2, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageWhenSliceChange()));
-  disconnect(this->ui.sliderPosDisp3, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageWhenSliceChange()));
+  // In Andreases code the slider was initiated as 0 (sliderPosDisp1)
+  disconnect(0, SIGNAL(valueChanged(int)), this,SLOT(SLT_DrawImageWhenSliceChange()));
+  // In Andreases code the slider was initiated as 0 (sliderPosDisp2)
+  disconnect(0, SIGNAL(valueChanged(int)), this,SLOT(SLT_DrawImageWhenSliceChange()));
+  // In Andreases code the slider was initiated as 0 (sliderPosDisp3)
+  disconnect(0, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawImageWhenSliceChange()));
+  disconnect(nullptr, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawImageInFixedSlice()));
+  // In Andreases code the slider was initiated as 1024 (sliderFixedL)
+  disconnect(nullptr, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawImageInFixedSlice()));
+  disconnect(nullptr, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawImageInFixedSlice()));
+  disconnect(nullptr, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawImageInFixedSlice()));
 
-  disconnect(this->ui.sliderFixedW, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageInFixedSlice()));
-  disconnect(this->ui.sliderFixedL, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageInFixedSlice()));
-  disconnect(this->ui.sliderMovingW, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageInFixedSlice()));
-  disconnect(this->ui.sliderMovingL, SIGNAL(valueChanged(int)), this,
-             SLOT(SLT_DrawImageInFixedSlice()));
+  // In Andreases code this does nothing so far and is therefore  outcommented (initOverlapWndSize())
+  //initOverlapWndSize();
 
-  initOverlapWndSize();
-
+  // In Andreases code he uses slider but we don't. Therefore this is outcommented
+  /*
   this->ui.sliderPosDisp1->setMinimum(0);
   this->ui.sliderPosDisp1->setMaximum(static_cast<int>(imgSize[2] - 1));
+  */
   const auto curPosZ = static_cast<int>(imgSize[2] / 2);
+  /*
   this->ui.sliderPosDisp1->setValue(curPosZ);
 
   this->ui.sliderPosDisp2->setMinimum(0);
   this->ui.sliderPosDisp2->setMaximum(static_cast<int>(imgSize[1] - 1));
+  */
   const auto curPosY = static_cast<int>(imgSize[1] / 2);
+  /*
   this->ui.sliderPosDisp2->setValue(curPosY);
 
   this->ui.sliderPosDisp3->setMinimum(0);
   this->ui.sliderPosDisp3->setMaximum(static_cast<int>(imgSize[0] - 1));
+  */
   const auto curPosX = static_cast<int>(imgSize[0] / 2);
+  /*
   this->ui.sliderPosDisp3->setValue(curPosX);
-
+  */
   auto x_split = QPoint(static_cast<int>(imgSize[0] / 2),
                         static_cast<int>(imgSize[1] / 2));
   auto y_split = QPoint(static_cast<int>(imgSize[0] / 2),
@@ -1662,30 +1783,480 @@ void MainWindow::whenFixedImgLoaded() const {
 
   const auto iSliderW = 2000;
   const auto iSliderL = 1024;
-
+  // In Andreases code he uses slider but we don't. Therefore this is outcommented
+  /*
   this->ui.sliderFixedW->setValue(iSliderW);
   this->ui.sliderMovingW->setValue(iSliderW);
 
   this->ui.sliderFixedL->setValue(iSliderL);
   this->ui.sliderMovingL->setValue(iSliderL);
+  */
+  // In Andreases code he uses slider but we don't. Therefore we replace them with nullptr
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
+          SLOT(SLT_DrawImageWhenSliceChange()));
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
+          SLOT(SLT_DrawImageWhenSliceChange()));
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
+          SLOT(SLT_DrawImageWhenSliceChange()));
 
-  connect(this->ui.sliderPosDisp1, SIGNAL(valueChanged(int)), this,
-          SLOT(SLT_DrawImageWhenSliceChange()));
-  connect(this->ui.sliderPosDisp2, SIGNAL(valueChanged(int)), this,
-          SLOT(SLT_DrawImageWhenSliceChange()));
-  connect(this->ui.sliderPosDisp3, SIGNAL(valueChanged(int)), this,
-          SLOT(SLT_DrawImageWhenSliceChange()));
-
-  connect(this->ui.sliderFixedW, SIGNAL(valueChanged(int)), this,
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
           SLOT(SLT_DrawImageInFixedSlice()));
-  connect(this->ui.sliderFixedL, SIGNAL(valueChanged(int)), this,
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
           SLOT(SLT_DrawImageInFixedSlice()));
-  connect(this->ui.sliderMovingW, SIGNAL(valueChanged(int)), this,
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
           SLOT(SLT_DrawImageInFixedSlice()));
-  connect(this->ui.sliderMovingL, SIGNAL(valueChanged(int)), this,
+  connect(nullptr, SIGNAL(valueChanged(int)), this,
           SLOT(SLT_DrawImageInFixedSlice()));
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// In Andreases code this method is called when deform registraion button is pushed. Find out where to implement this!
 
+void MainWindow::SLT_DoRegistrationDeform() {
+  if (m_spFixed == nullptr || m_spMoving == nullptr) {
+    return;
+  }
+  // In Andreases code this was checked, so we replace this with true (checkBoxCropBkgroundCT)
+  const auto bPrepareMaskOnly = !true;//this->ui.checkBoxCropBkgroundCT->isChecked();
+
+  std::cout << "0: DoRegistrationDeform: writing temporary files" << std::endl;
+
+  // Both image type: Unsigned Short
+  auto filePathFixed =
+      m_cbctregistration->m_strPathPlastimatch + "/" + "fixed_deform.mha";
+  auto filePathMoving =
+      m_cbctregistration->m_strPathPlastimatch + "/" + "moving_deform.mha";
+  auto filePathROI = m_cbctregistration->m_strPathPlastimatch + "/" +
+                     "fixed_roi_DIR.mha"; // optional
+
+  const auto filePathOutput =
+      m_cbctregistration->m_strPathPlastimatch + "/" + "output_deform.mha";
+  const auto filePathXform =
+      m_cbctregistration->m_strPathPlastimatch + "/" + "xform_deform.txt";
+
+  auto filePathOutputStage1 = m_cbctregistration->m_strPathPlastimatch + "/" +
+                              "output_deform_stage1.mha";
+  auto filePathOutputStage2 = m_cbctregistration->m_strPathPlastimatch + "/" +
+                              "output_deform_stage2.mha";
+  auto filePathOutputStage3 = m_cbctregistration->m_strPathPlastimatch + "/" +
+                              "output_deform_stage3.mha";
+
+  using writerType = itk::ImageFileWriter<UShortImageType>;
+
+  auto writer1 = writerType::New();
+  writer1->SetFileName(filePathFixed.toLocal8Bit().constData());
+  writer1->SetUseCompression(true);
+  writer1->SetInput(m_spFixed);
+
+  auto writer2 = writerType::New();
+  writer2->SetFileName(filePathMoving.toLocal8Bit().constData());
+  writer2->SetUseCompression(true);
+  writer2->SetInput(m_spMoving);
+  writer1->Update();
+  writer2->Update();
+
+  // Create a mask image based on the fixed sp image
+  // In Andreases code this was checked, so we replace this with true (checkBoxUseROIForDIR)
+  if (true){//this->ui.checkBoxUseROIForDIR->isChecked()) {
+    std::cout << "Creating a ROI mask for DIR.. " << std::endl;
+
+    auto strFOVGeom = QString("0.0,0.0,190.0"); //this->ui.lineEditFOVPos->text();
+
+    auto strListFOV = strFOVGeom.split(",");
+    if (strListFOV.count() == 3) {
+      const auto FOV_DcmPosX = strListFOV.at(0).toFloat(); // mm
+      const auto FOV_DcmPosY = strListFOV.at(1).toFloat();
+      const auto FOV_Radius = strListFOV.at(2).toFloat();
+
+      // Create Image using FixedImage sp
+
+      // Image Pointer here
+      UShortImageType::Pointer spRoiMask;
+      AllocateByRef<UShortImageType, UShortImageType>(m_spFixed, spRoiMask);
+      m_cbctregistration->m_pParent->GenerateCylinderMask(
+          spRoiMask, FOV_DcmPosX, FOV_DcmPosY, FOV_Radius);
+
+      auto writer3 = writerType::New();
+      writer3->SetFileName(filePathROI.toLocal8Bit().constData());
+      writer3->SetUseCompression(true);
+      writer3->SetInput(spRoiMask);
+      writer3->Update();
+    }
+  }
+
+  auto filePathFixed_proc = filePathFixed;
+
+  std::cout << "1: DoRegistrationDeform: CBCT pre-processing before deformable "
+               "registration"
+            << std::endl;
+  // std::cout << "Air region and bubble will be removed" << std::endl;
+
+  QFileInfo info1(m_cbctregistration->m_strPathCTSkin_autoRegi);
+  QFileInfo info2(m_cbctregistration->m_strPathXFAutoRigid);
+
+  if (!info1.exists() || !info2.exists()) {
+    std::cout << "Fatal error! no CT skin is found or no XF auto file found. "
+                 "Preprocessing will not be done. Proceeding."
+              << std::endl;
+  } else {
+    filePathFixed_proc = m_cbctregistration->m_strPathPlastimatch + "/" +
+                         "fixed_deform_proc.mha";
+    // skin removal and bubble filling : output file = filePathFixed_proc
+    // In Andreases code this was not checked, so we replace this with false (checkBoxFillBubbleCT)
+    const auto bBubbleRemoval = false;//this->ui.checkBoxFillBubbleCT->isChecked();
+    const auto skinExp = 8.0;//this->ui.lineEditCBCTSkinCropBfDIR->text().toDouble();
+
+    const auto iBubThresholdUshort = 500;//this->ui.spinBoxBkDetectCT->value(); // 500
+    const auto iBubFillUshort = 1000;//this->ui.spinBoxBubFillCT->value(); // 1000
+
+    m_cbctregistration->ProcessCBCT_beforeDeformRegi(
+        filePathFixed, m_cbctregistration->m_strPathCTSkin_autoRegi,
+        filePathFixed_proc, m_cbctregistration->m_strPathXFAutoRigid,
+        bBubbleRemoval, bPrepareMaskOnly, skinExp, iBubThresholdUshort,
+        iBubFillUshort); // bubble filling yes
+
+    if (bPrepareMaskOnly) {
+      filePathFixed_proc = filePathFixed;
+    }
+  }
+
+  std::cout << "2: DoRegistrationDeform: Creating a plastimatch command file"
+            << std::endl;
+
+  const auto fnCmdRegisterRigid = QString("cmd_register_deform.txt");
+  // QString fnCmdRegisterDeform = "cmd_register_deform.txt";
+  auto pathCmdRegister =
+      m_cbctregistration->m_strPathPlastimatch + "/" + fnCmdRegisterRigid;
+
+  auto strDeformableStage1 = QString("2,2,1,30,0.00001,0.005,30");//this->ui.lineEditArgument1->text(); // original param: 7, add output path
+  auto strDeformableStage2 = QString("");//this->ui.lineEditArgument2->text();
+  auto strDeformableStage3 = QString("");//this->ui.lineEditArgument3->text();
+
+  strDeformableStage1.append(", ").append(filePathOutputStage1);
+  strDeformableStage2.append(", ").append(filePathOutputStage2);
+  strDeformableStage3.append(", ").append(filePathOutputStage3);
+
+  const auto mse = false;//this->ui.radioButton_mse->isChecked();
+  const auto cuda = false;//m_pParent->ui.radioButton_UseCUDA->isChecked();
+  auto GradOptionStr = QString("0.7,0.7,0.7");//this->ui.lineEditGradOption->text();
+  // For Cropped patients, FOV mask is applied.
+  if (true){//this->ui.checkBoxUseROIForDIR->isChecked()) {
+    m_cbctregistration->GenPlastiRegisterCommandFile(
+        pathCmdRegister, filePathFixed_proc, filePathMoving, filePathOutput,
+        filePathXform, PLAST_BSPLINE, strDeformableStage1, strDeformableStage2,
+        strDeformableStage3, filePathROI, mse, cuda, GradOptionStr);
+  } else {
+    m_cbctregistration->GenPlastiRegisterCommandFile(
+        pathCmdRegister, filePathFixed_proc, filePathMoving, filePathOutput,
+        filePathXform, PLAST_BSPLINE, strDeformableStage1, strDeformableStage2,
+        strDeformableStage3, QString(), mse, cuda, GradOptionStr);
+  }
+
+  std::string str_command_filepath = pathCmdRegister.toLocal8Bit().constData();
+
+  m_cbctregistration->CallingPLMCommand(str_command_filepath);
+
+  std::cout << "5: DoRegistrationDeform: Registration is done" << std::endl;
+  std::cout << "6: DoRegistrationDeform: Reading output image" << std::endl;
+
+  using readerType = itk::ImageFileReader<UShortImageType>;
+
+  auto readerDefSt1 = readerType::New();
+
+  auto tmpFileInfo = QFileInfo(filePathOutputStage1);
+  if (tmpFileInfo.exists()) {
+    readerDefSt1->SetFileName(filePathOutputStage1.toLocal8Bit().constData());
+    readerDefSt1->Update();
+    m_cbctregistration->m_pParent->m_spDeformedCT1 = readerDefSt1->GetOutput();
+  }
+
+  auto readerDefSt2 = readerType::New();
+  tmpFileInfo = QFileInfo(filePathOutputStage2);
+  if (tmpFileInfo.exists()) {
+    readerDefSt2->SetFileName(filePathOutputStage2.toLocal8Bit().constData());
+    readerDefSt2->Update();
+    m_cbctregistration->m_pParent->m_spDeformedCT2 = readerDefSt2->GetOutput();
+  }
+
+  auto readerDefSt3 = readerType::New();
+  tmpFileInfo = QFileInfo(filePathOutputStage3);
+  if (tmpFileInfo.exists()) {
+    readerDefSt3->SetFileName(filePathOutputStage3.toLocal8Bit().constData());
+    readerDefSt3->Update();
+    m_cbctregistration->m_pParent->m_spDeformedCT3 = readerDefSt3->GetOutput();
+  }
+
+  auto readerFinCBCT = readerType::New();
+  tmpFileInfo = QFileInfo(filePathFixed_proc); // cropped image Or not
+  if (tmpFileInfo.exists()) {
+    readerFinCBCT->SetFileName(filePathFixed_proc.toLocal8Bit().constData());
+    readerFinCBCT->Update();
+    m_cbctregistration->m_pParent->m_spRawReconImg = readerFinCBCT->GetOutput();
+  } else {
+    std::cout << "No filePathFixed_proc is available. Exit the function"
+              << std::endl;
+    return;
+  }
+
+  // Puncturing should be done for final Deform image
+
+  auto strPathDeformCTFinal = filePathOutput;
+
+  QFileInfo tmpBubFileInfo(m_cbctregistration->m_strPathMskCBCTBubble);
+
+  if (false && tmpBubFileInfo.exists()) {// this->ui.checkBoxFillBubbleCT->isChecked() && tmpBubFileInfo.exists()) {
+    std::cout << "6B: final puncturing according to the CBCT bubble"
+              << std::endl;
+
+    /*Mask_parms parms_fill;
+    strPathDeformCTFinal = m_strPathPlastimatch + "/deformCTpuncFin.mha";
+
+    parms_fill.mask_operation = MASK_OPERATION_FILL;
+    parms_fill.input_fn = filePathOutput.toLocal8Bit().constData();
+    parms_fill.mask_fn = m_strPathMskCBCTBubble.toLocal8Bit().constData();
+    parms_fill.output_fn = strPathDeformCTFinal.toLocal8Bit().constData();*/
+
+    strPathDeformCTFinal =
+        m_cbctregistration->m_strPathPlastimatch + "/deformCTpuncFin.mha";
+
+    const auto enMaskOp = MASK_OPERATION_FILL;
+    auto input_fn = filePathOutput;
+    auto mask_fn = m_cbctregistration->m_strPathMskCBCTBubble;
+    auto output_fn = strPathDeformCTFinal;
+
+    // int iBubblePunctureVal = this->ui.lineEditBkFillCT->text().toInt(); //0 =
+    // soft tissue
+    const auto iBubblePunctureVal =
+        0; // 0 = air. deformed CT is now already a USHORT image
+    const auto mask_value = iBubblePunctureVal;
+    m_cbctregistration->plm_mask_main(enMaskOp, input_fn, mask_fn, output_fn,
+                                      static_cast<float>(mask_value));
+  }
+
+  auto readerDeformFinal = readerType::New();
+  tmpFileInfo = QFileInfo(strPathDeformCTFinal);
+  if (tmpFileInfo.exists()) {
+    readerDeformFinal->SetFileName(
+        strPathDeformCTFinal.toLocal8Bit().constData());
+    readerDeformFinal->Update();
+    m_cbctregistration->m_pParent->m_spDeformedCT_Final =
+        readerDeformFinal->GetOutput();
+  } else {
+    std::cout << "No final output is available. Exit the function" << std::endl;
+    return;
+  }
+
+  std::cout << "7: DoRegistrationDeform: Reading is completed" << std::endl;
+
+  const QFile xform_file(filePathXform);
+  m_cbctregistration->m_pParent->m_structures->ApplyTransformTo<RIGID_CT>(
+      xform_file);
+
+  std::cout << "8: Contours deformed" << std::endl;
+
+  UpdateListOfComboBox(0); // combo selection signalis called
+  UpdateListOfComboBox(1);
+
+  SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
+  SelectComboExternal(1, REGISTER_DEFORM_FINAL);
+
+  std::cout << "FINISHED!: Deformable image registration. Proceed to scatter "
+               "correction"
+            << std::endl;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// In Andreases code this method is called when norm CBCT button is pushed. Find out where to implement this!
+void MainWindow::SLT_IntensityNormCBCT() {
+  const auto fROI_Radius = 30;//this->ui.lineEditNormRoiRadius->text().toFloat();
+
+  std::cout << "Intensity is being analyzed...Please wait." << std::endl;
+
+  float intensitySDFix = 0.0;
+  float intensitySDMov = 0.0;
+  const auto meanIntensityFix = m_cbctregistration->m_pParent->GetMeanIntensity(
+      m_spFixed, fROI_Radius, &intensitySDFix);
+  const auto meanIntensityMov = m_cbctregistration->m_pParent->GetMeanIntensity(
+      m_spMoving, fROI_Radius, &intensitySDMov);
+
+  std::cout << "Mean/SD for Fixed = " << meanIntensityFix << "/"
+            << intensitySDFix << std::endl;
+  std::cout << "Mean/SD for Moving = " << meanIntensityMov << "/"
+            << intensitySDMov << std::endl;
+
+  AddConstHU(m_spFixed, static_cast<int>(meanIntensityMov - meanIntensityFix));
+  // SLT_PassMovingImgForAnalysis();
+
+  std::cout << "Intensity shifting is done! Added value = "
+            << static_cast<int>(meanIntensityMov - meanIntensityFix)
+            << std::endl;
+  auto update_message =
+      QString("Added_%1")
+          .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
+  this->UpdateReconImage(m_spFixed, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
+  SelectComboExternal(0, REGISTER_RAW_CBCT);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// In Andreases code this method is called when Scatter correct button is pushed. Find out where to implement this!
+void MainWindow::SLT_DoScatterCorrection_APRIORI() {
+
+  if ((this->m_cbctrecon->m_spRefCTImg == nullptr &&
+       m_dlgRegistration->m_spMoving == nullptr) ||
+      m_dlgRegistration->m_spFixed == nullptr) {
+    std::cerr
+        << "Error!: No ref or no fixed image for forward projection is found."
+        << "\n";
+    return;
+  }
+
+  const auto bExportProj_Fwd = false;// this->ui.checkBox_ExportFwd->isChecked();
+  const auto bExportProj_Scat = false;//this->ui.checkBox_ExportScat->isChecked();
+  const auto bExportProj_Cor = false;//this->ui.checkBox_ExportCor->isChecked();
+
+  // ForwardProjection(m_spRefCTImg, m_spCustomGeometry, m_spProjImgCT3D,
+  // false); //final moving image
+  if (bExportProj_Fwd) {
+    this->m_cbctrecon->m_strPathPatientDir = QFileDialog::getExistingDirectory(
+        this, tr("Open Directory"), ".",
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  }
+
+  // Overwrite the raw projections by re-projecting them from the potentially
+  // modified CBCT
+  auto spProjImg3DFloat =
+      this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
+          m_dlgRegistration->m_spFixed, this->m_cbctrecon->m_spCustomGeometry,
+          bExportProj_Fwd, false);//this->ui.radioButton_UseCUDA->isChecked());
+
+  FloatImageType::Pointer p_projimg;
+  if (m_dlgRegistration->m_spMoving != nullptr) {
+    p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
+        m_dlgRegistration->m_spMoving, this->m_cbctrecon->m_spCustomGeometry,
+        bExportProj_Fwd,
+        false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
+  } else if (this->m_cbctrecon->m_spRefCTImg != nullptr) {
+    std::cerr << "No Moving image in Registration is found. Ref CT image will "
+                 "be used instead"
+              << "\n";
+    p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
+        this->m_cbctrecon->m_spRefCTImg, this->m_cbctrecon->m_spCustomGeometry,
+        bExportProj_Fwd,
+        false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
+  }
+
+  // YKTEMP
+  auto projsize = p_projimg->GetBufferedRegion().GetSize();
+  std::cout << "ProjImgCT Size = " << projsize[0] << ", " << projsize[1] << ", "
+            << projsize[2] << "\n";
+  std::cout << "ProjImgCT origin = " << p_projimg->GetOrigin()[0] << ", "
+            << p_projimg->GetOrigin()[1] << ", " << p_projimg->GetOrigin()[2]
+            << "\n";
+  std::cout << "ProjImgCT spacing = " << p_projimg->GetSpacing()[0] << ", "
+            << p_projimg->GetSpacing()[1] << ", " << p_projimg->GetSpacing()[2]
+            << std::endl;
+
+  // double scaResam = this->ui.lineEdit_scaResam->text().toDouble();
+  const auto scaMedian = 12.0;//this->ui.lineEdit_scaMedian->text().toDouble();
+  const auto scaGaussian = 0.05;//this->ui.lineEdit_scaGaussian->text().toDouble();
+
+  std::cout << "Generating scatter map is ongoing..." << std::endl;
+
+  this->m_cbctrecon->GenScatterMap_PriorCT(
+      spProjImg3DFloat, p_projimg, this->m_cbctrecon->m_spProjImgScat3D,
+      scaMedian, scaGaussian,
+      bExportProj_Scat); // void GenScatterMap2D_PriorCT()
+
+  std::cout << "To account for the mAs values, the intensity scale factor of "
+            << GetRawIntensityScaleFactor(this->m_cbctrecon->m_strRef_mAs,
+                                          this->m_cbctrecon->m_strCur_mAs)
+            << "was multiplied during scatter correction to avoid negative "
+               "scatter"
+            << std::endl;
+  // In Andreases code he sets text on the ui but we don't. Therefoe this is outcommented
+  /*
+  this->ui.lineEdit_CurmAs->setText(this->m_cbctrecon->m_strCur_mAs);
+  this->ui.lineEdit_RefmAs->setText(this->m_cbctrecon->m_strRef_mAs);
+  */
+
+  p_projimg->Initialize(); // memory saving
+
+  std::cout << "Scatter correction is in progress..." << std::endl;
+
+  const auto postScatMedianSize = 3;//this->ui.lineEdit_scaPostMedian->text().toInt();
+
+  this->m_cbctrecon->ScatterCorr_PrioriCT(spProjImg3DFloat,
+                                          this->m_cbctrecon->m_spProjImgScat3D,
+                                          this->m_cbctrecon->m_spProjImgCorr3D,
+                                          postScatMedianSize, bExportProj_Cor);
+
+  this->m_cbctrecon->m_spProjImgScat3D->Initialize(); // memory saving
+
+  std::cout << "AfterCorrectionMacro is ongoing..." << std::endl;
+
+  // In Andreases code he sets elements on his ui. therefore this is outcommented:
+  // Update UI
+  /*
+  this->ui.pushButton_DoRecon->setEnabled(true);
+  this->ui.spinBoxImgIdx->setMinimum(0);
+  */
+  const auto iSizeZ = this->m_cbctrecon->m_spProjImg3DFloat->GetBufferedRegion().GetSize()[2];
+  /*
+  this->ui.spinBoxImgIdx->setMaximum(iSizeZ - 1);
+  this->ui.spinBoxImgIdx->setValue(0);
+  */
+  this->m_cbctrecon->SetMaxAndMinValueOfProjectionImage(); // update min max projection image
+  SLT_InitializeGraphLim();
+  SLT_DrawProjImages(); // Update Table is called
+
+  auto fdk_options = getFDKoptions();
+
+  this->m_cbctrecon->AfterScatCorrectionMacro(false,true,false,fdk_options);
+              /*
+this->ui.radioButton_UseCUDA->isChecked(),
+      this->ui.radioButton_UseOpenCL->isChecked(),
+      this->ui.checkBox_ExportVolDICOM->isChecked(), fdk_options);
+  */
+
+  // Skin removal (using CT contour w/ big margin)
+  std::cout
+      << "Post  FDK reconstruction is done. Moving on to post skin removal"
+      << std::endl;
+
+  const auto voi_name = QString("");//this->m_dlgRegistration->ui.comboBox_VOItoCropBy->currentText();
+  // m_cbctregistration->PostSkinRemovingCBCT(
+  //    this->m_cbctrecon->m_spScatCorrReconImg, voi_name.toStdString());
+
+  // 20151208 Removal of high intensity skin mask
+  // Main issue: raw CBCT projection includes mask, deformed CT doesn't include
+  // mask. In case of weight loss, mask signal is independent from skin contour,
+  // but deformed CT cannot have that signal.  Therefore, after the subtraction
+  // (CBCTcor projections), there is always a big peak. DIR quality doesn't
+  // matter because it cannot 'create' mask signal anyway.  Assumption: near the
+  // skin contour, this kind of discrepancy is not expected.
+  // m_pDlgRegistration->ThermoMaskRemovingCBCT(m_spRawReconImg,
+  // m_spScatCorrReconImg, threshold_HU);
+
+  m_dlgRegistration->UpdateListOfComboBox(0); // combo selection signalis
+                                              // called
+  m_dlgRegistration->UpdateListOfComboBox(1);
+  m_dlgRegistration->SelectComboExternal(
+      0, REGISTER_RAW_CBCT); // will call fixedImageSelected
+  m_dlgRegistration->SelectComboExternal(1, REGISTER_COR_CBCT);
+
+  // m_dlgRegistration->SLT_DoLowerMaskIntensity(); // it will check the check
+  // button.
+
+  SLT_DrawProjImages();
+
+  std::cout << "Updating ReconImage..";
+  auto updated_text = QString("Scatter corrected CBCT");
+  UpdateReconImage(this->m_cbctrecon->m_spScatCorrReconImg,
+                   updated_text); // main GUI update
+
+  std::cout << "FINISHED!Scatter correction: CBCT DICOM files are saved"
+            << std::endl;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+// In Andreases code he goes back to the registration UI. selects COR_CBCT and DEFORMED and then he clicks pass.
+// Automatise that
 
 
 

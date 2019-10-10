@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\build-RwDi\BachelorProjekt_autogen\mocs_compilation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\qyklabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\progressbar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\informationwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\cbctregistration_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\mainwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\qyklabel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\progressbar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\informationwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\cbctregistration_test.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\MyQComboBox.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\mainwindow.ui" />
+    <None Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\progressbar.ui" />
+    <None Include="C:\Users\ct-10\OneDrive - Aarhus universitet\7 Semester ST\Bachelor\UI_Kode\BachelorProject\BachelorProjekt\informationwindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2820C9B2-F1B7-3E12-ABCD-967DB6089BB7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7DF5C105-B4C9-3F5E-A340-9A5F72DF7FA0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
