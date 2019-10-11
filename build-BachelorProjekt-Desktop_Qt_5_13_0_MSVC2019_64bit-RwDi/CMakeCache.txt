@@ -230,6 +230,9 @@ Qt5Widgets_DIR:PATH=C:/Qt/5.13.0/msvc2017_64/lib/cmake/Qt5Widgets
 //The directory containing a CMake configuration file for Qt5.
 Qt5_DIR:PATH=C:/Qt/5.13.0/msvc2017_64/lib/cmake/Qt5
 
+//Use opencl for fdk and forward projection
+USE_OPENCL:BOOL=ON
+
 
 ########################
 # INTERNAL cache entries

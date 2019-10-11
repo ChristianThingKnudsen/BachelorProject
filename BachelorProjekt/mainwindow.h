@@ -156,12 +156,16 @@ public slots:
     void SLT_DrawImageInFixedSlice() const;
     void SLT_DoRegistrationDeform();
     void SLT_IntensityNormCBCT();
+    void SLT_OpenInfo();
+    void SLT_OpenAdvancedMode();
+    void SLT_Exit();
 
-
+/*
 private:
     void on_btnLoadCT_clicked();
 
     void on_btnInfo_clicked();
+    */
 
 private:
     Ui::MainWindow *ui;

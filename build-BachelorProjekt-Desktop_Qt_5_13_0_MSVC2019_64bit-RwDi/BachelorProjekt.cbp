@@ -34,6 +34,8 @@
 				<Option type="1"/>
 				<Option compiler="msvc8"/>
 				<Compiler>
+					<Add option="-DRTK_USE_OPENCL"/>
+					<Add option="-DSLAB_SIZE=16"/>
 					<Add option="-DITK_IO_FACTORY_REGISTER_MANAGER"/>
 					<Add option="-DQT_WIDGETS_LIB"/>
 					<Add option="-DQT_GUI_LIB"/>
@@ -53,6 +55,7 @@
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve/shared"/>
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve"/>
 					<Add directory="C:/Users/ct-10/CbctRecon/Library/CbctReconLib"/>
+					<Add directory="C:/Users/ct-10/CbctRecon/Library/CbctReconLib/rtkExtension"/>
 					<Add directory="C:/Users/ct-10/CbctRecon/build-vs19-mt/Library/CbctReconLib"/>
 					<Add directory="C:/Program Files (x86)/ITK/include/ITK-5.1"/>
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/include"/>
@@ -98,6 +101,8 @@
 				<Option type="1"/>
 				<Option compiler="msvc8"/>
 				<Compiler>
+					<Add option="-DRTK_USE_OPENCL"/>
+					<Add option="-DSLAB_SIZE=16"/>
 					<Add option="-DITK_IO_FACTORY_REGISTER_MANAGER"/>
 					<Add option="-DQT_WIDGETS_LIB"/>
 					<Add option="-DQT_GUI_LIB"/>
@@ -117,6 +122,7 @@
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve/shared"/>
 					<Add directory="C:/Users/ct-10/ITK/Modules/Remote/RTK/utilities/lp_solve"/>
 					<Add directory="C:/Users/ct-10/CbctRecon/Library/CbctReconLib"/>
+					<Add directory="C:/Users/ct-10/CbctRecon/Library/CbctReconLib/rtkExtension"/>
 					<Add directory="C:/Users/ct-10/CbctRecon/build-vs19-mt/Library/CbctReconLib"/>
 					<Add directory="C:/Program Files (x86)/ITK/include/ITK-5.1"/>
 					<Add directory="C:/Qt/5.13.0/msvc2017_64/include"/>

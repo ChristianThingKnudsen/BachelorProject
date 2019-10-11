@@ -16,6 +16,10 @@
 //Local
 #include "cbctrecon_io.h"
 
+//For loading CBCTRecon
+#include <iostream>
+#include <shellapi.h>
+
 enum enCOLOR {
   RED,
   GREEN,
@@ -42,21 +46,21 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-/*
-void MainWindow::on_btnLoadCT_clicked()
-{
-    Progressbar progressbar;
-    progressbar.setModal(true);
-    progressbar.exec();
-}
-
-void MainWindow::on_btnInfo_clicked()
+void MainWindow::SLT_OpenInfo()
 {
     InformationWindow infoWindow;
     infoWindow.setModal(true);
     infoWindow.exec();
 }
-*/
+void MainWindow::SLT_OpenAdvancedMode()
+{
+    //Link: https://stackoverflow.com/questions/15435994/how-do-i-open-an-exe-from-another-c-exe
+    ShellExecute(NULL, "open", "C:\\Users\\ct-10\\CbctRecon\\build-vs19-mt\\bin\\CbctRecon.exe", NULL, NULL, SW_MAXIMIZE);
+}
+void MainWindow::SLT_Exit()
+{
+    delete ui;
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -101,14 +105,14 @@ void MainWindow::init_DlgRegistration(QString &str_dcm_uid) const// init dlgRegi
 
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// Is called when the "Load CT" button is pushed
+// Is called when the "Load Data" button is pushed
 void MainWindow::SLT_SetHisDir() // Initialize all image buffer
 {
   // Initializing..
 
   // Set folder --> then use RTK HIS Reader
   auto dirPath = QFileDialog::getExistingDirectory(
-      this, tr("Open Directory"), this->m_cbctrecon->m_strPathDirDefault,
+      this, tr("Open Directory"), "C:\\Users\\ct-10\\CbctRecon\\build-vs19-mt\\ExternalData\\Testing\\Input\\Alderson\\CBCT\\Acquisitions\\746879825",//this->m_cbctrecon->m_strPathDirDefault,
       QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
   if (dirPath.length() <= 1) {
@@ -772,8 +776,7 @@ void MainWindow::SLT_DoReconstruction() {
   itk::TimeProbe reconTimeProbe;
   reconTimeProbe.Start();
   // In Andreases UI he uses Cuda, but I think we use OpenCL. Hope this works
-  this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT,
-                                                      fdk_options);
+  this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT, fdk_options);
   /*
   if (this->ui.radioButton_UseCUDA->isChecked()) {
     this->m_cbctrecon->DoReconstructionFDK<CUDA_DEVT>(REGISTER_RAW_CBCT,

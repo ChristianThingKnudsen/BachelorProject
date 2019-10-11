@@ -13,6 +13,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(USE_OPENCL "Use opencl for fdk and forward projection" ON)
+
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(DCMTK_wrap)
 
@@ -53,6 +55,11 @@ add_executable(BachelorProjekt
   MyQComboBox.hxx
 )
 
+if(USE_OPENCL)
+    target_compile_definitions(BachelorProjekt PUBLIC RTK_USE_OPENCL)
+endif()
+target_compile_definitions(BachelorProjekt PUBLIC "SLAB_SIZE=16")
+
 target_link_libraries(BachelorProjekt PRIVATE Qt5::Widgets)
 target_link_libraries(BachelorProjekt PRIVATE ${ITK_LIBRARIES})
 
@@ -68,6 +75,7 @@ set(CbctReconLib_INCLUDE_DIR "C:/Users/ct-10/CbctRecon/Library/CbctReconLib/" CA
 set(CbctReconLib_BUILD_INCLUDE_DIR "C:/Users/ct-10/CbctRecon/build-vs19-mt/Library/CbctReconLib" CACHE PATH "Path to configuration files of CbctReconLib")
 include_directories(
     ${CbctReconLib_INCLUDE_DIR}
+    ${CbctReconLib_INCLUDE_DIR}/rtkExtension
     ${CbctReconLib_BUILD_INCLUDE_DIR}
     ${ITK_INCLUDE_DIRS}
     )
