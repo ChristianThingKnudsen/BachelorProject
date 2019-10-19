@@ -29,6 +29,7 @@
 *.exe
 *.out
 *.app
+*.mha
 
 # Binary input files
 *.bin
@@ -64,4 +65,3 @@ cmake_build_*
 
 # Potential build dir in source dir
 build*
-*.mha
