@@ -173,7 +173,8 @@ void CbctRegistrationTest::LoadVOIFromComboBox(
 // combobox
 void CbctRegistrationTest::UpdateListOfComboBox(const int idx) const {
   MyQComboBox *crntCombo;
-
+  // In Adreases he uses combo boxes but we don't. therefore this part has been commented out.
+  /*
   if (idx == 0) {
     crntCombo = this->ui_comboBoxImgFixed.get();
   } else {
@@ -219,6 +220,7 @@ void CbctRegistrationTest::UpdateListOfComboBox(const int idx) const {
   if (p_parent->m_spScatCorrReconImg != nullptr) {
     crntCombo->addItem("COR_CBCT");
   }
+  */
 }
 
 void CbctRegistrationTest::SLT_RestoreImageSingle() const {

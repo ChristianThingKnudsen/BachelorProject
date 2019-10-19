@@ -9,6 +9,7 @@
 #include "cbctrecon.h"
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
+#include "progressbar.h"
 //#include "DlgRegistration.h"
 
 //Qt
@@ -74,7 +75,7 @@ public slots:
     void SLT_DrawRawImages() const{}; // external *.his images
     void SLT_DrawProjImages(); // draw images from HIS FILE READER or filtered
                                // image before going into recon.
-    void SLT_DrawReconImage(){};
+    void SLT_DrawReconImage();
 
     // tools
     void SLT_FileNameHex2Dec(){};
@@ -159,6 +160,10 @@ public slots:
     void SLT_OpenInfo();
     void SLT_OpenAdvancedMode();
     void SLT_Exit();
+    void SLT_PreProcessCT();
+    void SLT_IncreaseSliderValue();
+    void SLT_DecreaseSliderValue();
+    void SLT_IntensityNormCBCT_COR_CBCT();
 
 /*
 private:
@@ -178,5 +183,7 @@ private:
     AG17RGBAImage *m_DoseImgFixed;
     AG17RGBAImage *m_DoseImgMoving;
     AG17RGBAImage *m_AGDisp_Overlay;
+    Progressbar *progressbar;
+
 };
 #endif // MAINWINDOW_H

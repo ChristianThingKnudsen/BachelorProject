@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>976</width>
-    <height>535</height>
+    <width>1085</width>
+    <height>526</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SCUI</string>
   </property>
   <property name="styleSheet">
    <string notr="true">MainWindow{
@@ -41,252 +41,11 @@
     <property name="verticalSpacing">
      <number>3</number>
     </property>
-    <item row="0" column="0" rowspan="2">
-     <widget class="QFrame" name="frame">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>3</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>1</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-	background-color: #0D3F64;
-}</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayoutRegion">
-          <property name="leftMargin">
-           <number>9</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="labelRegion">
-            <property name="styleSheet">
-             <string notr="true">QLabel{
-	font-size: 20px;
-	color:#ffffff;
-}</string>
-            </property>
-            <property name="text">
-             <string>Region:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_region">
-            <property name="styleSheet">
-             <string notr="true">QComboBox{
-	font-weight: bold;
-	font-size: 18px;
-	background-color: #1367AB;
-	color: #ffffff;
-}</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-	background-color: #0D3F64;
-	color: #ffffff;
-}</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
-          <item>
-           <widget class="QPushButton" name="btnLoadData">
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
-	background-color: qlineargradient(spread:reflect, x1:0, y1:1, x2:0.5, y2:1, stop:0 rgba(0, 0, 0, 255), stop:0.724771 rgba(209, 209, 209, 255));
-	color: #ffffff;
-	font-size: 20px;
-}
-QPushButton:pressed{
-	background-color: #E4A115
-}</string>
-            </property>
-            <property name="text">
-             <string>Load Data</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="cbCT">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QCheckBox{
-	background-color: #FF0000;
-}</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="styleSheet">
-          <string notr="true">QFrame{
-	background-color: #0D3F64;
-	color: #ffffff;
-}</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
-          <item>
-           <widget class="QPushButton" name="btnScatterCorrect">
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
-	background-color: #1367AB;
-	color: #ffffff;
-	font-size: 20px;
-}
-QPushButton:pressed{
-	background-color: #E4A115
-}</string>
-            </property>
-            <property name="text">
-             <string>Scatter Correct</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-	background-color: #0D3F64;
-	color: #ffffff;
-}</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayoutSC">
-          <property name="bottomMargin">
-           <number>9</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="btnAdvanced">
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
-	background-color: #1367AB;
-	color: #ffffff;
-	font-size: 20px;
-}
-QPushButton:pressed{
-	background-color: #E4A115
-}</string>
-            </property>
-            <property name="text">
-             <string>Advanced Mode</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <layout class="QVBoxLayout" name="verticalLayout_4"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QFrame" name="frame">
-      <property name="styleSheet">
-       <string notr="true">QFrame{
-	background-color: #0D3F64;
-	color: #ffffff;
-}</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>9</number>
-       </property>
-       <property name="topMargin">
-        <number>9</number>
-       </property>
-       <property name="horizontalSpacing">
-        <number>6</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="qyklabel" name="labelImageRaw">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>256</width>
-           <height>256</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>1024</width>
-           <height>1024</height>
-          </size>
-         </property>
-         <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="0" column="1">
      <widget class="QFrame" name="frame">
       <property name="styleSheet">
        <string notr="true">QFrame{
-	background-color: #0D3F64;
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
 	color: #ffffff;
 }</string>
       </property>
@@ -299,6 +58,7 @@ QPushButton:pressed{
          <property name="styleSheet">
           <string notr="true">QLabel{
 	font-size: 20px;
+	background-color: rgba(0,0,0,0%)
 }</string>
          </property>
          <property name="text">
@@ -335,16 +95,20 @@ QPushButton:pressed{
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-	background-color:#E4A115; 
+	background-color: rgba(255,190,56,100%); 
 	color: #ffffff;
 	font-size: 20px;
+	border-radius: 20px;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
 }
 QPushButton:pressed{
 	background-color:#1367AB;
 }</string>
          </property>
          <property name="text">
-          <string>i</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -370,14 +134,487 @@ QPushButton:pressed{
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-	background-color: #FF0000;
+	background-color: rgba(255,105,97,100%);
 	color: #ffffff;
 	font-size: 20px;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 7px;
 }</string>
          </property>
          <property name="text">
-          <string>X</string>
+          <string/>
          </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_4"/>
+    </item>
+    <item row="0" column="0" rowspan="2">
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	color: #ffffff;
+	
+}</string>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>1</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelRegion">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLabel{
+	font-size: 18px;
+	color:#ffffff;
+	background-color: rgba(0,0,0,0%)
+}</string>
+            </property>
+            <property name="text">
+             <string>Region:</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_region">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QComboBox{
+	font-weight: bold;
+	font-size: 18px;
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	color: #ffffff;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 7px;
+	
+}
+QComboBox QAbstractItemView{
+	selection-background-color: rgba(255,190,56,100%); 
+}
+
+QComboBox::drop-down{
+	border: 0px;
+}
+
+QComboBox::down-arrow {
+	image: url(':/pictures/dropdownarrow.png');
+    width: 14px;
+    height: 14px;
+}
+
+
+
+
+</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QWidget{
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	color: #ffffff;
+}</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
+          <item>
+           <widget class="QPushButton" name="btnLoadData">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+	font-size: 18px;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 7px;
+	
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+            </property>
+            <property name="text">
+             <string>Load Data</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	color: #ffffff;
+}</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutLoadCBCT">
+          <item>
+           <widget class="QPushButton" name="btnScatterCorrect">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	background-color: rgba(19,103,171,60%);
+	color: rgba(255,255,255,60%);
+	font-size: 18px;
+	border-width: 1.4px;
+	border-color: rgba(0,0,0,60%);
+	border-style: solid;
+	border-radius: 7px;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+            </property>
+            <property name="text">
+             <string>Scatter Correct</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QWidget{
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	color: #ffffff;
+}</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutSC">
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnAdvanced">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+	font-size: 18px;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 7px;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+            </property>
+            <property name="text">
+             <string>Advanced Mode</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QFrame" name="frame">
+      <property name="styleSheet">
+       <string notr="true">QFrame{
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	color: #ffffff;
+}</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="horizontalSpacing">
+        <number>6</number>
+       </property>
+       <item row="0" column="2">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Cor image</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="qyklabel" name="labelImageCor">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>256</width>
+             <height>256</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>1024</width>
+             <height>1024</height>
+            </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Box</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Raw image</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="qyklabel" name="labelImageRaw">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>256</width>
+             <height>256</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>1024</width>
+             <height>1024</height>
+            </size>
+           </property>
+           <property name="mouseTracking">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Box</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="8">
+        <widget class="QFrame" name="frame_2">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Slice: 100 </string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="btnPlus">
+            <property name="minimumSize">
+             <size>
+              <width>25</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+	font-size: 18px;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 7px;
+	width: 13 px;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+            </property>
+            <property name="text">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QSlider" name="verticalSlider">
+            <property name="styleSheet">
+             <string notr="true">handle:horizontal {color: red}</string>
+            </property>
+            <property name="maximum">
+             <number>200</number>
+            </property>
+            <property name="value">
+             <number>99</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="tickPosition">
+             <enum>QSlider::TicksBothSides</enum>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="btnMinus">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>25</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	background-color: #1367AB;
+	color: #ffffff;
+	font-size: 18px;
+	border-width: 1.4px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 7px;
+}
+QPushButton:pressed{
+	background-color: #E4A115
+}</string>
+            </property>
+            <property name="text">
+             <string>-</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -405,8 +642,8 @@ QPushButton:pressed{
    <slot>SLT_DoRegistrationRigid()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>110</x>
-     <y>452</y>
+     <x>123</x>
+     <y>345</y>
     </hint>
     <hint type="destinationlabel">
      <x>489</x>
@@ -421,8 +658,8 @@ QPushButton:pressed{
    <slot>SLT_OpenAdvancedMode()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>886</x>
-     <y>34</y>
+     <x>191</x>
+     <y>475</y>
     </hint>
     <hint type="destinationlabel">
      <x>489</x>
@@ -432,7 +669,7 @@ QPushButton:pressed{
   </connection>
   <connection>
    <sender>btnLoadData</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>SLT_SetHisDir()</slot>
    <hints>
@@ -453,8 +690,8 @@ QPushButton:pressed{
    <slot>SLT_OpenInfo()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>697</x>
-     <y>34</y>
+     <x>913</x>
+     <y>47</y>
     </hint>
     <hint type="destinationlabel">
      <x>489</x>
@@ -475,6 +712,38 @@ QPushButton:pressed{
     <hint type="destinationlabel">
      <x>489</x>
      <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPlus</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SLT_IncreaseSliderValue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1019</x>
+     <y>127</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMinus</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SLT_DecreaseSliderValue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1019</x>
+     <y>480</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
@@ -563,5 +832,7 @@ QPushButton:pressed{
   <slot>SLT_OpenInfo()</slot>
   <slot>SLT_OpenAdvancedMode()</slot>
   <slot>SLT_Exit()</slot>
+  <slot>SLT_DecreaseSliderValue()</slot>
+  <slot>SLT_IncreaseSliderValue()</slot>
  </slots>
 </ui>

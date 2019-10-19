@@ -13,15 +13,15 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_InformationWindow
 {
 public:
-    QWidget *formLayoutWidget;
+    QGridLayout *gridLayout;
     QFormLayout *formLayout;
     QLabel *label_13;
     QLabel *labelRegion;
@@ -43,19 +43,17 @@ public:
     {
         if (InformationWindow->objectName().isEmpty())
             InformationWindow->setObjectName(QString::fromUtf8("InformationWindow"));
-        InformationWindow->resize(901, 324);
+        InformationWindow->resize(949, 525);
         InformationWindow->setStyleSheet(QString::fromUtf8("QDialog{\n"
-"	background-color: #1367AB;\n"
+"	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));\n"
 "}"));
-        formLayoutWidget = new QWidget(InformationWindow);
-        formLayoutWidget->setObjectName(QString::fromUtf8("formLayoutWidget"));
-        formLayoutWidget->setGeometry(QRect(1, 0, 901, 321));
-        formLayout = new QFormLayout(formLayoutWidget);
+        gridLayout = new QGridLayout(InformationWindow);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        formLayout = new QFormLayout();
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         formLayout->setHorizontalSpacing(9);
         formLayout->setVerticalSpacing(15);
-        formLayout->setContentsMargins(0, 0, 0, 0);
-        label_13 = new QLabel(formLayoutWidget);
+        label_13 = new QLabel(InformationWindow);
         label_13->setObjectName(QString::fromUtf8("label_13"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
@@ -67,7 +65,7 @@ public:
         label_13->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	text-decoration: underline;\n"
 "	font-size: 20px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "	alignment: center;\n"
 "}\n"
@@ -77,86 +75,93 @@ public:
 
         formLayout->setWidget(1, QFormLayout::SpanningRole, label_13);
 
-        labelRegion = new QLabel(formLayoutWidget);
+        labelRegion = new QLabel(InformationWindow);
         labelRegion->setObjectName(QString::fromUtf8("labelRegion"));
         labelRegion->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(2, QFormLayout::LabelRole, labelRegion);
 
-        labelLoadCT = new QLabel(formLayoutWidget);
+        labelLoadCT = new QLabel(InformationWindow);
         labelLoadCT->setObjectName(QString::fromUtf8("labelLoadCT"));
         labelLoadCT->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%);  \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(3, QFormLayout::LabelRole, labelLoadCT);
 
-        label_2 = new QLabel(formLayoutWidget);
+        label_2 = new QLabel(InformationWindow);
         label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setMaximumSize(QSize(800, 800));
         label_2->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
 "}"));
+        label_2->setWordWrap(true);
 
         formLayout->setWidget(3, QFormLayout::FieldRole, label_2);
 
-        label_3 = new QLabel(formLayoutWidget);
+        label_3 = new QLabel(InformationWindow);
         label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(4, QFormLayout::LabelRole, label_3);
 
-        label_4 = new QLabel(formLayoutWidget);
+        label_4 = new QLabel(InformationWindow);
         label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setMaximumSize(QSize(800, 16777215));
         label_4->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
 "}"));
+        label_4->setWordWrap(true);
 
         formLayout->setWidget(4, QFormLayout::FieldRole, label_4);
 
-        label_5 = new QLabel(formLayoutWidget);
+        label_5 = new QLabel(InformationWindow);
         label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setMaximumSize(QSize(16777215, 500));
         label_5->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(5, QFormLayout::LabelRole, label_5);
 
-        label_6 = new QLabel(formLayoutWidget);
+        label_6 = new QLabel(InformationWindow);
         label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setMaximumSize(QSize(800, 120));
         label_6->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
 "}"));
+        label_6->setWordWrap(true);
 
         formLayout->setWidget(5, QFormLayout::FieldRole, label_6);
 
-        label_7 = new QLabel(formLayoutWidget);
+        label_7 = new QLabel(InformationWindow);
         label_7->setObjectName(QString::fromUtf8("label_7"));
         label_7->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(6, QFormLayout::LabelRole, label_7);
 
-        label_8 = new QLabel(formLayoutWidget);
+        label_8 = new QLabel(InformationWindow);
         label_8->setObjectName(QString::fromUtf8("label_8"));
         label_8->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
@@ -164,57 +169,67 @@ public:
 
         formLayout->setWidget(6, QFormLayout::FieldRole, label_8);
 
-        label_9 = new QLabel(formLayoutWidget);
+        label_9 = new QLabel(InformationWindow);
         label_9->setObjectName(QString::fromUtf8("label_9"));
         label_9->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(7, QFormLayout::LabelRole, label_9);
 
-        labelShowOrgansInfo = new QLabel(formLayoutWidget);
+        labelShowOrgansInfo = new QLabel(InformationWindow);
         labelShowOrgansInfo->setObjectName(QString::fromUtf8("labelShowOrgansInfo"));
+        labelShowOrgansInfo->setMaximumSize(QSize(800, 16777215));
         labelShowOrgansInfo->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
 "}"));
+        labelShowOrgansInfo->setWordWrap(true);
 
         formLayout->setWidget(7, QFormLayout::FieldRole, labelShowOrgansInfo);
 
-        label_11 = new QLabel(formLayoutWidget);
+        label_11 = new QLabel(InformationWindow);
         label_11->setObjectName(QString::fromUtf8("label_11"));
         label_11->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	font-size: 15px;\n"
-"	color:#E4A115; \n"
+"	color: rgba(255,190,56,100%); \n"
 "	font-weight: bold;\n"
 "}\n"
 ""));
 
         formLayout->setWidget(8, QFormLayout::LabelRole, label_11);
 
-        label_12 = new QLabel(formLayoutWidget);
+        label_12 = new QLabel(InformationWindow);
         label_12->setObjectName(QString::fromUtf8("label_12"));
+        label_12->setMaximumSize(QSize(800, 16777215));
         label_12->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
 "}"));
+        label_12->setWordWrap(true);
 
         formLayout->setWidget(8, QFormLayout::FieldRole, label_12);
 
-        labelRegionInfo = new QLabel(formLayoutWidget);
+        labelRegionInfo = new QLabel(InformationWindow);
         labelRegionInfo->setObjectName(QString::fromUtf8("labelRegionInfo"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Minimum);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(labelRegionInfo->sizePolicy().hasHeightForWidth());
         labelRegionInfo->setSizePolicy(sizePolicy1);
+        labelRegionInfo->setMaximumSize(QSize(800, 120));
         labelRegionInfo->setAutoFillBackground(false);
         labelRegionInfo->setStyleSheet(QString::fromUtf8("QLabel{\n"
 "	color: #ffffff;\n"
+"	width: 20px;\n"
 "}"));
+        labelRegionInfo->setWordWrap(true);
 
         formLayout->setWidget(2, QFormLayout::FieldRole, labelRegionInfo);
+
+
+        gridLayout->addLayout(formLayout, 0, 0, 1, 1);
 
 
         retranslateUi(InformationWindow);

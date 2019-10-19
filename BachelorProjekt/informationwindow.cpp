@@ -6,6 +6,7 @@ InformationWindow::InformationWindow(QWidget *parent) :
     ui(new Ui::InformationWindow)
 {
     ui->setupUi(this);
+
 }
 
 InformationWindow::~InformationWindow()

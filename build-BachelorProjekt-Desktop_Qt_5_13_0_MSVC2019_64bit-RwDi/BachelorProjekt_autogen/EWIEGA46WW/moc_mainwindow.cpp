@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[97];
-    char stringdata0[2017];
+    QByteArrayData data[101];
+    char stringdata0[2113];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -128,7 +128,11 @@ QT_MOC_LITERAL(92, 1927, 24), // "SLT_DoRegistrationDeform"
 QT_MOC_LITERAL(93, 1952, 21), // "SLT_IntensityNormCBCT"
 QT_MOC_LITERAL(94, 1974, 12), // "SLT_OpenInfo"
 QT_MOC_LITERAL(95, 1987, 20), // "SLT_OpenAdvancedMode"
-QT_MOC_LITERAL(96, 2008, 8) // "SLT_Exit"
+QT_MOC_LITERAL(96, 2008, 8), // "SLT_Exit"
+QT_MOC_LITERAL(97, 2017, 16), // "SLT_PreProcessCT"
+QT_MOC_LITERAL(98, 2034, 23), // "SLT_IncreaseSliderValue"
+QT_MOC_LITERAL(99, 2058, 23), // "SLT_DecreaseSliderValue"
+QT_MOC_LITERAL(100, 2082, 30) // "SLT_IntensityNormCBCT_COR_CBCT"
 
     },
     "MainWindow\0foo\0\0SLT_LoadRawImages\0"
@@ -185,7 +189,9 @@ QT_MOC_LITERAL(96, 2008, 8) // "SLT_Exit"
     "SLT_DrawImageInFixedSlice\0"
     "SLT_DoRegistrationDeform\0SLT_IntensityNormCBCT\0"
     "SLT_OpenInfo\0SLT_OpenAdvancedMode\0"
-    "SLT_Exit"
+    "SLT_Exit\0SLT_PreProcessCT\0"
+    "SLT_IncreaseSliderValue\0SLT_DecreaseSliderValue\0"
+    "SLT_IntensityNormCBCT_COR_CBCT"
 };
 #undef QT_MOC_LITERAL
 
@@ -195,7 +201,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      91,   14, // methods
+      95,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -203,97 +209,101 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,  469,    2, 0x0a /* Public */,
-       3,    0,  470,    2, 0x0a /* Public */,
-       4,    0,  471,    2, 0x0a /* Public */,
-       5,    0,  472,    2, 0x0a /* Public */,
-       6,    0,  473,    2, 0x0a /* Public */,
-       7,    0,  474,    2, 0x0a /* Public */,
-       8,    0,  475,    2, 0x0a /* Public */,
-       9,    0,  476,    2, 0x0a /* Public */,
-      10,    0,  477,    2, 0x0a /* Public */,
-      11,    0,  478,    2, 0x0a /* Public */,
-      12,    1,  479,    2, 0x0a /* Public */,
-      15,    0,  482,    2, 0x0a /* Public */,
-      16,    0,  483,    2, 0x0a /* Public */,
-      17,    0,  484,    2, 0x0a /* Public */,
-      18,    0,  485,    2, 0x0a /* Public */,
-      19,    0,  486,    2, 0x0a /* Public */,
-      20,    0,  487,    2, 0x0a /* Public */,
-      21,    0,  488,    2, 0x0a /* Public */,
-      22,    0,  489,    2, 0x0a /* Public */,
-      23,    0,  490,    2, 0x0a /* Public */,
-      24,    0,  491,    2, 0x0a /* Public */,
-      25,    0,  492,    2, 0x0a /* Public */,
-      26,    0,  493,    2, 0x0a /* Public */,
-      27,    0,  494,    2, 0x0a /* Public */,
-      28,    0,  495,    2, 0x0a /* Public */,
-      29,    0,  496,    2, 0x0a /* Public */,
-      30,    0,  497,    2, 0x0a /* Public */,
-      31,    0,  498,    2, 0x0a /* Public */,
-      32,    0,  499,    2, 0x0a /* Public */,
-      33,    0,  500,    2, 0x0a /* Public */,
-      34,    0,  501,    2, 0x0a /* Public */,
-      35,    0,  502,    2, 0x0a /* Public */,
-      36,    0,  503,    2, 0x0a /* Public */,
-      37,    0,  504,    2, 0x0a /* Public */,
-      38,    0,  505,    2, 0x0a /* Public */,
-      39,    0,  506,    2, 0x0a /* Public */,
-      40,    0,  507,    2, 0x0a /* Public */,
-      41,    0,  508,    2, 0x0a /* Public */,
-      42,    0,  509,    2, 0x0a /* Public */,
-      43,    0,  510,    2, 0x0a /* Public */,
-      44,    0,  511,    2, 0x0a /* Public */,
-      45,    0,  512,    2, 0x0a /* Public */,
-      46,    0,  513,    2, 0x0a /* Public */,
-      47,    0,  514,    2, 0x0a /* Public */,
-      48,    0,  515,    2, 0x0a /* Public */,
-      49,    0,  516,    2, 0x0a /* Public */,
-      50,    0,  517,    2, 0x0a /* Public */,
-      51,    0,  518,    2, 0x0a /* Public */,
-      52,    0,  519,    2, 0x0a /* Public */,
-      53,    0,  520,    2, 0x0a /* Public */,
-      54,    0,  521,    2, 0x0a /* Public */,
-      55,    0,  522,    2, 0x0a /* Public */,
-      56,    0,  523,    2, 0x0a /* Public */,
-      57,    0,  524,    2, 0x0a /* Public */,
-      58,    0,  525,    2, 0x0a /* Public */,
-      59,    0,  526,    2, 0x0a /* Public */,
-      60,    0,  527,    2, 0x0a /* Public */,
-      61,    0,  528,    2, 0x0a /* Public */,
-      62,    0,  529,    2, 0x0a /* Public */,
-      63,    0,  530,    2, 0x0a /* Public */,
-      64,    0,  531,    2, 0x0a /* Public */,
-      65,    0,  532,    2, 0x0a /* Public */,
-      66,    0,  533,    2, 0x0a /* Public */,
-      67,    0,  534,    2, 0x0a /* Public */,
-      68,    0,  535,    2, 0x0a /* Public */,
-      69,    0,  536,    2, 0x0a /* Public */,
-      70,    0,  537,    2, 0x0a /* Public */,
-      71,    0,  538,    2, 0x0a /* Public */,
-      72,    0,  539,    2, 0x0a /* Public */,
-      73,    0,  540,    2, 0x0a /* Public */,
-      74,    0,  541,    2, 0x0a /* Public */,
-      75,    0,  542,    2, 0x0a /* Public */,
-      76,    0,  543,    2, 0x0a /* Public */,
-      77,    0,  544,    2, 0x0a /* Public */,
-      78,    0,  545,    2, 0x0a /* Public */,
-      79,    0,  546,    2, 0x0a /* Public */,
-      80,    0,  547,    2, 0x0a /* Public */,
-      81,    0,  548,    2, 0x0a /* Public */,
-      82,    0,  549,    2, 0x0a /* Public */,
-      83,    0,  550,    2, 0x0a /* Public */,
-      84,    0,  551,    2, 0x0a /* Public */,
-      85,    1,  552,    2, 0x0a /* Public */,
-      87,    1,  555,    2, 0x0a /* Public */,
-      89,    1,  558,    2, 0x0a /* Public */,
-      90,    0,  561,    2, 0x0a /* Public */,
-      91,    0,  562,    2, 0x0a /* Public */,
-      92,    0,  563,    2, 0x0a /* Public */,
-      93,    0,  564,    2, 0x0a /* Public */,
-      94,    0,  565,    2, 0x0a /* Public */,
-      95,    0,  566,    2, 0x0a /* Public */,
-      96,    0,  567,    2, 0x0a /* Public */,
+       1,    0,  489,    2, 0x0a /* Public */,
+       3,    0,  490,    2, 0x0a /* Public */,
+       4,    0,  491,    2, 0x0a /* Public */,
+       5,    0,  492,    2, 0x0a /* Public */,
+       6,    0,  493,    2, 0x0a /* Public */,
+       7,    0,  494,    2, 0x0a /* Public */,
+       8,    0,  495,    2, 0x0a /* Public */,
+       9,    0,  496,    2, 0x0a /* Public */,
+      10,    0,  497,    2, 0x0a /* Public */,
+      11,    0,  498,    2, 0x0a /* Public */,
+      12,    1,  499,    2, 0x0a /* Public */,
+      15,    0,  502,    2, 0x0a /* Public */,
+      16,    0,  503,    2, 0x0a /* Public */,
+      17,    0,  504,    2, 0x0a /* Public */,
+      18,    0,  505,    2, 0x0a /* Public */,
+      19,    0,  506,    2, 0x0a /* Public */,
+      20,    0,  507,    2, 0x0a /* Public */,
+      21,    0,  508,    2, 0x0a /* Public */,
+      22,    0,  509,    2, 0x0a /* Public */,
+      23,    0,  510,    2, 0x0a /* Public */,
+      24,    0,  511,    2, 0x0a /* Public */,
+      25,    0,  512,    2, 0x0a /* Public */,
+      26,    0,  513,    2, 0x0a /* Public */,
+      27,    0,  514,    2, 0x0a /* Public */,
+      28,    0,  515,    2, 0x0a /* Public */,
+      29,    0,  516,    2, 0x0a /* Public */,
+      30,    0,  517,    2, 0x0a /* Public */,
+      31,    0,  518,    2, 0x0a /* Public */,
+      32,    0,  519,    2, 0x0a /* Public */,
+      33,    0,  520,    2, 0x0a /* Public */,
+      34,    0,  521,    2, 0x0a /* Public */,
+      35,    0,  522,    2, 0x0a /* Public */,
+      36,    0,  523,    2, 0x0a /* Public */,
+      37,    0,  524,    2, 0x0a /* Public */,
+      38,    0,  525,    2, 0x0a /* Public */,
+      39,    0,  526,    2, 0x0a /* Public */,
+      40,    0,  527,    2, 0x0a /* Public */,
+      41,    0,  528,    2, 0x0a /* Public */,
+      42,    0,  529,    2, 0x0a /* Public */,
+      43,    0,  530,    2, 0x0a /* Public */,
+      44,    0,  531,    2, 0x0a /* Public */,
+      45,    0,  532,    2, 0x0a /* Public */,
+      46,    0,  533,    2, 0x0a /* Public */,
+      47,    0,  534,    2, 0x0a /* Public */,
+      48,    0,  535,    2, 0x0a /* Public */,
+      49,    0,  536,    2, 0x0a /* Public */,
+      50,    0,  537,    2, 0x0a /* Public */,
+      51,    0,  538,    2, 0x0a /* Public */,
+      52,    0,  539,    2, 0x0a /* Public */,
+      53,    0,  540,    2, 0x0a /* Public */,
+      54,    0,  541,    2, 0x0a /* Public */,
+      55,    0,  542,    2, 0x0a /* Public */,
+      56,    0,  543,    2, 0x0a /* Public */,
+      57,    0,  544,    2, 0x0a /* Public */,
+      58,    0,  545,    2, 0x0a /* Public */,
+      59,    0,  546,    2, 0x0a /* Public */,
+      60,    0,  547,    2, 0x0a /* Public */,
+      61,    0,  548,    2, 0x0a /* Public */,
+      62,    0,  549,    2, 0x0a /* Public */,
+      63,    0,  550,    2, 0x0a /* Public */,
+      64,    0,  551,    2, 0x0a /* Public */,
+      65,    0,  552,    2, 0x0a /* Public */,
+      66,    0,  553,    2, 0x0a /* Public */,
+      67,    0,  554,    2, 0x0a /* Public */,
+      68,    0,  555,    2, 0x0a /* Public */,
+      69,    0,  556,    2, 0x0a /* Public */,
+      70,    0,  557,    2, 0x0a /* Public */,
+      71,    0,  558,    2, 0x0a /* Public */,
+      72,    0,  559,    2, 0x0a /* Public */,
+      73,    0,  560,    2, 0x0a /* Public */,
+      74,    0,  561,    2, 0x0a /* Public */,
+      75,    0,  562,    2, 0x0a /* Public */,
+      76,    0,  563,    2, 0x0a /* Public */,
+      77,    0,  564,    2, 0x0a /* Public */,
+      78,    0,  565,    2, 0x0a /* Public */,
+      79,    0,  566,    2, 0x0a /* Public */,
+      80,    0,  567,    2, 0x0a /* Public */,
+      81,    0,  568,    2, 0x0a /* Public */,
+      82,    0,  569,    2, 0x0a /* Public */,
+      83,    0,  570,    2, 0x0a /* Public */,
+      84,    0,  571,    2, 0x0a /* Public */,
+      85,    1,  572,    2, 0x0a /* Public */,
+      87,    1,  575,    2, 0x0a /* Public */,
+      89,    1,  578,    2, 0x0a /* Public */,
+      90,    0,  581,    2, 0x0a /* Public */,
+      91,    0,  582,    2, 0x0a /* Public */,
+      92,    0,  583,    2, 0x0a /* Public */,
+      93,    0,  584,    2, 0x0a /* Public */,
+      94,    0,  585,    2, 0x0a /* Public */,
+      95,    0,  586,    2, 0x0a /* Public */,
+      96,    0,  587,    2, 0x0a /* Public */,
+      97,    0,  588,    2, 0x0a /* Public */,
+      98,    0,  589,    2, 0x0a /* Public */,
+      99,    0,  590,    2, 0x0a /* Public */,
+     100,    0,  591,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -380,6 +390,10 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::Bool,   86,
     QMetaType::Void, QMetaType::QString,   88,
     QMetaType::Void, QMetaType::QString,   88,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -488,6 +502,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 88: _t->SLT_OpenInfo(); break;
         case 89: _t->SLT_OpenAdvancedMode(); break;
         case 90: _t->SLT_Exit(); break;
+        case 91: _t->SLT_PreProcessCT(); break;
+        case 92: _t->SLT_IncreaseSliderValue(); break;
+        case 93: _t->SLT_DecreaseSliderValue(); break;
+        case 94: _t->SLT_IntensityNormCBCT_COR_CBCT(); break;
         default: ;
         }
     }
@@ -522,13 +540,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 91)
+        if (_id < 95)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 91;
+        _id -= 95;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 91)
+        if (_id < 95)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 91;
+        _id -= 95;
     }
     return _id;
 }

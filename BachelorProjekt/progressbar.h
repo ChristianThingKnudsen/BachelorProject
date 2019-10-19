@@ -17,6 +17,12 @@ public:
 
 private:
     Ui::Progressbar *ui;
-};
 
+public slots:
+    void setPBValue(int value);
+    void setPBText(QString text);
+
+};
 #endif // PROGRESSBAR_H
+
+
