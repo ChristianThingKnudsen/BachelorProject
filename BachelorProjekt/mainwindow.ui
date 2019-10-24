@@ -104,7 +104,7 @@
 	border-style: solid;
 }
 QPushButton:pressed{
-	background-color:#1367AB;
+	background-color: rgba(255,105,97,100%);
 }</string>
          </property>
          <property name="text">
@@ -141,6 +141,9 @@ QPushButton:pressed{
 	border-color: #000000;
 	border-style: solid;
 	border-radius: 7px;
+}
+QPushButton:pressed{
+	background-color: rgba(255,190,56,100%);
 }</string>
          </property>
          <property name="text">
@@ -161,6 +164,12 @@ QPushButton:pressed{
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
@@ -281,7 +290,7 @@ QComboBox::down-arrow {
 	color: #ffffff;
 }</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayoutLoadCT">
+         <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
            <widget class="QPushButton" name="btnLoadData">
             <property name="maximumSize">
@@ -307,6 +316,19 @@ QPushButton:pressed{
             </property>
             <property name="text">
              <string>Load Data</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QProgressBar" name="progressBarLoad">
+            <property name="maximumSize">
+             <size>
+              <width>188</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="value">
+             <number>0</number>
             </property>
            </widget>
           </item>
@@ -422,6 +444,13 @@ QPushButton:pressed{
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item alignment="Qt::AlignHCenter">
           <widget class="QLabel" name="label_3">
+           <property name="styleSheet">
+            <string notr="true">QLabel{
+	font-size: 18px;
+	color:#ffffff;
+	background-color: rgba(0,0,0,0%)
+}</string>
+           </property>
            <property name="text">
             <string>Cor image</string>
            </property>
@@ -464,6 +493,13 @@ QPushButton:pressed{
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item alignment="Qt::AlignHCenter">
           <widget class="QLabel" name="label_2">
+           <property name="styleSheet">
+            <string notr="true">QLabel{
+	font-size: 18px;
+	color:#ffffff;
+	background-color: rgba(0,0,0,0%)
+}</string>
+           </property>
            <property name="text">
             <string>Raw image</string>
            </property>
@@ -508,36 +544,71 @@ QPushButton:pressed{
           <string notr="true"/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="topMargin">
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Slice: 100 </string>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <property name="spacing">
+               <number>6</number>
               </property>
-             </widget>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="labelSliderIdx">
+                <property name="styleSheet">
+                 <string notr="true">QLabel{
+	font-size: 16px;
+	color:#ffffff;
+	background-color: rgba(0,0,0,0%)
+}</string>
+                </property>
+                <property name="text">
+                 <string>Slice: 100 </string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
-           </layout>
-          </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="btnPlus">
-            <property name="minimumSize">
-             <size>
-              <width>25</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>25</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <property name="spacing">
+               <number>6</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="btnPlus">
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
 	font-size: 18px;
@@ -550,53 +621,56 @@ QPushButton:pressed{
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-            </property>
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QSlider" name="verticalSlider">
-            <property name="styleSheet">
-             <string notr="true">handle:horizontal {color: red}</string>
-            </property>
-            <property name="maximum">
-             <number>200</number>
-            </property>
-            <property name="value">
-             <number>99</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="tickPosition">
-             <enum>QSlider::TicksBothSides</enum>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="btnMinus">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>25</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>23</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
+                </property>
+                <property name="text">
+                 <string>+</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QSlider" name="verticalSlider">
+                <property name="styleSheet">
+                 <string notr="true">handle:horizontal {color: red}</string>
+                </property>
+                <property name="maximum">
+                 <number>200</number>
+                </property>
+                <property name="value">
+                 <number>99</number>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="tickPosition">
+                 <enum>QSlider::TicksBothSides</enum>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="btnMinus">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>23</width>
+                  <height>16777213</height>
+                 </size>
+                </property>
+                <property name="toolTipDuration">
+                 <number>-1</number>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{
 	background-color: #1367AB;
 	color: #ffffff;
 	font-size: 18px;
@@ -608,11 +682,15 @@ QPushButton:pressed{
 QPushButton:pressed{
 	background-color: #E4A115
 }</string>
-            </property>
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -637,7 +715,7 @@ QPushButton:pressed{
  <connections>
   <connection>
    <sender>btnScatterCorrect</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>SLT_DoRegistrationRigid()</slot>
    <hints>
@@ -653,7 +731,7 @@ QPushButton:pressed{
   </connection>
   <connection>
    <sender>btnAdvanced</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>SLT_OpenAdvancedMode()</slot>
    <hints>
@@ -685,7 +763,7 @@ QPushButton:pressed{
   </connection>
   <connection>
    <sender>btnInfo</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>SLT_OpenInfo()</slot>
    <hints>
@@ -701,7 +779,7 @@ QPushButton:pressed{
   </connection>
   <connection>
    <sender>btnExit</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>SLT_Exit()</slot>
    <hints>
@@ -740,6 +818,22 @@ QPushButton:pressed{
     <hint type="sourcelabel">
      <x>1019</x>
      <y>480</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SLT_DrawReconImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1023</x>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>542</x>

@@ -73,6 +73,13 @@ image: url(':/../../pictures/dropdownarrow.png');
     this->m_cbctregistration =
         std::make_unique<CbctRegistration>(this->m_cbctrecon.get());
 
+    m_YKImgFixed = &m_cbctregistration->m_YKImgFixed[0];
+    m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];
+    m_YKDisp = &m_cbctregistration->m_YKDisp[0];
+
+    m_DoseImgFixed = &m_cbctregistration->m_DoseImgFixed[0];
+    m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0];
+    m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0];
 }
 
 MainWindow::~MainWindow()
@@ -152,6 +159,7 @@ void MainWindow::init_DlgRegistration(QString &str_dcm_uid) const// init dlgRegi
 // Is called when the "Load Data" button is pushed
 void MainWindow::SLT_SetHisDir() // Initialize all image buffer
 {
+  ui->progressBarLoad->setValue(2);
 
   // Initializing..
 
@@ -168,16 +176,10 @@ void MainWindow::SLT_SetHisDir() // Initialize all image buffer
     return;
   }
 
-  progressbar = new Progressbar(this);
-  progressbar->show();
-  progressbar->setPBText("Loading data...");
-  progressbar->setPBValue(10);
-
   //this ->ui->cbCT->setChecked(true);//this->ui.lineEdit_HisDirPath->setText(dirPath);
 
   this->m_cbctrecon->SetProjDir(dirPath);
   init_DlgRegistration(this->m_cbctrecon->m_strDCMUID);
-  progressbar->setPBValue(40);
 
   //this->ui.lineEdit_ElektaGeomPath->setText(this->m_cbctrecon->m_strPathGeomXML);
 
@@ -192,7 +194,6 @@ void MainWindow::SLT_SetHisDir() // Initialize all image buffer
               << "kVp= " << kVp << ", mA= " << mA << ", ms= " << ms
               << std::endl;
   }
-  progressbar->setPBValue(60);
   //this->ui.lineEdit_CurmAs->setText(QString("%1, %2").arg(mA).arg(ms));
 
   VEC3D couch_trans = {-999, -999,
@@ -221,13 +222,10 @@ void MainWindow::SLT_SetHisDir() // Initialize all image buffer
     //this->ui.lineEdit_CouchTrans->setText("Not available");
     //this->ui.lineEdit_CouchRot->setText("Not available");
   }
-  progressbar->setPBValue(70);
 
   this->m_cbctrecon->m_vSelectedFileNames.clear();
 
   std::cout << "Push Load button to load projection images" << std::endl;
-  progressbar->setPBValue(95);
-  delete progressbar;
   SLT_LoadSelectedProjFiles(dirPath);
 }
 //Is needed for the next method SLT_LoadSelectedProjFiles()
@@ -290,31 +288,21 @@ MainWindow::ReadBowtieFileWhileProbing(const QString &proj_path,
   const auto calDir(proj_path + QString("/Calibrations/"));
 
   QString bowtiePath;
-
+  ui->progressBarLoad->setValue(20);
   switch (this->m_cbctrecon->m_projFormat) {
   case XIM_FORMAT:
     bowtiePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Calibrations\\AIR-Full-Bowtie-100KV-Scattergrid-SAD-SID_0\\Current\\FilterBowtie.xim");//getBowtiePath(this, calDir);
     if (bowtiePath.length() > 1) {
       progressbar = new Progressbar(this);
-      progressbar->show();
-      progressbar->setPBText("Loading bowtie-filter...");
-      progressbar->setPBValue(10);
       std::cout << "loading bowtie-filter..." << std::endl;
-      progressbar->setPBValue(20);
       std::vector<std::string> filepath;
-      progressbar->setPBValue(30);
       filepath.push_back(bowtiePath.toStdString());
       bowtiereader->SetFileNames(filepath);
-      progressbar->setPBValue(50);
       // std::thread calc_thread_bowtie(read_bowtie_projection, bowtiereader);
       std::thread calc_thread_bowtie(
           [&bowtiereader] { bowtiereader->Update(); });
-      progressbar->setPBValue(70);
       answers = probeUser(guessDir.absolutePath());
-      progressbar->setPBValue(80);
       calc_thread_bowtie.join();
-      progressbar->setPBValue(100);
-      delete progressbar;
 
     } else {
       answers = probeUser(
@@ -334,6 +322,7 @@ MainWindow::ReadBowtieFileWhileProbing(const QString &proj_path,
 //Is called by SLT_SetHisDir()
 void MainWindow::SLT_LoadSelectedProjFiles(QString &path) // main loading fuction for projection images
 {
+  ui->progressBarLoad->setValue(40);
   //this->ui.pushButton_DoRecon->setDisabled(true);
   // 1) Get all projection file names
 
@@ -851,7 +840,7 @@ void MainWindow::SLT_DrawGraph() const
 // Is implemented in SLT_LoadSelectedProjFiles()
 void MainWindow::SLT_DoReconstruction() {
   const auto fdk_options = getFDKoptions();
-
+  ui->progressBarLoad->setValue(60);
   itk::TimeProbe reconTimeProbe;
   reconTimeProbe.Start();
   // In Andreases UI he uses Cuda, but I think we use OpenCL. Hope this works
@@ -873,8 +862,11 @@ void MainWindow::SLT_DoReconstruction() {
             << reconTimeProbe.GetUnit() << std::endl;
   //this->ui.lineEdit_ReconstructionTime->setText(QString("%1").arg(reconTimeProbe.GetMean()));
 
-  //this->ui.spinBoxReconImgSliceNo->setMinimum(0);
-  //this->ui.spinBoxReconImgSliceNo->setMaximum(fdk_options.ct_size[1] - 1);
+  this->ui->verticalSlider->setMinimum(0);//this->ui.spinBoxReconImgSliceNo->setMinimum(0);
+  this->ui->verticalSlider->setMaximum(fdk_options.ct_size[1] - 1);//this->ui.spinBoxReconImgSliceNo->setMaximum(fdk_options.ct_size[1] - 1);
+  this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(qRound(fdk_options.ct_size[1] / 2.0)));
+  this->ui->verticalSlider->setValue(qRound(fdk_options.ct_size[1] / 2.0));
+
   //this->ui.spinBoxReconImgSliceNo->setValue(qRound(fdk_options.ct_size[1] / 2.0)); // DrawReconImage is called automatically
 
   SLT_DrawProjImages();
@@ -898,7 +890,7 @@ void MainWindow::SLT_DoReconstruction() {
   ui->btnLoadData->setEnabled(false);
   ui->btnLoadData->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
 
-
+  ui->progressBarLoad->setValue(100);
   ui->btnScatterCorrect->setEnabled(true);
   ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
   //SLT_PreProcessCT(); // Is added by us. Added for later use
@@ -968,27 +960,21 @@ void MainWindow::UpdateReconImage(UShortImageType::Pointer &spNewImg,
   auto size = p_curimg->GetBufferedRegion().GetSize();
 
   this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 100);
-  // In Andreases code this was initialized as 0 (spinBoxReconImgSliceNo) but we dont have a spinner so therefore this has been commented out
-  //disconnect(0, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
-  // In Andreases code this was used to view image slices. Therefore this is outcommented (spinBoxReconImgSliceNo)
-  /*
-  this->ui.spinBoxReconImgSliceNo->setMinimum(0);
-  this->ui.spinBoxReconImgSliceNo->setMaximum(size[2] - 1);
+
+  disconnect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
+  this->ui->verticalSlider->setMinimum(0);
+  this->ui->verticalSlider->setMaximum(size[2] - 1);
 
   const auto initVal = qRound((size[2] - 1) / 2.0);
-  */
   // SLT_DrawReconImage(); //Update Table, Update Graph
 
-  // m_dspYKReconImage->CreateImage(size_trans[0], size_trans[1],0);
-  SLT_InitializeGraphLim();
-  // In Andreases code this was used to view image slices. Therefore this is outcommented (spinBoxReconImgSliceNo)
-  /*
-  this->ui.spinBoxReconImgSliceNo->setValue(initVal);
-  */
+  SLT_InitializeGraphLim(); // What about this???
+
+
+  this->ui->verticalSlider->setValue(initVal);
   //this->ui.radioButton_graph_recon->setChecked(true);
 
-  // In Andreases code this was initialized as 0 (spinBoxReconImgSliceNo) but we dont have a spinner so therefore this has been commented out
-  //connect(0, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
+  connect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
 
   SLT_DrawReconImage();
 }
@@ -1039,7 +1025,8 @@ void MainWindow::SLT_DrawReconImage() {
   size[2] = 0; // z size number = 0 --> should not be 1
 
   auto start = crnt_region_3d.GetIndex();
-  const auto iSliceNumber = 100;//this->ui.spinBoxReconImgSliceNo->value();
+  const auto iSliceNumber = this->ui->verticalSlider->value();//this->ui.spinBoxReconImgSliceNo->value();
+  this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(iSliceNumber));
   start[2] = iSliceNumber; // 60
 
   const auto originZ = this->m_cbctrecon->m_spCrntReconImg->GetOrigin()[2];
@@ -1362,12 +1349,20 @@ void MainWindow::SLT_DoRegistrationRigid() // plastimatch auto registration
   if (transform_success) {
     std::cout << "7: Contours registered" << std::endl;
   }
-
+  // We don't use UpdateListOfComboBox
+  /*
   UpdateListOfComboBox(0); // combo selection signalis called
   UpdateListOfComboBox(1);
-
+  */
+  /*
   SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
   SelectComboExternal(1, REGISTER_AUTO_RIGID);
+  */
+
+  // This is used instead of SelectComboExternal
+  SLT_FixedImageSelected("RAW_CBCT");
+  SLT_MovingImageSelected("MANUAL_RIGID_CT");
+
 
   m_cbctregistration->m_strPathXFAutoRigid = filePathXform; // for further use
 
@@ -1614,11 +1609,11 @@ void MainWindow::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt
   }
 
   if (idx == 0) {
-    m_cbctrecon->m_spRawReconImg = spTmpImg.GetPointer();
+    m_spFixedImg = spTmpImg.GetPointer();
 
     //whenFixedImgLoaded(); commented out
   } else if (idx == 1) {
-    m_cbctrecon->m_spRefCTImg = spTmpImg.GetPointer();
+    m_spMovingImg = spTmpImg.GetPointer();
     // In Andreases code this does nothing so far and is therefore  outcommented (whenMovingImgLoaded())
     //whenMovingImgLoaded();
   }
@@ -1702,7 +1697,7 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
 void MainWindow::SLT_DrawImageWhenSliceChange() {
-  if (m_cbctrecon->m_spRawReconImg == nullptr) {
+  if (m_spFixedImg == nullptr) {
     return;
   }
 
@@ -1732,9 +1727,9 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
     break;
   }
 
-  auto imgSize = m_cbctrecon->m_spRawReconImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
-  auto imgOrigin = m_cbctrecon->m_spRawReconImg->GetOrigin();
-  auto imgSpacing = m_cbctrecon->m_spRawReconImg->GetSpacing();
+  auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
+  auto imgOrigin = m_spFixedImg->GetOrigin();
+  auto imgSpacing = m_spFixedImg->GetSpacing();
 
   auto curPhysPos = std::array<double, 3>{{
       imgOrigin[2] + sliderPosIdxZ * imgSpacing[2], // Z in default setting
@@ -1788,15 +1783,15 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
 
   // center of the split value is passed by m_YKImgFixed;
 
-  if (m_cbctrecon->m_spRefCTImg != nullptr) {
+  if (m_spMovingImg != nullptr) {
     this->m_cbctrecon->Draw2DFrom3DDouble(
-        m_cbctrecon->m_spRawReconImg, m_cbctrecon->m_spRefCTImg, PLANE_AXIAL, curPhysPos[0], m_YKImgFixed[0],
+        m_spFixedImg, m_spMovingImg, PLANE_AXIAL, curPhysPos[0], m_YKImgFixed[0],
         m_YKImgMoving[0]);
     this->m_cbctrecon->Draw2DFrom3DDouble(
-        m_cbctrecon->m_spRawReconImg, m_cbctrecon->m_spRefCTImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgFixed[1],
+        m_spFixedImg, m_spMovingImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgFixed[1],
         m_YKImgMoving[1]);
     this->m_cbctrecon->Draw2DFrom3DDouble(
-        m_cbctrecon->m_spRawReconImg, m_cbctrecon->m_spRefCTImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgFixed[2],
+        m_spFixedImg, m_spMovingImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgFixed[2],
         m_YKImgMoving[2]);
     if (m_cbctregistration->dose_loaded) {
       this->m_cbctrecon->Draw2DFrom3DDouble(
@@ -1811,13 +1806,13 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
     }
   } else {
     this->m_cbctrecon->Draw2DFrom3DDouble(
-        m_cbctrecon->m_spRawReconImg, m_cbctrecon->m_spRawReconImg, PLANE_AXIAL, curPhysPos[0], m_YKImgFixed[0],
+        m_spFixedImg, m_spFixedImg, PLANE_AXIAL, curPhysPos[0], m_YKImgFixed[0],
         m_YKImgMoving[0]);
     this->m_cbctrecon->Draw2DFrom3DDouble(
-        m_cbctrecon->m_spRawReconImg, m_cbctrecon->m_spRawReconImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgFixed[1],
+        m_spFixedImg, m_spFixedImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgFixed[1],
         m_YKImgMoving[1]);
     this->m_cbctrecon->Draw2DFrom3DDouble(
-        m_cbctrecon->m_spRawReconImg, m_cbctrecon->m_spRawReconImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgFixed[2],
+        m_spFixedImg, m_spFixedImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgFixed[2],
         m_YKImgMoving[2]);
     if (m_cbctregistration->dose_loaded) {
       this->m_cbctrecon->Draw2DFrom3DDouble(
@@ -1844,14 +1839,14 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   this->ui.lineEditCurPosZ->setText(strPos1);
   */
   ////Update Origin text box
-  auto imgOriginFixed = m_cbctrecon->m_spRawReconImg->GetOrigin();
+  auto imgOriginFixed = m_spFixedImg->GetOrigin();
   QString strOriFixed;
   strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0], imgOriginFixed[1], imgOriginFixed[2]);
   // In Andreases code he set the text on the ui. Therefore we outcomment this (lineEditOriginFixed)
   //this->ui.lineEditOriginFixed->setText(strOriFixed);
 
-  if (m_cbctrecon->m_spRefCTImg != nullptr) {
-    const auto imgOriginMoving = m_cbctrecon->m_spRefCTImg->GetOrigin();
+  if (m_spMovingImg != nullptr) {
+    const auto imgOriginMoving = m_spMovingImg->GetOrigin();
     QString strOriMoving;
     strOriMoving.sprintf("%3.4f, %3.4f, %3.4f", imgOriginMoving[0],
                          imgOriginMoving[1], imgOriginMoving[2]);
@@ -1864,38 +1859,24 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
                                             this->ui.labelOverlapWnd2,
                                             this->ui.labelOverlapWnd3}};
                                             */
-  auto arr_wnd = std::array<qyklabel *, 3>{{this->ui->labelImageCor,nullptr,nullptr}};
+  auto wnd = this->ui->labelImageCor;
 
   if (m_cbctregistration->cur_voi != nullptr) {
     const auto p_cur_voi = m_cbctregistration->cur_voi.get();
 
     set_points_by_slice<UShortImageType, PLANE_AXIAL, RED>(
-        arr_wnd.at(refIdx % 3), p_cur_voi, curPhysPos, imgSpacing,
+        wnd, p_cur_voi, curPhysPos, imgSpacing,
         imgOriginFixed, imgSize);
 
-    set_points_by_slice<UShortImageType, PLANE_FRONTAL, RED>(
-        arr_wnd.at((refIdx + 1) % 3), p_cur_voi, curPhysPos, imgSpacing,
-        imgOriginFixed, imgSize);
-
-    set_points_by_slice<UShortImageType, PLANE_SAGITTAL, RED>(
-        arr_wnd.at((refIdx + 2) % 3), p_cur_voi, curPhysPos, imgSpacing,
-        imgOriginFixed, imgSize);
   }
 
   if (m_cbctregistration->WEPL_voi != nullptr) {
     const auto p_wepl_voi = m_cbctregistration->WEPL_voi.get();
 
     set_points_by_slice<UShortImageType, PLANE_AXIAL, GREEN>(
-        arr_wnd.at(refIdx % 3), p_wepl_voi, curPhysPos, imgSpacing,
+        wnd, p_wepl_voi, curPhysPos, imgSpacing,
         imgOriginFixed, imgSize);
 
-    set_points_by_slice<UShortImageType, PLANE_FRONTAL, GREEN>(
-        arr_wnd.at((refIdx + 1) % 3), p_wepl_voi, curPhysPos, imgSpacing,
-        imgOriginFixed, imgSize);
-
-    set_points_by_slice<UShortImageType, PLANE_SAGITTAL, GREEN>(
-        arr_wnd.at((refIdx + 2) % 3), p_wepl_voi, curPhysPos, imgSpacing,
-        imgOriginFixed, imgSize);
   }
 
   SLT_DrawImageInFixedSlice();
@@ -1938,7 +1919,7 @@ void MainWindow::SLT_DrawImageInFixedSlice() const
   // For dose overlay
   if (m_cbctregistration->dose_loaded) {
       // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+    if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
       for (auto i = 0; i < 3; i++) {
         auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
         if (idxAdd + i >= 3) {
@@ -2216,7 +2197,7 @@ void MainWindow::SLT_DoRegistrationDeform() {
   auto pathCmdRegister =
       m_cbctregistration->m_strPathPlastimatch + "/" + fnCmdRegisterRigid;
 
-  auto strDeformableStage1 = QString("2,2,1,30,0.00001,0.005,30");//this->ui.lineEditArgument1->text(); // original param: 7, add output path
+  auto strDeformableStage1 = QString("2,2,1,30,0.00001,0.005,5");//this->ui.lineEditArgument1->text(); // original param: 7, add output path
   auto strDeformableStage2 = QString("");//this->ui.lineEditArgument2->text();
   auto strDeformableStage3 = QString("");//this->ui.lineEditArgument3->text();
 
@@ -2342,15 +2323,23 @@ void MainWindow::SLT_DoRegistrationDeform() {
 
   std::cout << "8: Contours deformed" << std::endl;
 
+  /* Theese does nothing at the moment
   UpdateListOfComboBox(0); // combo selection signalis called
   UpdateListOfComboBox(1);
 
+
   SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
   SelectComboExternal(1, REGISTER_DEFORM_FINAL);
-
+  */
   std::cout << "FINISHED!: Deformable image registration. Proceed to scatter "
                "correction"
             << std::endl;
+  // This is added by us:
+  auto FirstString = QString("RAW_CBCT");
+  auto SecondString = QString("DEFORM_FINAL");
+  LoadImgFromComboBox(0, FirstString);
+  LoadImgFromComboBox(1, SecondString);
+  //
 
   SLT_IntensityNormCBCT();
 }
@@ -2366,7 +2355,7 @@ void MainWindow::SLT_IntensityNormCBCT() {
   const auto meanIntensityFix = m_cbctregistration->m_pParent->GetMeanIntensity(
       m_cbctrecon->m_spRawReconImg, fROI_Radius, &intensitySDFix);
   const auto meanIntensityMov = m_cbctregistration->m_pParent->GetMeanIntensity(
-      m_cbctrecon->m_spRefCTImg, fROI_Radius, &intensitySDMov);
+      m_cbctrecon->m_spDeformedCT_Final, fROI_Radius, &intensitySDMov);
 
   std::cout << "Mean/SD for Fixed = " << meanIntensityFix << "/"
             << intensitySDFix << std::endl;
@@ -2382,7 +2371,8 @@ void MainWindow::SLT_IntensityNormCBCT() {
   auto update_message =
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
-  this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
+
+  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
   SelectComboExternal(0, REGISTER_RAW_CBCT);
 
   SLT_DoScatterCorrection_APRIORI();
@@ -2396,16 +2386,16 @@ void MainWindow::SLT_IntensityNormCBCT_COR_CBCT() {
   float intensitySDFix = 0.0;
   float intensitySDMov = 0.0;
   const auto meanIntensityFix = m_cbctregistration->m_pParent->GetMeanIntensity(
-      m_cbctrecon->m_spRawReconImg, fROI_Radius, &intensitySDFix);
+      m_cbctrecon->m_spScatCorrReconImg, fROI_Radius, &intensitySDFix);
   const auto meanIntensityMov = m_cbctregistration->m_pParent->GetMeanIntensity(
-      m_cbctrecon->m_spRefCTImg, fROI_Radius, &intensitySDMov);
+      m_cbctrecon->m_spDeformedCT_Final, fROI_Radius, &intensitySDMov);
 
   std::cout << "Mean/SD for Fixed = " << meanIntensityFix << "/"
             << intensitySDFix << std::endl;
   std::cout << "Mean/SD for Moving = " << meanIntensityMov << "/"
             << intensitySDMov << std::endl;
 
-  AddConstHU(m_cbctrecon->m_spRawReconImg, static_cast<int>(meanIntensityMov - meanIntensityFix));
+  AddConstHU(m_cbctrecon->m_spScatCorrReconImg, static_cast<int>(meanIntensityMov - meanIntensityFix));
   // SLT_PassMovingImgForAnalysis();
 
   std::cout << "Intensity shifting is done! Added value = "
@@ -2414,10 +2404,13 @@ void MainWindow::SLT_IntensityNormCBCT_COR_CBCT() {
   auto update_message =
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
-  this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
+  // Maybe this
+  SLT_FixedImageSelected("COR_CBCT");
+  //SLT_MovingImageSelected("DEFORMED_CT_FINAL");
+  //
+  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
   SelectComboExternal(0, REGISTER_COR_CBCT);
   ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
-
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when Scatter correct button is pushed. Find out where to implement this!

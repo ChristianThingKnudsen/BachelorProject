@@ -178,6 +178,8 @@ private:
     YK16GrayImage *m_YKDisp;
     YK16GrayImage *m_YKImgFixed;
     YK16GrayImage *m_YKImgMoving;
+    UShortImageType::Pointer m_spFixedImg;  // pointer only, for display
+    UShortImageType::Pointer m_spMovingImg; // pointer only, for display
     UShortImageType::Pointer m_spFixedDose;  // pointer only, for display
     UShortImageType::Pointer m_spMovingDose; // pointer only, for display
     AG17RGBAImage *m_DoseImgFixed;

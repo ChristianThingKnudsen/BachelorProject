@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Progressbar</class>
- <widget class="QDialog" name="Progressbar">
+ <class>ProgressbarClass</class>
+ <widget class="QDialog" name="ProgressbarClass">
   <property name="enabled">
    <bool>true</bool>
   </property>
