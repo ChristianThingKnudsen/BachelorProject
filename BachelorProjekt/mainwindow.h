@@ -47,7 +47,7 @@ public:
   void whenFixedImgLoaded() const;
 
 public slots:
-    void foo();//void foo() {std::cerr << "hello world!\n";} // This is a test
+
     //void showProgressBar(std::text, std:_updateTime) {}
     //Methods imported from CBCTRecon
 
