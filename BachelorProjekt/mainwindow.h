@@ -10,6 +10,8 @@
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
 #include "progressbar.h"
+#include "loadingthread.h"
+//#include "scattercorrectthread.h"
 //#include "DlgRegistration.h"
 
 //Qt
@@ -28,6 +30,7 @@ public:
     ~MainWindow();
 
 public:
+  CbctRecon* myCBCT;
   std::unique_ptr<CbctRecon> m_cbctrecon;
   std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
   std::unique_ptr<QStandardItemModel> m_pTableModel;
@@ -45,6 +48,12 @@ public:
   UShortImageType::Pointer m_spMoving; // pointer only, for display
   ctType get_ctType(const QString &selText);
   void whenFixedImgLoaded() const;
+
+
+  //Threads
+  LoadingThread *lThread;
+  //ScatterCorrectThread *sThread;
+
 
 public slots:
 
@@ -73,7 +82,7 @@ public slots:
     void SLTM_LoadRTKoutput(){};
 
     void SLT_DrawRawImages() const{}; // external *.his images
-    void SLT_DrawProjImages(); // draw images from HIS FILE READER or filtered
+    void SLT_DrawProjImages(){}; // draw images from HIS FILE READER or filtered
                                // image before going into recon.
     void SLT_DrawReconImage();
 
@@ -164,7 +173,14 @@ public slots:
     void SLT_IncreaseSliderValue();
     void SLT_DecreaseSliderValue();
     void SLT_IntensityNormCBCT_COR_CBCT();
-
+    void SLT_StartLoadingThread();
+    void SLT_ShowMessageBox(int, QString, QString);
+    void SLT_StartScatterCorrectThread();
+    void SLT_InitializeSlider(FDK_options);
+    void SLT_SetButtonsAfterLoad();
+    void SLT_UpdateSlider(int);
+    void SLT_DisconnectSlider();
+    void SLT_ReConnectSlider(int);
 /*
 private:
     void on_btnLoadCT_clicked();
@@ -186,6 +202,7 @@ private:
     AG17RGBAImage *m_DoseImgMoving;
     AG17RGBAImage *m_AGDisp_Overlay;
     Progressbar *progressbar;
+
 
 };
 #endif // MAINWINDOW_H

@@ -58,6 +58,7 @@
          <property name="styleSheet">
           <string notr="true">QLabel{
 	font-size: 20px;
+	font-weight: bold;
 	background-color: rgba(0,0,0,0%)
 }</string>
          </property>
@@ -71,6 +72,7 @@
          <property name="styleSheet">
           <string notr="true">QCheckBox{
 	font-size: 20px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
          </property>
@@ -226,6 +228,7 @@ QPushButton:pressed{
             <property name="styleSheet">
              <string notr="true">QLabel{
 	font-size: 18px;
+	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%)
 }</string>
@@ -302,6 +305,7 @@ QComboBox::down-arrow {
             <property name="styleSheet">
              <string notr="true">QPushButton{
 	background-color: #1367AB;
+	font-weight: bold;
 	color: #ffffff;
 	font-size: 18px;
 	border-width: 1.4px;
@@ -330,6 +334,7 @@ QPushButton:pressed{
             <property name="styleSheet">
              <string notr="true">QProgressBar{
 border: 1px solid transparent;
+font-weight: bold;
 text-align: center;
 color:rgba(255,255,255,70%);
 border-radius: 5px;
@@ -358,19 +363,30 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="WindowText">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Button">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
                <red>255</red>
                <green>255</green>
                <blue>255</blue>
               </color>
+             </brush>
+            </colorrole>
+            <colorrole role="Button">
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Light">
@@ -412,9 +428,9 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="Text">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
+               <red>255</red>
+               <green>255</green>
+               <blue>255</blue>
               </color>
              </brush>
             </colorrole>
@@ -430,28 +446,50 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="ButtonText">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
+               <red>255</red>
+               <green>255</green>
+               <blue>255</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Base">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
-              </color>
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Window">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
-              </color>
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Shadow">
@@ -504,19 +542,30 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="WindowText">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Button">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
                <red>255</red>
                <green>255</green>
                <blue>255</blue>
               </color>
+             </brush>
+            </colorrole>
+            <colorrole role="Button">
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Light">
@@ -558,9 +607,9 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="Text">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
+               <red>255</red>
+               <green>255</green>
+               <blue>255</blue>
               </color>
              </brush>
             </colorrole>
@@ -576,28 +625,50 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="ButtonText">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>0</red>
-               <green>0</green>
-               <blue>0</blue>
+               <red>255</red>
+               <green>255</green>
+               <blue>255</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Base">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
-              </color>
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Window">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
-              </color>
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Shadow">
@@ -650,19 +721,30 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="WindowText">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>127</red>
-               <green>127</green>
-               <blue>127</blue>
-              </color>
-             </brush>
-            </colorrole>
-            <colorrole role="Button">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
                <red>255</red>
                <green>255</green>
                <blue>255</blue>
               </color>
+             </brush>
+            </colorrole>
+            <colorrole role="Button">
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Light">
@@ -704,9 +786,9 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="Text">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>127</red>
-               <green>127</green>
-               <blue>127</blue>
+               <red>255</red>
+               <green>255</green>
+               <blue>255</blue>
               </color>
              </brush>
             </colorrole>
@@ -722,28 +804,50 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <colorrole role="ButtonText">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>127</red>
-               <green>127</green>
-               <blue>127</blue>
+               <red>255</red>
+               <green>255</green>
+               <blue>255</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Base">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
-              </color>
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Window">
-             <brush brushstyle="SolidPattern">
-              <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
-              </color>
+             <brush brushstyle="RadialGradientPattern">
+              <gradient centralx="0.500000000000000" centraly="0.500000000000000" focalx="0.499000000000000" focaly="0.505682000000000" radius="0.700000000000000" type="RadialGradient" spread="ReflectSpread" coordinatemode="ObjectBoundingMode">
+               <gradientstop position="0.000000000000000">
+                <color alpha="253">
+                 <red>20</red>
+                 <green>106</green>
+                 <blue>173</blue>
+                </color>
+               </gradientstop>
+               <gradientstop position="0.756757000000000">
+                <color alpha="255">
+                 <red>20</red>
+                 <green>69</green>
+                 <blue>109</blue>
+                </color>
+               </gradientstop>
+              </gradient>
              </brush>
             </colorrole>
             <colorrole role="Shadow">
@@ -815,6 +919,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <property name="styleSheet">
              <string notr="true">QPushButton{
 	background-color: rgba(19,103,171,60%);
+	font-weight: bold;
 	color: rgba(255,255,255,60%);
 	font-size: 18px;
 	border-width: 1.4px;
@@ -1143,6 +1248,7 @@ QPushButton:pressed{
             <property name="styleSheet">
              <string notr="true">QProgressBar{
 border: 1px solid transparent;
+font-weight: bold;
 text-align: center;
 color:rgba(255,255,255,70%);
 border-radius: 5px;
@@ -1196,6 +1302,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba
             <property name="styleSheet">
              <string notr="true">QPushButton{
 	background-color: #1367AB;
+	font-weight: bold;
 	color: #ffffff;
 	font-size: 18px;
 	border-width: 1.4px;
@@ -1243,12 +1350,13 @@ QPushButton:pressed{
            <property name="styleSheet">
             <string notr="true">QLabel{
 	font-size: 18px;
+	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%)
 }</string>
            </property>
            <property name="text">
-            <string>Cor image</string>
+            <string>Cor CBCT</string>
            </property>
           </widget>
          </item>
@@ -1292,12 +1400,13 @@ QPushButton:pressed{
            <property name="styleSheet">
             <string notr="true">QLabel{
 	font-size: 18px;
+	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%)
 }</string>
            </property>
            <property name="text">
-            <string>Raw image</string>
+            <string>Raw CBCT</string>
            </property>
           </widget>
          </item>
@@ -1367,6 +1476,7 @@ QPushButton:pressed{
                 <property name="styleSheet">
                  <string notr="true">QLabel{
 	font-size: 16px;
+	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%)
 }</string>
@@ -1513,7 +1623,7 @@ QPushButton:pressed{
    <sender>btnScatterCorrect</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>SLT_DoRegistrationRigid()</slot>
+   <slot>SLT_StartScatterCorrectThread()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>123</x>
@@ -1545,7 +1655,7 @@ QPushButton:pressed{
    <sender>btnLoadData</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>SLT_SetHisDir()</slot>
+   <slot>SLT_StartLoadingThread()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>107</x>
@@ -1724,5 +1834,7 @@ QPushButton:pressed{
   <slot>SLT_Exit()</slot>
   <slot>SLT_DecreaseSliderValue()</slot>
   <slot>SLT_IncreaseSliderValue()</slot>
+  <slot>SLT_StartLoadingThread()</slot>
+  <slot>SLT_StartScatterCorrectThread()</slot>
  </slots>
 </ui>
