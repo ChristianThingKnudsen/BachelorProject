@@ -6,21 +6,24 @@
 #include <qfiledialog.h>
 #include "mha_io.h"
 #include "cbctrecon_io.h"
+#include "mainwindow.h"
 
 
-LoadingThread::LoadingThread(QObject *parent) : QThread(parent)
+
+
+LoadingThread::LoadingThread(MainWindow *parent) : QThread(dynamic_cast<QObject*>(parent))
 {
-    this->m_cbctrecon = std::make_unique<CbctRecon>();
-    this->m_cbctregistration =
-        std::make_unique<CbctRegistration>(this->m_cbctrecon.get());
+    //this->m_cbctrecon = std::make_unique<CbctRecon>();
+    this->m_cbctrecon = parent->m_cbctrecon.get();
+    this->m_cbctregistration = parent->m_cbctregistration.get();
 
-    m_YKImgFixed = &m_cbctregistration->m_YKImgFixed[0];
-    m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];
-    m_YKDisp = &m_cbctregistration->m_YKDisp[0];
+    //m_YKImgFixed = &m_cbctregistration->m_YKImgFixed[0];
+    //m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];
+    //m_YKDisp = &m_cbctregistration->m_YKDisp[0];
 
-    m_DoseImgFixed = &m_cbctregistration->m_DoseImgFixed[0];
-    m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0];
-    m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0];
+    //m_DoseImgFixed = &m_cbctregistration->m_DoseImgFixed[0];
+    //m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0];
+    //m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0];
 }
 
 void LoadingThread::run(){
@@ -568,6 +571,7 @@ void LoadingThread::UpdateReconImage(UShortImageType::Pointer &spNewImg,
   //SLT_InitializeGraphLim(); // What about this???
 
   emit Signal_ReConnectSlider(initVal);
+
 
 
 }

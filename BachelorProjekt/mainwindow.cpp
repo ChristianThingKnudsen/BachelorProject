@@ -17,7 +17,7 @@
 //Local
 #include "cbctrecon_io.h"
 #include "loadingthread.h"
-//#include "scattercorrectthread.h"
+#include "scattercorrectthread.h"
 
 //For loading CBCTRecon
 #include <iostream>
@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) // Constructor
 
 {   
     ui->setupUi(this);
-    //this->ui->cbCT->setStyleSheet("QCheckBox{background-color: #FF0000;}");
     ui->comboBox_region->addItem("Head-Neck");
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
@@ -87,13 +86,19 @@ image: url(':/../../pictures/dropdownarrow.png');
 
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
-    connect(lThread, SIGNAL(Signal_FDKopKtions(FDK_options)),this,SLOT(SLT_SetSlider));
-    connect(lThread, SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad));
-    connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider));
+    connect(lThread, SIGNAL(Signal_FDKopKtions(FDK_options)),this,SLOT(SLT_SetSlider()));
+    connect(lThread, SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
+    connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider()));
     connect(lThread, SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
-    connect(lThread,SIGNAL(Signal_PassCBCTRecon(std::unique_ptr<CbctRecon> &)),this, SLOT(SLT_OnPassedCBCTRecon(std::unique_ptr<CbctRecon> &)));
-    //sThread = new ScatterCorrectThread(this);
+    //connect(lThread,SIGNAL(Signal_PassCBCTRecon(std::unique_ptr<CbctRecon> &)),this, SLOT(SLT_OnPassedCBCTRecon(std::unique_ptr<CbctRecon> &)));
+
+    scThread = new ScatterCorrectThread(this);
+    connect(scThread,SIGNAL(SigalUpdateLabel(int, QString)), this, SLOT(SLT_UpdateLabel(int, QString)));
+    connect(scThread,SIGNAL(SignalPassFixedImg(QString)),this, SLOT(SLT_PassFixedImgForAnalysis(QString)));
+
+    connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
+    connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
 
 
 
@@ -103,7 +108,7 @@ MainWindow::~MainWindow() // Destructor
 {
     delete ui;
     delete lThread;
-    //delete sThread;
+    //delete scThread;
 }
 void MainWindow::SLT_OpenInfo() // Is called when the info button is pushed
 {
@@ -143,7 +148,8 @@ void MainWindow::SLT_StartLoadingThread(){
 }
 
 void MainWindow::SLT_StartScatterCorrectThread(){
-    //sThread->start();
+    lThread->wait();
+    scThread->start();
 }
 
 void MainWindow::SLT_ShowMessageBox(int idx, QString header,QString message){
@@ -187,7 +193,17 @@ void MainWindow::SLT_ReConnectSlider(int initVal){
 
     connect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
 
+
     SLT_DrawReconImage();
+    ui->btnScatterCorrect->setEnabled(true);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
+}
+void MainWindow::SLT_UpdateLabel(int idx, QString string){
+    if(idx == 0){
+        ui->labelRawImgTitle->setText(string);
+    }if(idx ==1){
+        ui->labelCorImgTitle->setText(string);
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -224,6 +240,7 @@ void MainWindow::init_DlgRegistration(QString &str_dcm_uid) const// init dlgRegi
     // if not found, just skip
     //SelectComboExternal(0, REGISTER_RAW_CBCT);     // will call fixedImageSelected
     //SelectComboExternal(1, REGISTER_MANUAL_RIGID); // WILL BE IGNORED
+
 
 
 }
@@ -370,7 +387,6 @@ MainWindow::ReadBowtieFileWhileProbing(const QString &proj_path,
   case XIM_FORMAT:
     bowtiePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Calibrations\\AIR-Full-Bowtie-100KV-Scattergrid-SAD-SID_0\\Current\\FilterBowtie.xim");//getBowtiePath(this, calDir);
     if (bowtiePath.length() > 1) {
-      progressbar = new Progressbar(this);
       std::cout << "loading bowtie-filter..." << std::endl;
       std::vector<std::string> filepath;
       filepath.push_back(bowtiePath.toStdString());
@@ -1093,12 +1109,13 @@ void MainWindow::SLT_ViewRegistration() const
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void MainWindow::SLT_DrawReconImage() {
-  this->myCBCT = lThread->m_cbctrecon.get();
-  if (myCBCT->m_dspYKReconImage == nullptr) {
+    lThread->wait();
+  //this->myCBCT = lThread->m_cbctrecon.get();
+  if (m_cbctrecon->m_dspYKReconImage == nullptr) {
     return;
   }
 
-  if (myCBCT->m_spCrntReconImg == nullptr) {
+  if (m_cbctrecon->m_spCrntReconImg == nullptr) {
     std::cout << "no recon image to be displayed" << std::endl;
     return;
   }
@@ -1114,7 +1131,7 @@ void MainWindow::SLT_DrawReconImage() {
 
   using DuplicatorType = itk::ImageDuplicator<UShortImageType>;
   auto duplicator = DuplicatorType::New();
-  duplicator->SetInputImage(myCBCT->m_spCrntReconImg);
+  duplicator->SetInputImage(m_cbctrecon->m_spCrntReconImg);
   duplicator->Update();
   const auto clonedImage = duplicator->GetOutput();
 
@@ -1134,8 +1151,8 @@ void MainWindow::SLT_DrawReconImage() {
   this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(iSliceNumber));
   start[2] = iSliceNumber; // 60
 
-  const auto originZ = myCBCT->m_spCrntReconImg->GetOrigin()[2];
-  const auto spacingZ = myCBCT->m_spCrntReconImg->GetSpacing()[2];
+  const auto originZ = m_cbctrecon->m_spCrntReconImg->GetOrigin()[2];
+  const auto spacingZ = m_cbctrecon->m_spCrntReconImg->GetSpacing()[2];
   const auto posZ = originZ + iSliceNumber * spacingZ;
 
   const auto strPosZ = QString("%1").arg(posZ, 0, 'f', 2);
@@ -1158,9 +1175,9 @@ void MainWindow::SLT_DrawReconImage() {
   extractFilter->Update();
 
   UShortImage2DType::Pointer pCrnt2D = extractFilter->GetOutput();
-  myCBCT->m_dspYKReconImage = YK16GrayImage::CopyItkImage2YKImage(
+  m_cbctrecon->m_dspYKReconImage = YK16GrayImage::CopyItkImage2YKImage(
       pCrnt2D,
-      std::move(myCBCT->m_dspYKReconImage)); // dimension should be
+      std::move(m_cbctrecon->m_dspYKReconImage)); // dimension should be
                                                         // same automatically.
 
 
@@ -1169,10 +1186,10 @@ void MainWindow::SLT_DrawReconImage() {
   const auto physPosY = 0;//this->ui.lineEdit_PostFOV_Y->text().toFloat();
   const auto physRadius = 190;//this->ui.lineEdit_PostFOV_R->text().toFloat();
   const auto physTablePosY = 120;//this->ui.lineEdit_PostTablePosY->text().toFloat();
-  myCBCT->PostApplyFOVDispParam(physPosX, physPosY, physRadius,
+  m_cbctrecon->PostApplyFOVDispParam(physPosX, physPosY, physRadius,
                                            physTablePosY);
 
-  auto p_dspykimg = myCBCT->m_dspYKReconImage.get();
+  auto p_dspykimg = m_cbctrecon->m_dspYKReconImage.get();
   if (false){//this->ui.checkBox_PostDispObjOn->isChecked()) {
     p_dspykimg->m_bDrawFOVCircle = true;
     p_dspykimg->m_bDrawTableLine = true;
@@ -1218,11 +1235,11 @@ void MainWindow::SLT_PreProcessCT() {
     std::cout
         << "Reference CT DIR should be specified for structure based cropping"
         << std::endl;
-    if (m_spMoving == nullptr || m_spFixed == nullptr) {
+    if (m_spMovingImg == nullptr || m_spFixedImg == nullptr) {
       return;
     }
-    const auto fixed_size = m_spFixed->GetLargestPossibleRegion().GetSize();
-    const auto moving_size = m_spMoving->GetLargestPossibleRegion().GetSize();
+    const auto fixed_size = m_spFixedImg->GetLargestPossibleRegion().GetSize();
+    const auto moving_size = m_spMovingImg->GetLargestPossibleRegion().GetSize();
     if (fixed_size[0] != moving_size[0] || fixed_size[1] != moving_size[1] ||
         fixed_size[2] != moving_size[2]) {
       std::cout
@@ -1240,8 +1257,8 @@ void MainWindow::SLT_PreProcessCT() {
     if (reply == QMessageBox::Yes) {
       std::cout << "Attempting automatic air filling and skin cropping..."
                 << std::endl;
-      m_cbctregistration->autoPreprocessCT(iAirThresholdShort, m_spFixed,
-                                           m_spMoving);
+      m_cbctregistration->autoPreprocessCT(iAirThresholdShort, m_spFixedImg,
+                                           m_spMovingImg);
     }
     return;
   }
@@ -1305,6 +1322,7 @@ void MainWindow::SLT_PreProcessCT() {
 
 void MainWindow::SLT_DoRegistrationRigid() // plastimatch auto registration
 {
+    /*
     //Added by us:
     auto p_dspykimg = this->m_cbctrecon->m_dspYKReconImage.get();
     p_dspykimg->m_bDrawFOVCircle = false;
@@ -1315,14 +1333,16 @@ void MainWindow::SLT_DoRegistrationRigid() // plastimatch auto registration
     this->ui->labelImageCor->SetBaseImage(p_dspykimg);
     this->ui->labelImageCor->update();
     //
+    */
 
     //This code is adde by us and is found from the callback from the comboboxes.
     SLT_FixedImageSelected(QString("RAW_CBCT"));
-    SLT_MovingImageSelected(QString("REF_CT"));
+    SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
+    SLT_ManualMoveByDCMPlanOpen();
 
   // 1) Save current image files
-   // m_spFixed replaced with m_spRawReconImg
-    // m_spMoving replaced with m_spRefCTImg
+   // m_spFixedImg replaced with m_spRawReconImg
+    // m_spMovingImg replaced with m_spRefCTImg
   if (m_cbctrecon->m_spRawReconImg == nullptr || m_cbctrecon->m_spRefCTImg == nullptr) {
     return;
   }
@@ -1639,7 +1659,7 @@ void MainWindow::SelectComboExternal(const int idx, const enREGI_IMAGES iImage) 
 //Is called by SelectComboExternal
 void MainWindow::SLT_FixedImageSelected(QString selText) {
   // QString strCrntText = this->ui.comboBoxImgFixed->currentText();
-  LoadImgFromComboBox(0, selText); // here, m_spMoving and Fixed images are determined
+  LoadImgFromComboBox(0, selText); // here, m_spMovingImg and Fixed images are determined
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SelectComboExternal
@@ -1825,7 +1845,7 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   if(m_cbctrecon->m_spRawReconImg == nullptr){
       return;
   }
-  auto imgSize = m_cbctrecon->m_spRawReconImg->GetBufferedRegion().GetSize();
+  auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize();
   const auto curPosZ = static_cast<int>(imgSize[2]/2);
   const auto curPosY = static_cast<int>(imgSize[1]/2);
   const auto curPosX = static_cast<int>(imgSize[0]/2);
@@ -1835,24 +1855,24 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   // In Andreases code it's hard to tell what the slider values should be, and therefor will they be initialized as 0.
   switch (m_enViewArrange) {
   case AXIAL_FRONTAL_SAGITTAL:
-    sliderPosIdxZ = 0;//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
-    sliderPosIdxY = 0;//curPosY;//this->ui.sliderPosDisp2->value();
-    sliderPosIdxX = 0;//curPosX;//this->ui.sliderPosDisp3->value();
+    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   case FRONTAL_SAGITTAL_AXIAL:
-    sliderPosIdxZ = 0;//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
-    sliderPosIdxY = 0;//curPosY;//this->ui.sliderPosDisp2->value();
-    sliderPosIdxX = 0;//curPosX;//this->ui.sliderPosDisp3->value();
+    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   case SAGITTAL_AXIAL_FRONTAL:
-    sliderPosIdxZ = 0;//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
-    sliderPosIdxY = 0;//curPosY;//this->ui.sliderPosDisp2->value();
-    sliderPosIdxX = 0;//curPosX;//this->ui.sliderPosDisp3->value();
+    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   default:
-    sliderPosIdxZ = 0;//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
-    sliderPosIdxY = 0;//curPosY;//this->ui.sliderPosDisp2->value();
-    sliderPosIdxX = 0;//curPosX;//this->ui.sliderPosDisp3->value();
+    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+    sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   }
 
@@ -1868,7 +1888,7 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
 
   const auto refIdx = 3 - m_enViewArrange;
   // In Andreases code this checkbox was checked (checkBoxDrawCrosshair)
-  if (true){//this->ui.checkBoxDrawCrosshair->isChecked()) {
+  if (false){//this->ui.checkBoxDrawCrosshair->isChecked()) {
     m_YKDisp[refIdx % 3].m_bDrawCrosshair = true;
     m_YKDisp[(refIdx + 1) % 3].m_bDrawCrosshair = true;
     m_YKDisp[(refIdx + 2) % 3].m_bDrawCrosshair = true;
@@ -2031,7 +2051,7 @@ void MainWindow::SLT_DrawImageInFixedSlice() const
       // m_YKDisp[i].SetSplitCenter(QPoint dataPt);//From mouse event
       if (!m_YKDisp[i].ConstituteFromTwo(m_YKImgFixed[i + idxAdd],
                                          m_YKImgMoving[i + idxAdd])) {
-        std::cout << "Image error " << i + 1 << " th view" << std::endl;
+          std::cout << "Image error " << i + 1 << " th view" << std::endl;
       }
     }
   } else {
@@ -2152,6 +2172,7 @@ void MainWindow::whenFixedImgLoaded() const {
   /*
   this->ui.sliderPosDisp1->setValue(curPosZ);
 
+
   this->ui.sliderPosDisp2->setMinimum(0);
   this->ui.sliderPosDisp2->setMaximum(static_cast<int>(imgSize[1] - 1));
   */
@@ -2166,12 +2187,13 @@ void MainWindow::whenFixedImgLoaded() const {
   /*
   this->ui.sliderPosDisp3->setValue(curPosX);
   */
-  auto x_split = QPoint(static_cast<int>(imgSize[0] / 2),
-                        static_cast<int>(imgSize[1] / 2));
-  auto y_split = QPoint(static_cast<int>(imgSize[0] / 2),
-                        static_cast<int>(imgSize[2] / 2));
-  auto z_split = QPoint(static_cast<int>(imgSize[1] / 2),
-                        static_cast<int>(imgSize[2] / 2));
+  std::cout << "sliderPosDisp1:" << curPosX << " th view" << std::endl;
+  std::cout << "sliderPosDisp2:" << curPosY << " th view" << std::endl;
+  std::cout << "sliderPosDisp2:" << curPosZ << " th view" << std::endl;
+
+  auto x_split = QPoint(static_cast<int>(0), static_cast<int>(0));//QPoint(static_cast<int>(imgSize[0] / 2), static_cast<int>(imgSize[1] / 2));
+  auto y_split = QPoint(static_cast<int>(0), static_cast<int>(0));//QPoint(static_cast<int>(imgSize[0] / 2), static_cast<int>(imgSize[2] / 2));
+  auto z_split = QPoint(static_cast<int>(0), static_cast<int>(0));//QPoint(static_cast<int>(imgSize[1] / 2),static_cast<int>(imgSize[2] / 2));
 
   m_YKDisp[0].SetSplitCenter(x_split);
   m_YKDisp[1].SetSplitCenter(y_split);
@@ -2510,7 +2532,7 @@ void MainWindow::SLT_IntensityNormCBCT() {
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
 
-  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
+  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_RAW_CBCT);
 
   SLT_DoScatterCorrection_APRIORI();
@@ -2549,8 +2571,11 @@ void MainWindow::SLT_IntensityNormCBCT_COR_CBCT() {
   //SLT_FixedImageSelected("COR_CBCT");
   //SLT_MovingImageSelected("DEFORMED_CT_FINAL");
   //
-  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixed, update_message);
+  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_COR_CBCT);
+  SLT_FixedImageSelected(QString("RAW_CBCT"));
+  //SLT_PassFixedImgForAnalysis();
+  SLT_FixedImageSelected(QString("COR_CBCT"));
   ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -2558,8 +2583,8 @@ void MainWindow::SLT_IntensityNormCBCT_COR_CBCT() {
 void MainWindow::SLT_DoScatterCorrection_APRIORI() {
 
   if ((this->m_cbctrecon->m_spRefCTImg == nullptr &&
-       m_cbctrecon->m_spRefCTImg == nullptr) ||//m_dlgRegistration->m_spMoving == nullptr) ||
-      m_cbctrecon->m_spRawReconImg ==nullptr){//m_dlgRegistration->m_spFixed == nullptr) {
+       m_cbctrecon->m_spRefCTImg == nullptr) ||//m_dlgRegistration->m_spMovingImg == nullptr) ||
+      m_cbctrecon->m_spRawReconImg ==nullptr){//m_dlgRegistration->m_spFixedImg == nullptr) {
     std::cerr
         << "Error!: No ref or no fixed image for forward projection is found."
         << "\n";
@@ -2585,13 +2610,13 @@ void MainWindow::SLT_DoScatterCorrection_APRIORI() {
 
   auto spProjImg3DFloat =
       this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-          m_cbctrecon->m_spRawReconImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixed, this->m_cbctrecon->m_spCustomGeometry,
+          m_cbctrecon->m_spRawReconImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
           bExportProj_Fwd, false);//this->ui.radioButton_UseCUDA->isChecked());
 
   FloatImageType::Pointer p_projimg;
-  if (m_cbctrecon->m_spRefCTImg != nullptr){//m_dlgRegistration->m_spMoving != nullptr) {
+  if (m_cbctrecon->m_spRefCTImg != nullptr){//m_dlgRegistration->m_spMovingImg != nullptr) {
     p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-        m_cbctrecon->m_spRefCTImg, this->m_cbctrecon->m_spCustomGeometry,//m_dlgRegistration->m_spMoving, this->m_cbctrecon->m_spCustomGeometry,
+        m_cbctrecon->m_spRefCTImg, this->m_cbctrecon->m_spCustomGeometry,//m_dlgRegistration->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
         bExportProj_Fwd,
         false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
   } else if (this->m_cbctrecon->m_spRefCTImg != nullptr) {
@@ -2726,3 +2751,93 @@ this->ui.radioButton_UseCUDA->isChecked(),
 
 
 
+void MainWindow::ImageManualMoveOneShot(
+    const float shiftX, const float shiftY,
+    const float shiftZ) // DICOM coordinate
+{
+  if (m_spMovingImg == nullptr) {
+    return;
+  }
+
+  // USHORT_ImageType::SizeType imgSize =
+  // m_spMovingImg->GetRequestedRegion().GetSize(); //1016x1016 x z
+  using USPointType = UShortImageType::PointType;
+  auto imgOrigin = m_spMovingImg->GetOrigin();
+  // USHORT_ImageType::SpacingType imgSpacing = m_spFixedImg->GetSpacing();
+  imgOrigin[0] = imgOrigin[0] - static_cast<USPointType::ValueType>(shiftX);
+  imgOrigin[1] = imgOrigin[1] - static_cast<USPointType::ValueType>(shiftY);
+  imgOrigin[2] = imgOrigin[2] - static_cast<USPointType::ValueType>(shiftZ);
+
+  m_spMovingImg->SetOrigin(imgOrigin);
+
+  SLT_DrawImageWhenSliceChange();
+
+  // Display relative movement
+  // Starting point? RefCT image
+  // Only Valid when Moving image is the ManualMove
+  auto imgOriginRef = this->m_cbctrecon->m_spRefCTImg->GetOrigin(); //m_pParent replaced with this
+
+  printf("delta(mm): %3.1f, %3.1f, %3.1f", imgOrigin[0] - imgOriginRef[0],
+      imgOrigin[1] - imgOriginRef[1], imgOrigin[2] - imgOriginRef[2]);
+  //this->ui.lineEditOriginChanged->setText(strDelta);
+}
+
+void MainWindow::SLT_ManualMoveByDCMPlanOpen() {
+  const auto p_parent = m_cbctregistration->m_pParent;
+  auto filePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan\\RN.1.2.246.352.71.5.361940808526.11351.20190611075823.dcm");
+  /*
+  auto filePath = QFileDialog::getOpenFileName(
+      this, "Open DCMRT Plan file", p_parent->m_strPathDirDefault,
+      "DCMRT Plan (*.dcm)", nullptr, nullptr);
+  */
+  if (filePath.length() < 1) {
+    return;
+  }
+
+  const auto planIso = m_cbctregistration->GetIsocenterDCM_FromRTPlan(filePath);
+
+  if (fabs(planIso.x) < 0.001 && fabs(planIso.y) < 0.001 &&
+      fabs(planIso.z) < 0.001) {
+    std::cout
+        << "Warning!!!! Plan iso is 0 0 0. Most likely not processed properly"
+        << std::endl;
+  } else {
+    std::cout << "isocenter was found: " << planIso.x << ", " << planIso.y
+              << ", " << planIso.z << std::endl;
+  }
+
+  if (m_spFixedImg == nullptr || m_spMovingImg == nullptr) {
+    return;
+  }
+
+  if (p_parent->m_spRefCTImg == nullptr ||
+      p_parent->m_spManualRigidCT == nullptr) {
+    return;
+  }
+
+  ImageManualMoveOneShot(static_cast<float>(planIso.x),
+                         static_cast<float>(planIso.y),
+                         static_cast<float>(planIso.z));
+
+  /* Should be done in confirm manual!
+  const auto trn_vec =
+      FloatVector{static_cast<float>(planIso.x), static_cast<float>(planIso.y),
+                  static_cast<float>(planIso.z)};
+  auto &structs = m_cbctregistration->m_pParent->m_structures;
+  structs->ApplyVectorTransform_InPlace<PLAN_CT>(trn_vec);
+  */
+
+  //UpdateListOfComboBox(0); // combo selection signalis called
+  //UpdateListOfComboBox(1);
+
+  //SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
+  //SelectComboExternal(1, REGISTER_MANUAL_RIGID);
+  SLT_FixedImageSelected(QString("RAW_CBCT"));
+  SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
+}
+void MainWindow::SLT_PassFixedImgForAnalysis(QString cur_fixed) {
+  if (m_spFixedImg != nullptr) {
+
+    this->UpdateReconImage(m_spFixedImg, cur_fixed);
+  }
+}

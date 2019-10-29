@@ -172,7 +172,7 @@ void CbctRegistrationTest::LoadVOIFromComboBox(
 // search  for the  main data, if there  is, add  the predefined name to the
 // combobox
 void CbctRegistrationTest::UpdateListOfComboBox(const int idx) const {
-  MyQComboBox *crntCombo;
+  // MyQComboBox *crntCombo;
   // In Adreases he uses combo boxes but we don't. therefore this part has been commented out.
   /*
   if (idx == 0) {

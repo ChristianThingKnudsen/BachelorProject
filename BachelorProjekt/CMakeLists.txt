@@ -44,9 +44,9 @@ add_executable(BachelorProjekt
   mainwindow.ui
   qyklabel.cpp
   qyklabel.h
-  progressbar.cpp
-  progressbar.h
-  progressbar.ui
+  #progressbar.cpp
+  #progressbar.h
+  #progressbar.ui
   informationwindow.cpp
   informationwindow.h
   informationwindow.ui
@@ -55,8 +55,8 @@ add_executable(BachelorProjekt
   MyQComboBox.hxx
   loadingthread.h
   loadingthread.cpp
-  #scattercorrectthread.cpp
-  #scattercorrectthread.h
+  scattercorrectthread.cpp
+  scattercorrectthread.h
 )
 
 if(USE_OPENCL)

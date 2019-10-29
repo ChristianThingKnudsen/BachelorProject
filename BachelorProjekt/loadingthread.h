@@ -6,21 +6,25 @@
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
 
+
 //QT
 #include <QStandardItemModel>
+
 
 class LoadingThread : public QThread
 {
     Q_OBJECT
 public:
     // For threading
-    explicit LoadingThread(QObject *parent=0);
+    explicit LoadingThread(MainWindow *parent=nullptr);
     void run();
     bool Stop;
 
     // Relevant variables
-    std::unique_ptr<CbctRecon> m_cbctrecon;
-    std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
+    //std::unique_ptr<CbctRecon> m_cbctrecon;
+
+    CbctRecon* m_cbctrecon;
+    CbctRegistration* m_cbctregistration; // just for convienience
     std::unique_ptr<QStandardItemModel> m_pTableModel;
     std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
     FDK_options getFDKoptions() const;
@@ -55,14 +59,6 @@ signals:
     void Signal_UpdateSlider(int);
     void Signal_DisconnectSlider();
     void Signal_ReConnectSlider(int);
-private:
-    YK16GrayImage *m_YKDisp;
-    YK16GrayImage *m_YKImgFixed;
-    YK16GrayImage *m_YKImgMoving;
-    AG17RGBAImage *m_DoseImgFixed;
-    AG17RGBAImage *m_DoseImgMoving;
-    AG17RGBAImage *m_AGDisp_Overlay;
-
 };
 
 

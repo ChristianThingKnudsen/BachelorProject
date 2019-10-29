@@ -10,7 +10,7 @@
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
 #include "progressbar.h"
-#include "loadingthread.h"
+//#include "loadingthread.h"
 //#include "scattercorrectthread.h"
 //#include "DlgRegistration.h"
 
@@ -21,6 +21,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class LoadingThread;
+class ScatterCorrectThread;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -30,7 +33,7 @@ public:
     ~MainWindow();
 
 public:
-  CbctRecon* myCBCT;
+  //CbctRecon* myCBCT;
   std::unique_ptr<CbctRecon> m_cbctrecon;
   std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
   std::unique_ptr<QStandardItemModel> m_pTableModel;
@@ -44,15 +47,13 @@ public:
   void UpdateListOfComboBox(const int idx) const;
   void LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt);
   void UpdateVOICombobox(const ctType ct_type) const;
-  UShortImageType::Pointer m_spFixed;  // pointer only, for display
-  UShortImageType::Pointer m_spMoving; // pointer only, for display
   ctType get_ctType(const QString &selText);
   void whenFixedImgLoaded() const;
 
 
   //Threads
   LoadingThread *lThread;
-  //ScatterCorrectThread *sThread;
+  ScatterCorrectThread *scThread;
 
 
 public slots:
@@ -181,6 +182,13 @@ public slots:
     void SLT_UpdateSlider(int);
     void SLT_DisconnectSlider();
     void SLT_ReConnectSlider(int);
+    void SLT_UpdateLabel(int, QString);
+    void ImageManualMoveOneShot(
+            const float shiftX, const float shiftY,
+            const float shiftZ);
+    void SLT_ManualMoveByDCMPlanOpen();
+    void SLT_PassFixedImgForAnalysis(QString);
+
 /*
 private:
     void on_btnLoadCT_clicked();
@@ -191,6 +199,7 @@ private:
 private:
     Ui::MainWindow *ui;
     int m_enViewArrange{};
+public:
     YK16GrayImage *m_YKDisp;
     YK16GrayImage *m_YKImgFixed;
     YK16GrayImage *m_YKImgMoving;
