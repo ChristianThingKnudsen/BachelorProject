@@ -1855,22 +1855,22 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   // In Andreases code it's hard to tell what the slider values should be, and therefor will they be initialized as 0.
   switch (m_enViewArrange) {
   case AXIAL_FRONTAL_SAGITTAL:
-    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxZ = ui->verticalSlider->value();//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
     sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
     sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   case FRONTAL_SAGITTAL_AXIAL:
-    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxZ = ui->verticalSlider->value();//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
     sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
     sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   case SAGITTAL_AXIAL_FRONTAL:
-    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxZ = ui->verticalSlider->value();//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
     sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
     sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   default:
-    sliderPosIdxZ = curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
+    sliderPosIdxZ = ui->verticalSlider->value();//curPosZ;//this->ui.sliderPosDisp1->value(); // Z corresponds to axial, Y to frontal, X to sagittal
     sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
     sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
