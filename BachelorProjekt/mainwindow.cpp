@@ -91,7 +91,8 @@ image: url(':/../../pictures/dropdownarrow.png');
     connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider()));
     connect(lThread, SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
-    //connect(lThread,SIGNAL(Signal_PassCBCTRecon(std::unique_ptr<CbctRecon> &)),this, SLOT(SLT_OnPassedCBCTRecon(std::unique_ptr<CbctRecon> &)));
+    connect(lThread,SIGNAL(Signal_UpdateProgressBar(int,int)),this,SLOT(SLT_UpdateProgressBar(int, int)));
+
 
     scThread = new ScatterCorrectThread(this);
     connect(scThread,SIGNAL(SigalUpdateLabel(int, QString)), this, SLOT(SLT_UpdateLabel(int, QString)));
@@ -99,6 +100,7 @@ image: url(':/../../pictures/dropdownarrow.png');
 
     connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
     connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
+
 
 
 
@@ -203,6 +205,17 @@ void MainWindow::SLT_UpdateLabel(int idx, QString string){
         ui->labelRawImgTitle->setText(string);
     }if(idx ==1){
         ui->labelCorImgTitle->setText(string);
+    }
+}
+void MainWindow::SLT_UpdateProgressBar(int idx, int progress){
+    if(idx==0){
+        ui->progressBarLoad->setValue(progress);
+    }
+    else if(idx == 1){
+        ui->progressBarSC->setValue(progress);
+    }
+    else{
+        return;
     }
 }
 

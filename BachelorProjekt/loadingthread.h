@@ -41,6 +41,9 @@ public:
     ctType get_ctType(const QString &selText);
     void whenFixedImgLoaded() const;
 
+private:
+    int idx;
+
 
 private slots:
     void SLT_SetHisDir();
@@ -52,6 +55,7 @@ private slots:
     void SLT_UpdateTable();
 
 
+
 signals:
     void SignalMessageBox(int, QString,QString);
     void Signal_FDKoptions(FDK_options);
@@ -59,6 +63,7 @@ signals:
     void Signal_UpdateSlider(int);
     void Signal_DisconnectSlider();
     void Signal_ReConnectSlider(int);
+    void Signal_UpdateProgressBar(int,int);
 };
 
 

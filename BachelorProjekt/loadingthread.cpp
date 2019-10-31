@@ -16,6 +16,7 @@ LoadingThread::LoadingThread(MainWindow *parent) : QThread(dynamic_cast<QObject*
     //this->m_cbctrecon = std::make_unique<CbctRecon>();
     this->m_cbctrecon = parent->m_cbctrecon.get();
     this->m_cbctregistration = parent->m_cbctregistration.get();
+    idx = 0;
 
     //m_YKImgFixed = &m_cbctregistration->m_YKImgFixed[0];
     //m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];
@@ -175,6 +176,7 @@ LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
       std::vector<std::string> filepath;
       filepath.push_back(bowtiePath.toStdString());
       bowtiereader->SetFileNames(filepath);
+      emit Signal_UpdateProgressBar(idx,20);
       std::thread calc_thread_bowtie(
           [&bowtiereader] { bowtiereader->Update(); });
       answers = probeUser(guessDir.absolutePath());
@@ -318,15 +320,18 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   auto bowtie_reader = ReadBowtieFileWhileProbing(geopath, answers);
 
   calc_thread.join();
+  emit Signal_UpdateProgressBar(idx,40);
   std::cout << "Reader re-attached to main thread" << std::endl;
 
   this->m_cbctrecon->m_spProjImg3DFloat =
       reader->GetOutput(); // 1024 1024, line integ image
   auto &proj = this->m_cbctrecon->m_spProjImg3DFloat;
+
   const auto bowtie_proj = bowtie_reader->GetOutput();
   if (bowtie_reader != nullptr) {
     ApplyBowtie(proj, bowtie_proj);
   }
+
 
 
   if (this->m_cbctrecon->m_projFormat == HND_FORMAT) {
@@ -361,7 +366,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   SLT_InitializeGraphLim();
 
   //this->SLT_DrawProjImages(); // Update Table is called                        Maybe comment this in later on
-
+   emit Signal_UpdateProgressBar(idx,60);
   if (!std::get<0>(answers)) { // instaRecon
     std::cout
         << "FINISHED!: Loading projection files. Proceed to reconstruction"
@@ -505,6 +510,7 @@ void LoadingThread::SLT_DoReconstruction() {
   reconTimeProbe.Start();
   // In Andreases UI he uses Cuda, but I think we use OpenCL. Hope this works
   this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT, fdk_options);
+  emit Signal_UpdateProgressBar(idx,80);
   /*
   if (this->ui.radioButton_UseCUDA->isChecked()) {
     this->m_cbctrecon->DoReconstructionFDK<CUDA_DEVT>(REGISTER_RAW_CBCT,
@@ -538,7 +544,7 @@ void LoadingThread::SLT_DoReconstruction() {
   // REGISTER_RAW_CBCT );
 
   emit Signal_SetButtonsAfterLoad();
-
+  emit Signal_UpdateProgressBar(idx,100);
 
 }
 
@@ -571,8 +577,6 @@ void LoadingThread::UpdateReconImage(UShortImageType::Pointer &spNewImg,
   //SLT_InitializeGraphLim(); // What about this???
 
   emit Signal_ReConnectSlider(initVal);
-
-
 
 }
 /*

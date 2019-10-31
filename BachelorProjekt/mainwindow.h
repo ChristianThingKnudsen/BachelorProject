@@ -188,6 +188,7 @@ public slots:
             const float shiftZ);
     void SLT_ManualMoveByDCMPlanOpen();
     void SLT_PassFixedImgForAnalysis(QString);
+    void SLT_UpdateProgressBar(int,int);
 
 /*
 private:
