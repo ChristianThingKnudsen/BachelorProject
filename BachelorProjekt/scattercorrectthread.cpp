@@ -121,8 +121,11 @@ void ScatterCorrectThread::SLT_ManualMoveByDCMPlanOpen() {
 
   //SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
   //SelectComboExternal(1, REGISTER_MANUAL_RIGID);
+
+  /*
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
+  */
 }
 
 // External method implemented from DlgRegistration
@@ -143,8 +146,10 @@ void ScatterCorrectThread::SLT_DoRegistrationRigid() // plastimatch auto registr
     */
 
     //This code is adde by us and is found from the callback from the comboboxes.
+    /*
     m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
     m_parent->SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
+    */
 
     //Callback to Open RT plan:
 
@@ -227,7 +232,7 @@ void ScatterCorrectThread::SLT_DoRegistrationRigid() // plastimatch auto registr
 
       // Image Pointer here
       UShortImageType::Pointer spRoiMask;
-      AllocateByRef<UShortImageType, UShortImageType>(m_cbctrecon->m_spRawReconImg, spRoiMask);
+      AllocateByRef<UShortImageType, UShortImageType>(m_parent->m_spFixedImg, spRoiMask); //m_cbctrecon->m_spRawReconImg
       this->m_cbctrecon->GenerateCylinderMask(spRoiMask, FOV_DcmPosX,
                                                    FOV_DcmPosY, FOV_Radius);
 
@@ -1017,7 +1022,7 @@ void ScatterCorrectThread::SLT_DoRegistrationDeform() {
 
       // Image Pointer here
       UShortImageType::Pointer spRoiMask;
-      AllocateByRef<UShortImageType, UShortImageType>(m_cbctrecon->m_spRawReconImg, spRoiMask);
+      AllocateByRef<UShortImageType, UShortImageType>(m_parent->m_spFixedImg, spRoiMask); //m_cbctrecon->m_spRawReconImg
       m_cbctregistration->m_pParent->GenerateCylinderMask(
           spRoiMask, FOV_DcmPosX, FOV_DcmPosY, FOV_Radius);
 
@@ -1252,7 +1257,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT() {
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
 
-  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
+  m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_RAW_CBCT);
 
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
@@ -1289,17 +1294,17 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
   auto update_message =
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
-  // Maybe this
-  //SLT_FixedImageSelected("COR_CBCT");
-  //SLT_MovingImageSelected("DEFORMED_CT_FINAL");
-  //
-  //this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
+
+  m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_COR_CBCT);
 
+
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
+  m_parent->SLT_MovingImageSelected(QString("RAW_CBCT"));
   emit SignalPassFixedImg(QString("RAW_CBCT"));
-  //SLT_PassFixedImgForAnalysis(QString("RAW_CBCT"));
   m_parent->SLT_FixedImageSelected(QString("COR_CBCT"));
+  m_parent->SLT_MovingImageSelected(QString("COR_CBCT"));
+
   //ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
 }
 /*
@@ -1344,7 +1349,7 @@ void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
 
   auto spProjImg3DFloat =
       this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-          m_cbctrecon->m_spRawReconImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
+          m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
           bExportProj_Fwd, false);//this->ui.radioButton_UseCUDA->isChecked());
 
   FloatImageType::Pointer p_projimg;
@@ -1353,12 +1358,12 @@ void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
         m_parent->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,//m_dlgRegistration->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
         bExportProj_Fwd,
         false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
-  } else if (this->m_parent->m_spMovingImg != nullptr) {
+  } else if (this->m_cbctrecon->m_spRefCTImg != nullptr) {
     std::cerr << "No Moving image in Registration is found. Ref CT image will "
                  "be used instead"
               << "\n";
     p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-        this->m_parent->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
+        this->m_cbctrecon->m_spRefCTImg, this->m_cbctrecon->m_spCustomGeometry,
         bExportProj_Fwd,
         false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
   }
@@ -1462,7 +1467,8 @@ this->ui.radioButton_UseCUDA->isChecked(),
   // Methods down below has been changed due to comboboxes
   // SLT_FixedImageSelected("RAW_CBCT");//m_dlgRegistration->SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
   //m_dlgRegistration->SelectComboExternal(1, REGISTER_COR_CBCT);
-
+  m_parent->SLT_FixedImageSelected("RAW_CBCT");
+  m_parent->SLT_MovingImageSelected("COR_CBCT");
   // m_dlgRegistration->SLT_DoLowerMaskIntensity(); // it will check the check
   // button.
 
@@ -1472,10 +1478,11 @@ this->ui.radioButton_UseCUDA->isChecked(),
   auto updated_text = QString("Scatter corrected CBCT");
 
   // This has been commented out subce we don't want to update recon image
-  //UpdateReconImage(this->m_cbctrecon->m_spScatCorrReconImg, updated_text); // main GUI update
+  m_parent->UpdateReconImage(this->m_cbctrecon->m_spScatCorrReconImg, updated_text); // main GUI update
 
   std::cout << "FINISHED!Scatter correction: CBCT DICOM files are saved"
             << std::endl;
+
   SLT_IntensityNormCBCT_COR_CBCT();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

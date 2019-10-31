@@ -54,7 +54,7 @@ private slots:
 
 signals:
     void SignalMessageBox(int, QString,QString);
-    void Signal_FDKopKtions(FDK_options);
+    void Signal_FDKoptions(FDK_options);
     void Signal_SetButtonsAfterLoad();
     void Signal_UpdateSlider(int);
     void Signal_DisconnectSlider();

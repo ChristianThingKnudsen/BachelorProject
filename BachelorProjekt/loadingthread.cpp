@@ -521,7 +521,7 @@ void LoadingThread::SLT_DoReconstruction() {
   std::cout << "It took " << reconTimeProbe.GetMean() << ' '
             << reconTimeProbe.GetUnit() << std::endl;
 
-  emit Signal_FDKopKtions(fdk_options);
+  emit Signal_FDKoptions(fdk_options);
 
   //this->ui.spinBoxReconImgSliceNo->setValue(qRound(fdk_options.ct_size[1] / 2.0)); // DrawReconImage is called automatically
 

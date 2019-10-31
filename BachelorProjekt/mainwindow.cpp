@@ -86,7 +86,7 @@ image: url(':/../../pictures/dropdownarrow.png');
 
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
-    connect(lThread, SIGNAL(Signal_FDKopKtions(FDK_options)),this,SLOT(SLT_SetSlider()));
+    connect(lThread, SIGNAL(Signal_FDKoptions(FDK_options)),this,SLOT(SLT_SetSlider()));
     connect(lThread, SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
     connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider()));
     connect(lThread, SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
@@ -1109,7 +1109,7 @@ void MainWindow::SLT_ViewRegistration() const
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void MainWindow::SLT_DrawReconImage() {
-    lThread->wait();
+  lThread->wait();
   //this->myCBCT = lThread->m_cbctrecon.get();
   if (m_cbctrecon->m_dspYKReconImage == nullptr) {
     return;
@@ -2576,7 +2576,7 @@ void MainWindow::SLT_IntensityNormCBCT_COR_CBCT() {
   SLT_FixedImageSelected(QString("RAW_CBCT"));
   //SLT_PassFixedImgForAnalysis();
   SLT_FixedImageSelected(QString("COR_CBCT"));
-  ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
+  ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when Scatter correct button is pushed. Find out where to implement this!
@@ -2836,8 +2836,8 @@ void MainWindow::SLT_ManualMoveByDCMPlanOpen() {
   SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
 }
 void MainWindow::SLT_PassFixedImgForAnalysis(QString cur_fixed) {
-  if (m_spFixedImg != nullptr) {
+  if (m_cbctrecon->m_spRawReconImg != nullptr) {
 
-    this->UpdateReconImage(m_spFixedImg, cur_fixed);
+    this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, cur_fixed);
   }
 }
