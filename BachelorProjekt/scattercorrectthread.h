@@ -22,6 +22,7 @@ public:
     CbctRegistration* m_cbctregistration; // just for convienience
     //std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
 
+
 private slots:
     //Some slots...
     void SLT_DoRegistrationRigid();
@@ -51,6 +52,7 @@ signals:
     void SignalPassFixedImg(QString);
     void SignalDrawImageInFixedSlice() const;
     void SignalDrawImageWhenSliceChange();
+    void Signal_UpdateProgressBarSC(int);
 
 private:
     // Some private variables or pointers...

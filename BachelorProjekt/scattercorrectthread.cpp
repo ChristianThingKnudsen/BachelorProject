@@ -34,6 +34,7 @@ ScatterCorrectThread::ScatterCorrectThread(MainWindow *parent) : QThread(dynamic
 void ScatterCorrectThread::run(){
     m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
     m_parent->SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
+    emit Signal_UpdateProgressBarSC(10);
 
     this->SLT_ManualMoveByDCMPlanOpen();
     this->SLT_DoRegistrationRigid();
@@ -247,7 +248,7 @@ void ScatterCorrectThread::SLT_DoRegistrationRigid() // plastimatch auto registr
   } else {
     filePathROI = QString("");
   }
-
+  emit Signal_UpdateProgressBarSC(20);
   // Preprocessing
   // 2) move CT-based skin mask on CBCT based on manual shift
   //  if (m_strPathCTSkin)
@@ -317,7 +318,7 @@ void ScatterCorrectThread::SLT_DoRegistrationRigid() // plastimatch auto registr
   */
 
   m_cbctregistration->m_strPathXFAutoRigid = filePathXform; // for further use
-
+  emit Signal_UpdateProgressBarSC(30);
   SLT_DoRegistrationDeform(); // Is added by us. Defrom registration
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1004,7 +1005,7 @@ void ScatterCorrectThread::SLT_DoRegistrationDeform() {
   writer2->SetInput(m_parent->m_spMovingImg);
   writer1->Update();
   writer2->Update();
-
+  emit Signal_UpdateProgressBarSC(40);
   // Create a mask image based on the fixed sp image
   // In Andreases code this was checked, so we replace this with true (checkBoxUseROIForDIR)
   if (true){//this->ui.checkBoxUseROIForDIR->isChecked()) {
@@ -1072,7 +1073,7 @@ void ScatterCorrectThread::SLT_DoRegistrationDeform() {
 
   std::cout << "2: DoRegistrationDeform: Creating a plastimatch command file"
             << std::endl;
-
+  emit Signal_UpdateProgressBarSC(50);
   const auto fnCmdRegisterRigid = QString("cmd_register_deform.txt");
   // QString fnCmdRegisterDeform = "cmd_register_deform.txt";
   auto pathCmdRegister =
@@ -1231,6 +1232,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT() {
   //This code is adde by us and is found from the callback from the comboboxes.
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
+  emit Signal_UpdateProgressBarSC(60);
   const auto fROI_Radius = 30;//this->ui.lineEditNormRoiRadius->text().toFloat();
 
   std::cout << "Intensity is being analyzed...Please wait." << std::endl;
@@ -1257,7 +1259,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT() {
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
 
-  m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
+  //m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_RAW_CBCT);
 
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
@@ -1270,7 +1272,6 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
   m_parent->SLT_FixedImageSelected(QString("COR_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
   const auto fROI_Radius = 30;//this->ui.lineEditNormRoiRadius->text().toFloat();
-
   std::cout << "Intensity is being analyzed...Please wait." << std::endl;
 
   float intensitySDFix = 0.0;
@@ -1295,7 +1296,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
       QString("Added_%1")
           .arg(static_cast<int>(meanIntensityMov - meanIntensityFix));
 
-  m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);
+  //m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_COR_CBCT);
 
 
@@ -1304,7 +1305,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
   emit SignalPassFixedImg(QString("RAW_CBCT"));
   m_parent->SLT_FixedImageSelected(QString("COR_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("COR_CBCT"));
-
+  emit Signal_UpdateProgressBarSC(100);
   //ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
 }
 /*
@@ -1319,7 +1320,7 @@ void ScatterCorrectThread::SLT_PassFixedImgForAnalysis(QString cur_fixed) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when Scatter correct button is pushed. Find out where to implement this!
 void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
-
+  emit Signal_UpdateProgressBarSC(70);
   if ((this->m_cbctrecon->m_spRefCTImg == nullptr &&
        m_parent->m_spMovingImg == nullptr) ||//m_dlgRegistration->m_spMovingImg == nullptr) ||
       m_cbctrecon->m_spRawReconImg ==nullptr){//m_dlgRegistration->m_spFixedImg == nullptr) {
@@ -1351,7 +1352,7 @@ void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
       this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
           m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
           bExportProj_Fwd, false);//this->ui.radioButton_UseCUDA->isChecked());
-
+  emit Signal_UpdateProgressBarSC(80);
   FloatImageType::Pointer p_projimg;
   if (m_parent->m_spMovingImg != nullptr){//m_dlgRegistration->m_spMovingImg != nullptr) {
     p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
@@ -1382,7 +1383,6 @@ void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
   // double scaResam = this->ui.lineEdit_scaResam->text().toDouble();
   const auto scaMedian = 12.0;//this->ui.lineEdit_scaMedian->text().toDouble();
   const auto scaGaussian = 0.05;//this->ui.lineEdit_scaGaussian->text().toDouble();
-
   std::cout << "Generating scatter map is ongoing..." << std::endl;
 
   this->m_cbctrecon->GenScatterMap_PriorCT(
@@ -1414,7 +1414,7 @@ void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
                                           postScatMedianSize, bExportProj_Cor);
 
   this->m_cbctrecon->m_spProjImgScat3D->Initialize(); // memory saving
-
+  emit Signal_UpdateProgressBarSC(90);
   std::cout << "AfterCorrectionMacro is ongoing..." << std::endl;
 
   // In Andreases code he sets elements on his ui. therefore this is outcommented:
@@ -1478,7 +1478,7 @@ this->ui.radioButton_UseCUDA->isChecked(),
   auto updated_text = QString("Scatter corrected CBCT");
 
   // This has been commented out subce we don't want to update recon image
-  m_parent->UpdateReconImage(this->m_cbctrecon->m_spScatCorrReconImg, updated_text); // main GUI update
+  //m_parent->UpdateReconImage(this->m_cbctrecon->m_spScatCorrReconImg, updated_text); // main GUI update
 
   std::cout << "FINISHED!Scatter correction: CBCT DICOM files are saved"
             << std::endl;

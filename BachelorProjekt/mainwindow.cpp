@@ -51,10 +51,12 @@ MainWindow::MainWindow(QWidget *parent) // Constructor
     ui->btnInfo->setIconSize(QSize(30,30));
 
     // Icon for Exit
+    /*
     QPixmap pixmapExit("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\exit.png");
     QIcon ButtonExit(pixmapExit);
     ui->btnExit->setIcon(ButtonExit);
     ui->btnExit->setIconSize(QSize(30,30));
+    */
 
     //Color for combobox
     QPalette p = ui->comboBox_region->palette();
@@ -91,7 +93,7 @@ image: url(':/../../pictures/dropdownarrow.png');
     connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider()));
     connect(lThread, SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
-    connect(lThread,SIGNAL(Signal_UpdateProgressBar(int,int)),this,SLOT(SLT_UpdateProgressBar(int, int)));
+    connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
 
 
     scThread = new ScatterCorrectThread(this);
@@ -100,6 +102,7 @@ image: url(':/../../pictures/dropdownarrow.png');
 
     connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
     connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
+    connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
 
 
 
@@ -176,7 +179,7 @@ void MainWindow::SLT_SetButtonsAfterLoad(){
     ui->btnLoadData->setEnabled(false);
     ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->btnScatterCorrect->setEnabled(true);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
     //SLT_PreProcessCT(); // Is added by us. Added for later use
 }
 
@@ -207,16 +210,11 @@ void MainWindow::SLT_UpdateLabel(int idx, QString string){
         ui->labelCorImgTitle->setText(string);
     }
 }
-void MainWindow::SLT_UpdateProgressBar(int idx, int progress){
-    if(idx==0){
-        ui->progressBarLoad->setValue(progress);
-    }
-    else if(idx == 1){
-        ui->progressBarSC->setValue(progress);
-    }
-    else{
-        return;
-    }
+void MainWindow::SLT_UpdateProgressBarLoad(int progress){
+    ui->progressBarLoad->setValue(progress);
+}
+void MainWindow::SLT_UpdateProgressBarSC(int progress){
+    ui->progressBarSC->setValue(progress);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
