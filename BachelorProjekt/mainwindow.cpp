@@ -103,17 +103,15 @@ image: url(':/../../pictures/dropdownarrow.png');
     connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
     connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
-
-
-
-
+    connect(scThread,SIGNAL(Signal_SCThreadIsDone()),this,SLOT(SLT_SCThreadIsDone()));
+    connect(scThread,SIGNAL(Signal_UpdateVOICombobox(ctType)),this,SLOT(UpdateVOICombobox(const ctType)));
 }
 
 MainWindow::~MainWindow() // Destructor
 {
     delete ui;
     delete lThread;
-    //delete scThread;
+    delete scThread;
 }
 void MainWindow::SLT_OpenInfo() // Is called when the info button is pushed
 {
@@ -215,6 +213,13 @@ void MainWindow::SLT_UpdateProgressBarLoad(int progress){
 }
 void MainWindow::SLT_UpdateProgressBarSC(int progress){
     ui->progressBarSC->setValue(progress);
+}
+void MainWindow::SLT_SCThreadIsDone(){
+    scThread->wait();
+    ui->comboBoxWEPL->setEnabled(true);
+    ui->btnWEPL->setEnabled(true);
+    ui->btnWEPL->setStyleSheet("QPushButton{background-color: #1367AB;font-weight: bold;color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
+
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1712,14 +1717,14 @@ void MainWindow::UpdateVOICombobox(const ctType ct_type) const {
     return;
   }
   // In Andreases code he uses checkboxes therefore this is outcommented (comboBox_VOI)
-  /*
-  this->ui.comboBox_VOI->clear();
+
+  ui->comboBoxWEPL->clear();//this->ui.comboBox_VOI->clear();
   for (const auto &voi : struct_set->slist) {
-    this->ui.comboBox_VOI->addItem(QString(voi.name.c_str()));
-    this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
-    this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
+    this->ui->comboBoxWEPL->addItem(QString(voi.name.c_str()));
+    //this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
+    //this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
   }
-  */
+
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_FixedImageSelected and SLT_MovingImageSelected
@@ -2851,4 +2856,23 @@ void MainWindow::SLT_PassFixedImgForAnalysis(QString cur_fixed) {
 
     this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, cur_fixed);
   }
+}
+void MainWindow::SLT_WEPLcalc() {
+
+  //Get VIO
+  const auto voi_name = ui->comboBoxWEPL->currentText().toStdString();
+
+  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
+  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
+
+  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
+  const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
+  m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
+
+  const auto wepl_voi =
+      CalculateWEPLtoVOI(m_cbctregistration->cur_voi.get(), gantry_angle,
+                         couch_angle, m_spMovingImg, m_spFixedImg);
+  m_cbctregistration->WEPL_voi = std::make_unique<Rtss_roi_modern>(*wepl_voi);
+  // Draw WEPL
+  SLT_DrawImageWhenSliceChange();
 }

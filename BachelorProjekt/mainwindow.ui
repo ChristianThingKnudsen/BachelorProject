@@ -1610,6 +1610,22 @@ QPushButton:pressed{
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnWEPL</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SLT_WEPLcalc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>101</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>foo()</slot>
@@ -1699,5 +1715,6 @@ QPushButton:pressed{
   <slot>SLT_IncreaseSliderValue()</slot>
   <slot>SLT_StartLoadingThread()</slot>
   <slot>SLT_StartScatterCorrectThread()</slot>
+  <slot>SLT_WEPLcalc()</slot>
  </slots>
 </ui>

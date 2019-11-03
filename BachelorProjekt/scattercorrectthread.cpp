@@ -9,6 +9,7 @@
 #include "cbctrecon.h"
 #include "cbctregistration.h"
 #include "mainwindow.h"
+#include "OpenCL/ImageFilters.h"
 
 enum enCOLOR {
   RED,
@@ -35,8 +36,8 @@ void ScatterCorrectThread::run(){
     m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
     m_parent->SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
     emit Signal_UpdateProgressBarSC(10);
-
     this->SLT_ManualMoveByDCMPlanOpen();
+    this->SLT_ConfirmManualRegistration();
     this->SLT_DoRegistrationRigid();
 }
 
@@ -128,6 +129,79 @@ void ScatterCorrectThread::SLT_ManualMoveByDCMPlanOpen() {
   m_parent->SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
   */
 }
+
+void ScatterCorrectThread::SLT_ConfirmManualRegistration() {
+  if (m_parent->m_spFixedImg == nullptr || m_parent->m_spMovingImg == nullptr) {
+    return;
+  }
+
+  auto p_parent = m_cbctregistration->m_pParent;
+  if (p_parent->m_spRefCTImg == nullptr ||
+      p_parent->m_spManualRigidCT == nullptr) {
+    return;
+  }
+
+  if (false){//this->ui.checkBoxKeyMoving->isChecked()) {
+    SLT_KeyMoving(false); // uncheck macro
+  }
+
+  // Apply post processing for raw CBCT image and generate
+  std::cout << "Preprocessing for CBCT" << std::endl;
+
+  auto originBefore = p_parent->m_spRefCTImg->GetOrigin();
+  auto originAfter = p_parent->m_spManualRigidCT->GetOrigin();
+
+  double fShift[3];
+  fShift[0] = originBefore[0] - originAfter[0]; // DICOM
+  fShift[1] = originBefore[1] - originAfter[1];
+  fShift[2] = originBefore[2] - originAfter[2];
+
+  const auto trn_vec = FloatVector{static_cast<float>(-fShift[0]),
+                                   static_cast<float>(-fShift[1]),
+                                   static_cast<float>(-fShift[2])};
+
+  m_cbctregistration->m_pParent->m_structures
+      ->ApplyVectorTransform_InPlace<PLAN_CT>(trn_vec);
+
+  if (false){//this->ui.checkBoxCropBkgroundCT->isChecked()) {
+    auto structures =
+        m_cbctregistration->m_pParent->m_structures->get_ss(RIGID_CT);
+
+    // RIGID_CT structs should be created above
+    const auto voi_name = QString("BODY");//this->ui.comboBox_VOItoCropBy->currentText();
+    if (structures != nullptr) {
+      const auto voi = structures->get_roi_ref_by_name(voi_name.toStdString());
+      OpenCL_crop_by_struct_InPlace(p_parent->m_spRawReconImg, voi);
+    }
+
+    auto update_message = QString("CBCT cropped outside of ") + voi_name;
+    //m_parent->UpdateReconImage(p_parent->m_spRawReconImg, update_message);
+
+    //UpdateListOfComboBox(0); // combo selection signalis called
+    //UpdateListOfComboBox(1);
+
+    //SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
+    //SelectComboExternal(1, REGISTER_MANUAL_RIGID);
+  }
+
+  // Export final xform file
+  auto filePathXform =
+      m_cbctregistration->m_strPathPlastimatch + "/" + "xform_manual.txt";
+
+  std::ofstream fout;
+  fout.open(filePathXform.toLocal8Bit().constData());
+  fout << "#Custom Transform" << std::endl;
+  fout << "#Transform: Translation_only" << std::endl;
+  fout << "Parameters: " << fShift[0] << " " << fShift[1] << " " << fShift[2]
+       << std::endl;
+  // fout << "FixedParameters: 0 0 0" << std::endl;
+
+  fout.close();
+  std::cout << "Writing manual registration transform info is done."
+            << std::endl;
+  //this->ui.pushButtonConfirmManualRegi->setDisabled(true);
+}
+
 
 // External method implemented from DlgRegistration
 // Is called when the "Scatter Correct" button is pushed
@@ -521,6 +595,7 @@ void ScatterCorrectThread::UpdateVOICombobox(const ctType ct_type) const {
     this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
   }
   */
+
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_FixedImageSelected and SLT_MovingImageSelected
@@ -1305,7 +1380,10 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
   emit SignalPassFixedImg(QString("RAW_CBCT"));
   m_parent->SLT_FixedImageSelected(QString("COR_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("COR_CBCT"));
+  const auto cur_ct2 = get_ctType("COR_CBCT");
+  emit Signal_UpdateVOICombobox(cur_ct2);
   emit Signal_UpdateProgressBarSC(100);
+  emit Signal_SCThreadIsDone();
   //ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: rgba(47,212,75,60%);color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
 }
 /*
@@ -1446,7 +1524,7 @@ this->ui.radioButton_UseCUDA->isChecked(),
       << "Post  FDK reconstruction is done. Moving on to post skin removal"
       << std::endl;
 
-  const auto voi_name = QString("");//this->m_dlgRegistration->ui.comboBox_VOItoCropBy->currentText();
+  const auto voi_name = QString("BODY");//this->m_dlgRegistration->ui.comboBox_VOItoCropBy->currentText();
   // m_cbctregistration->PostSkinRemovingCBCT(
   //    this->m_cbctrecon->m_spScatCorrReconImg, voi_name.toStdString());
 

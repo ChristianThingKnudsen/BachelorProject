@@ -190,6 +190,8 @@ public slots:
     void SLT_PassFixedImgForAnalysis(QString);
     void SLT_UpdateProgressBarLoad(int);
     void SLT_UpdateProgressBarSC(int);
+    void SLT_SCThreadIsDone();
+    void SLT_WEPLcalc();
 
 /*
 private:

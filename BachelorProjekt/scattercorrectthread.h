@@ -45,6 +45,7 @@ private slots:
     void SLT_ManualMoveByDCMPlanOpen();
     //void ImageManualMoveOneShot(const float shiftX, const float shiftY, const float shiftZ);
     //void SLT_PassFixedImgForAnalysis(QString);
+    void SLT_ConfirmManualRegistration();
 
 signals:
     //Some signals...
@@ -53,6 +54,8 @@ signals:
     void SignalDrawImageInFixedSlice() const;
     void SignalDrawImageWhenSliceChange();
     void Signal_UpdateProgressBarSC(int);
+    void Signal_SCThreadIsDone();
+    void Signal_UpdateVOICombobox(ctType);
 
 private:
     // Some private variables or pointers...
