@@ -63,7 +63,7 @@
 }</string>
          </property>
          <property name="text">
-          <string>ID:xxxxxx-xxxx</string>
+          <string>ID: 291194-0911</string>
          </property>
         </widget>
        </item>
@@ -1716,5 +1716,7 @@ QPushButton:pressed{
   <slot>SLT_StartLoadingThread()</slot>
   <slot>SLT_StartScatterCorrectThread()</slot>
   <slot>SLT_WEPLcalc()</slot>
+  <slot>SLT_UpdateLabelRaw(QString)</slot>
+  <slot>SLT_UpdateLabelCor(QString)</slot>
  </slots>
 </ui>

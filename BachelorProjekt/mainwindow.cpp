@@ -97,7 +97,8 @@ image: url(':/../../pictures/dropdownarrow.png');
 
 
     scThread = new ScatterCorrectThread(this);
-    connect(scThread,SIGNAL(SigalUpdateLabel(int, QString)), this, SLOT(SLT_UpdateLabel(int, QString)));
+    connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
+    connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
     connect(scThread,SIGNAL(SignalPassFixedImg(QString)),this, SLOT(SLT_PassFixedImgForAnalysis(QString)));
 
     connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
@@ -201,12 +202,11 @@ void MainWindow::SLT_ReConnectSlider(int initVal){
     ui->btnScatterCorrect->setEnabled(true);
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
 }
-void MainWindow::SLT_UpdateLabel(int idx, QString string){
-    if(idx == 0){
+void MainWindow::SLT_UpdateLabelRaw(QString string){
         ui->labelRawImgTitle->setText(string);
-    }if(idx ==1){
-        ui->labelCorImgTitle->setText(string);
-    }
+}
+void MainWindow::SLT_UpdateLabelCor(QString string){
+    ui->labelCorImgTitle->setText(string);
 }
 void MainWindow::SLT_UpdateProgressBarLoad(int progress){
     ui->progressBarLoad->setValue(progress);

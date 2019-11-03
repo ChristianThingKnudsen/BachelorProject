@@ -182,7 +182,8 @@ public slots:
     void SLT_UpdateSlider(int);
     void SLT_DisconnectSlider();
     void SLT_ReConnectSlider(int);
-    void SLT_UpdateLabel(int, QString);
+    void SLT_UpdateLabelRaw(QString);
+    void SLT_UpdateLabelCor(QString);
     void ImageManualMoveOneShot(
             const float shiftX, const float shiftY,
             const float shiftZ);

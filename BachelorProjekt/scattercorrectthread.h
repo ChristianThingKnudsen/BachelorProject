@@ -49,7 +49,8 @@ private slots:
 
 signals:
     //Some signals...
-    void SigalUpdateLabel(int, QString);
+    void Signal_UpdateLabelRaw(QString);
+    void Signal_UpdateLabelCor(QString);
     void SignalPassFixedImg(QString);
     void SignalDrawImageInFixedSlice() const;
     void SignalDrawImageWhenSliceChange();

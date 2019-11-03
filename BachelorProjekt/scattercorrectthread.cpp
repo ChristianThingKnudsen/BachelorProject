@@ -1336,7 +1336,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT() {
 
   //m_parent->UpdateReconImage(m_parent->m_spFixedImg, update_message);//m_pParent->UpdateReconImage(m_spFixedImg, update_message);
   //SelectComboExternal(0, REGISTER_RAW_CBCT);
-
+  emit Signal_UpdateLabelCor(QString("Norm Raw CBCT"));
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
 
   SLT_DoScatterCorrection_APRIORI();
@@ -1378,8 +1378,10 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
   m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("RAW_CBCT"));
   emit SignalPassFixedImg(QString("RAW_CBCT"));
+  emit Signal_UpdateLabelRaw(QString("Norm Raw CBCT"));
   m_parent->SLT_FixedImageSelected(QString("COR_CBCT"));
   m_parent->SLT_MovingImageSelected(QString("COR_CBCT"));
+  emit Signal_UpdateLabelCor(QString("Norm Cor CBCT"));
   const auto cur_ct2 = get_ctType("COR_CBCT");
   emit Signal_UpdateVOICombobox(cur_ct2);
   emit Signal_UpdateProgressBarSC(100);
@@ -1545,6 +1547,7 @@ this->ui.radioButton_UseCUDA->isChecked(),
   // Methods down below has been changed due to comboboxes
   // SLT_FixedImageSelected("RAW_CBCT");//m_dlgRegistration->SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
   //m_dlgRegistration->SelectComboExternal(1, REGISTER_COR_CBCT);
+  emit Signal_UpdateLabelCor(QString("Cor CBCT"));
   m_parent->SLT_FixedImageSelected("RAW_CBCT");
   m_parent->SLT_MovingImageSelected("COR_CBCT");
   // m_dlgRegistration->SLT_DoLowerMaskIntensity(); // it will check the check
