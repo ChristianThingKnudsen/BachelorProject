@@ -34,6 +34,7 @@ ScatterCorrectThread::ScatterCorrectThread(MainWindow *parent) : QThread(dynamic
 }
 void ScatterCorrectThread::run(){
     m_parent->SLT_FixedImageSelected(QString("RAW_CBCT"));
+    emit Signal_UpdateLabelCor(QString("Raw CBCT"));
     m_parent->SLT_MovingImageSelected(QString("MANUAL_RIGID_CT"));
     emit Signal_UpdateProgressBarSC(10);
     this->SLT_ManualMoveByDCMPlanOpen();

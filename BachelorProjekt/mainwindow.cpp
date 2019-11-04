@@ -219,7 +219,7 @@ void MainWindow::SLT_SCThreadIsDone(){
     ui->comboBoxWEPL->setEnabled(true);
     ui->btnWEPL->setEnabled(true);
     ui->btnWEPL->setStyleSheet("QPushButton{background-color: #1367AB;font-weight: bold;color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
-
+    ui->comboBoxWEPL->setCurrentIndex(0);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
