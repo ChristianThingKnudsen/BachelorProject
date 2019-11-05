@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) // Constructor
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
 
+    ui->comboBoxWEPL->addItem("No structures");
+
     // Icon for Load Data
     QPixmap pixmapLoad("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\upload.png");
     QIcon ButtonLoad(pixmapLoad);
@@ -223,6 +225,8 @@ void MainWindow::SLT_SCThreadIsDone(){
     ui->comboBoxWEPL->setEnabled(true);
     ui->btnWEPL->setEnabled(true);
     ui->btnWEPL->setStyleSheet("QPushButton{background-color: #1367AB;font-weight: bold;color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(':/pictures/dropdownarrow.png');width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setEnabled(true);
     ui->comboBoxWEPL->setCurrentIndex(0);
 }
 
