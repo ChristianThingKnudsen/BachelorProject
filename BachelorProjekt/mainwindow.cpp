@@ -88,12 +88,13 @@ image: url(':/../../pictures/dropdownarrow.png');
 
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
-    connect(lThread, SIGNAL(Signal_FDKoptions(FDK_options)),this,SLOT(SLT_SetSlider()));
+    connect(lThread, SIGNAL(Signal_FDKoptions(FDK_options)),this,SLOT(SLT_SetSlider())); //???
     connect(lThread, SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
-    connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider()));
+    connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
     connect(lThread, SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
     connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
+    connect(lThread,SIGNAL(finished()),lThread,SLOT(quit()));
 
 
     scThread = new ScatterCorrectThread(this);
@@ -106,6 +107,7 @@ image: url(':/../../pictures/dropdownarrow.png');
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
     connect(scThread,SIGNAL(Signal_SCThreadIsDone()),this,SLOT(SLT_SCThreadIsDone()));
     connect(scThread,SIGNAL(Signal_UpdateVOICombobox(ctType)),this,SLOT(UpdateVOICombobox(const ctType)));
+    connect(scThread,SIGNAL(finished()),lThread,SLOT(quit()));
 }
 
 MainWindow::~MainWindow() // Destructor
@@ -152,7 +154,7 @@ void MainWindow::SLT_StartLoadingThread(){
 }
 
 void MainWindow::SLT_StartScatterCorrectThread(){
-    lThread->wait();
+    //lThread->wait();
     scThread->start();
 }
 
@@ -168,7 +170,7 @@ void MainWindow::SLT_ShowMessageBox(int idx, QString header,QString message){
 
 void MainWindow::SLT_InitializeSlider(FDK_options fdkoptions){
 
-    this->ui->verticalSlider->setMinimum(0);//this->ui.spinBoxReconImgSliceNo->setMinimum(0);
+    this->ui->verticalSlider->setMinimum(1);//this->ui.spinBoxReconImgSliceNo->setMinimum(0);
     this->ui->verticalSlider->setMaximum(fdkoptions.ct_size[1] - 1);//this->ui.spinBoxReconImgSliceNo->setMaximum(fdk_options.ct_size[1] - 1);
     this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(qRound(fdkoptions.ct_size[1] / 2.0)));
     this->ui->verticalSlider->setValue(qRound(fdkoptions.ct_size[1] / 2.0));
@@ -184,7 +186,7 @@ void MainWindow::SLT_SetButtonsAfterLoad(){
 
 void MainWindow::SLT_UpdateSlider(int max){
     this->ui->verticalSlider->setMinimum(1);
-    this->ui->verticalSlider->setMaximum(max);
+    this->ui->verticalSlider->setMaximum(max-1);
 }
 
 void MainWindow::SLT_DisconnectSlider(){
@@ -215,7 +217,9 @@ void MainWindow::SLT_UpdateProgressBarSC(int progress){
     ui->progressBarSC->setValue(progress);
 }
 void MainWindow::SLT_SCThreadIsDone(){
-    scThread->wait();
+    //scThread->wait();
+    ui->btnScatterCorrect->setEnabled(false);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->comboBoxWEPL->setEnabled(true);
     ui->btnWEPL->setEnabled(true);
     ui->btnWEPL->setStyleSheet("QPushButton{background-color: #1367AB;font-weight: bold;color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
@@ -997,7 +1001,7 @@ void MainWindow::SLT_DoReconstruction() {
             << reconTimeProbe.GetUnit() << std::endl;
   //this->ui.lineEdit_ReconstructionTime->setText(QString("%1").arg(reconTimeProbe.GetMean()));
 
-  this->ui->verticalSlider->setMinimum(0);//this->ui.spinBoxReconImgSliceNo->setMinimum(0);
+  this->ui->verticalSlider->setMinimum(1);//this->ui.spinBoxReconImgSliceNo->setMinimum(0);
   this->ui->verticalSlider->setMaximum(fdk_options.ct_size[1] - 1);//this->ui.spinBoxReconImgSliceNo->setMaximum(fdk_options.ct_size[1] - 1);
   this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(qRound(fdk_options.ct_size[1] / 2.0)));
   this->ui->verticalSlider->setValue(qRound(fdk_options.ct_size[1] / 2.0));
@@ -1098,7 +1102,7 @@ void MainWindow::UpdateReconImage(UShortImageType::Pointer &spNewImg,
   this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0); // maybe 100 instead of 0.
 
   disconnect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
-  this->ui->verticalSlider->setMinimum(0);
+  this->ui->verticalSlider->setMinimum(1);
   this->ui->verticalSlider->setMaximum(size[2] - 1);
 
   const auto initVal = qRound((size[2] - 1) / 2.0);
@@ -1125,7 +1129,7 @@ void MainWindow::SLT_ViewRegistration() const
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void MainWindow::SLT_DrawReconImage() {
-  lThread->wait();
+  //lThread->wait();
   //this->myCBCT = lThread->m_cbctrecon.get();
   if (m_cbctrecon->m_dspYKReconImage == nullptr) {
     return;

@@ -542,8 +542,8 @@ void LoadingThread::SLT_DoReconstruction() {
   // fixedImageSelected  m_pDlgRegistration->SelectComboExternal(1,
   // REGISTER_RAW_CBCT );
 
-  emit Signal_SetButtonsAfterLoad();
   emit Signal_UpdateProgressBarLoad(100);
+  emit Signal_SetButtonsAfterLoad();
 
 }
 
