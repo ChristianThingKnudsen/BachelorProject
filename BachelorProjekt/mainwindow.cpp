@@ -25,7 +25,7 @@
 
 enum enCOLOR {
   RED,
-  GREEN,
+  BLUE,
 };
 
 MainWindow::MainWindow(QWidget *parent) // Constructor
@@ -1791,7 +1791,7 @@ template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
   switch (color) {
   case RED:
     return &window->m_vPt;
-  case GREEN:
+  case BLUE:
   default:
     return &window->m_vPt_green;
   }
@@ -2046,7 +2046,7 @@ void MainWindow::SLT_DrawImageWhenSliceChange() {
   if (m_cbctregistration->WEPL_voi != nullptr) {
     const auto p_wepl_voi = m_cbctregistration->WEPL_voi.get();
 
-    set_points_by_slice<UShortImageType, PLANE_AXIAL, GREEN>(
+    set_points_by_slice<UShortImageType, PLANE_AXIAL, BLUE>(
         wnd, p_wepl_voi, curPhysPos, imgSpacing,
         imgOriginFixed, imgSize);
 

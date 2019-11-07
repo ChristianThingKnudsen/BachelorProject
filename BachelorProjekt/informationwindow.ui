@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>949</width>
-    <height>356</height>
+    <height>299</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,7 +73,38 @@
 </string>
        </property>
        <property name="text">
-        <string>Region</string>
+        <string>ID</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="labelRegionInfo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>800</width>
+         <height>120</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	color: #ffffff;
+	width: 20px;
+}</string>
+       </property>
+       <property name="text">
+        <string>This field indicates which patient is been processed at the moment</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -88,7 +119,7 @@
 </string>
        </property>
        <property name="text">
-        <string>Load CT</string>
+        <string>Load Data</string>
        </property>
       </widget>
      </item>
@@ -106,7 +137,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This button allows the user to read in the taken CT image. The corresponding checkbox will light up green when the image has been loaded. </string>
+        <string>This button will open two file explores. One path for the CBCT-projections to be declared, and another for the CT-projections to be declared.</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -124,7 +155,7 @@
 </string>
        </property>
        <property name="text">
-        <string>Load CBCT</string>
+        <string>Region</string>
        </property>
       </widget>
      </item>
@@ -142,7 +173,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This button allows the user to read in the taken CBCT image. The corresponding checkbox will light up green when the image has been loaded. </string>
+        <string>This option allows to choose which part of the body that is up for treatment. The program then selects the appropriate values based on the selected region. </string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -184,7 +215,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This button takes the CT and CBCT image and creates a scatter corrected CBCT image, which can be used for reviewing the dose plan</string>
+        <string>This button will run an algorithm which will remove the scatter from the CBCT image and plot it. This might take some time. </string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -202,7 +233,7 @@
 </string>
        </property>
        <property name="text">
-        <string>ID</string>
+        <string>WEPL</string>
        </property>
       </widget>
      </item>
@@ -214,7 +245,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This label shows the security number of the patient under treatment </string>
+        <string>Here you choose which structure you want to calculate the WEPL on. After you select the structure click WEPL</string>
        </property>
       </widget>
      </item>
@@ -229,7 +260,7 @@
 </string>
        </property>
        <property name="text">
-        <string>Show Organs</string>
+        <string>Advanced Mode</string>
        </property>
       </widget>
      </item>
@@ -247,74 +278,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>When this checkbox is checked the scatter corrected CBCT image, will then be superimposed by the organ image</string>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_11">
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 15px;
-	color: rgba(255,190,56,100%); 
-	font-weight: bold;
-}
-</string>
-       </property>
-       <property name="text">
-        <string>Advanced mode</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLabel" name="label_12">
-       <property name="maximumSize">
-        <size>
-         <width>800</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	color: #ffffff;
-}</string>
-       </property>
-       <property name="text">
         <string>This button opens a new form where more values behind the scene can be accessed. This is only recommended for  physicists </string>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="labelRegionInfo">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>800</width>
-         <height>120</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	color: #ffffff;
-	width: 20px;
-}</string>
-       </property>
-       <property name="text">
-        <string>This option allows to choose which part of the body that is up for treatment. The program then selects the appropriate values based on the selected region. </string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
