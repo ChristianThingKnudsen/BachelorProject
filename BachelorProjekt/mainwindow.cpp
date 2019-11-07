@@ -90,10 +90,10 @@ image: url(':/../../pictures/dropdownarrow.png');
 
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
-    connect(lThread, SIGNAL(Signal_FDKoptions(FDK_options)),this,SLOT(SLT_SetSlider())); //???
-    connect(lThread, SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
-    connect(lThread, SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
-    connect(lThread, SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
+    connect(lThread,SIGNAL(Signal_FDKoptions(FDK_options)),this,SLOT(SLT_SetSlider())); //???
+    connect(lThread,SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
+    connect(lThread,SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
+    connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
     connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
     connect(lThread,SIGNAL(finished()),lThread,SLOT(quit()));
@@ -225,7 +225,7 @@ void MainWindow::SLT_SCThreadIsDone(){
     ui->comboBoxWEPL->setEnabled(true);
     ui->btnWEPL->setEnabled(true);
     ui->btnWEPL->setStyleSheet("QPushButton{background-color: #1367AB;font-weight: bold;color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
-    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(':/pictures/dropdownarrow.png');width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
     ui->comboBoxWEPL->setEnabled(true);
     ui->comboBoxWEPL->setCurrentIndex(0);
 }
