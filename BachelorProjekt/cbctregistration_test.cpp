@@ -13,7 +13,7 @@
 #include "cbctrecon.h"
 #include "cbctrecon_compute.h"
 #include "cbctrecon_io.h"
-#include "mainwindow.h"
+#include "scui.h"
 #include "cbctregistration.h"
 
 #define FIXME_BACKGROUND_MAX (-1200)
@@ -37,7 +37,7 @@ CbctRegistrationTest::CbctRegistrationTest() {
   ui_comboBox_VOItoCropBy = std::make_unique<MyQComboBox>();
 }
 
-CbctRegistrationTest::CbctRegistrationTest(MainWindow *parent) {
+CbctRegistrationTest::CbctRegistrationTest(Scui *parent) {
   m_pParent = parent;
   m_cbctregistration =
       std::make_unique<CbctRegistration>(parent->m_cbctrecon.get());

@@ -14,7 +14,7 @@ class LoadingThread : public QThread
     Q_OBJECT
 public:
     // For threading
-    explicit LoadingThread(MainWindow *parent=nullptr);
+    explicit LoadingThread(Scui *parent=nullptr);
     void run();
     bool Stop;
 

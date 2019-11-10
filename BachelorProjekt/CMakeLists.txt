@@ -39,9 +39,9 @@ set(PLM_TARGETS
 
 add_executable(BachelorProjekt
   main.cpp
-  mainwindow.cpp
-  mainwindow.h
-  mainwindow.ui
+  scui.cpp
+  scui.h
+  scui.ui
   qyklabel.cpp
   qyklabel.h
   #progressbar.cpp

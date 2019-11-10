@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SCUI_H
+#define SCUI_H
 
 #include <QMainWindow>
 
@@ -18,19 +18,19 @@
 #include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui { class Scui; }
 QT_END_NAMESPACE
 
 class LoadingThread;
 class ScatterCorrectingThread;
 
-class MainWindow : public QMainWindow
+class Scui : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    Scui(QWidget *parent = nullptr);
+    ~Scui();
 
 public:
   std::unique_ptr<CbctRecon> m_cbctrecon;
@@ -168,7 +168,7 @@ public slots:
     void SLT_WEPLcalc();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::Scui *ui;
     int m_enViewArrange{};
 public:
     YK16GrayImage *m_YKDisp;

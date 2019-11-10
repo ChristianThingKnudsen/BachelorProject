@@ -8,7 +8,7 @@
 
 #include "cbctrecon.h"
 #include "cbctregistration.h"
-#include "mainwindow.h"
+#include "scui.h"
 #include "OpenCL/ImageFilters.h"
 
 enum enCOLOR {
@@ -16,7 +16,7 @@ enum enCOLOR {
   GREEN,
 };
 
-ScatterCorrectingThread::ScatterCorrectingThread(MainWindow *parent) : QThread(dynamic_cast<QObject*>(parent))
+ScatterCorrectingThread::ScatterCorrectingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))
 {
     this->m_parent = parent;
     this->m_cbctrecon = parent->m_cbctrecon.get();

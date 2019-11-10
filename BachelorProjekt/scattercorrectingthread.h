@@ -12,12 +12,12 @@ class ScatterCorrectingThread : public QThread
     Q_OBJECT
 public:
     // For threading
-    explicit ScatterCorrectingThread(MainWindow *parent=nullptr);
+    explicit ScatterCorrectingThread(Scui *parent=nullptr);
     void run();
     bool Stop;
 
     // Relevant variables
-    MainWindow* m_parent;
+    Scui* m_parent;
     CbctRecon* m_cbctrecon;
     CbctRegistration* m_cbctregistration; // just for convienience
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Scui</class>
+ <widget class="QMainWindow" name="Scui">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,10 +23,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>SCUI</string>
+   <string>Scui</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">MainWindow{
+   <string notr="true">Scui{
 	background-color: #1367AB;
 }</string>
   </property>
@@ -1544,7 +1544,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnScatterCorrect</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_StartScatterCorrectingThread()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1560,7 +1560,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnAdvanced</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_OpenAdvancedMode()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1576,7 +1576,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnLoadData</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_StartLoadingThread()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1592,7 +1592,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnInfo</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_OpenInfo()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1608,7 +1608,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnExit</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_Exit()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1624,7 +1624,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnPlus</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_IncreaseSliderValue()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1640,7 +1640,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnMinus</sender>
    <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_DecreaseSliderValue()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1656,7 +1656,7 @@ QPushButton:pressed{
   <connection>
    <sender>verticalSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_DrawReconImage()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1672,7 +1672,7 @@ QPushButton:pressed{
   <connection>
    <sender>verticalSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_DrawImageWhenSliceChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1688,7 +1688,7 @@ QPushButton:pressed{
   <connection>
    <sender>btnWEPL</sender>
    <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>Scui</receiver>
    <slot>SLT_WEPLcalc()</slot>
    <hints>
     <hint type="sourcelabel">

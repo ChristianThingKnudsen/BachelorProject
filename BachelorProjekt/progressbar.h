@@ -2,12 +2,12 @@
 #define PROGRESSBAR_H
 
 #include <QDialog>
-//#include "mainwindow.h"
+//#include "scui.h"
 //#include "progressbar.ui"
 //#include "ui_progressbar.h"
 
 //class Progressbar;
-//class MainWindow;
+//class Scui;
 //class QString;
 namespace Ui {
     class Progressbar;
@@ -35,9 +35,9 @@ class Progressbar: public QDialog, public Ui::ProgressbarClass {
     Q_OBJECT
 
 public:
-    MainWindow *m_pParent{};
+    Scui *m_pParent{};
     Progressbar();
-    explicit Progressbar(MainWindow *parent);
+    explicit Progressbar(Scui *parent);
 
    // explicit Progressbar(QWidget *parent = nullptr);
     //~Progressbar();

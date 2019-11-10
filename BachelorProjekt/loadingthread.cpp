@@ -6,12 +6,12 @@
 #include <qfiledialog.h>
 #include "mha_io.h"
 #include "cbctrecon_io.h"
-#include "mainwindow.h"
+#include "scui.h"
 
 
 
 
-LoadingThread::LoadingThread(MainWindow *parent) : QThread(dynamic_cast<QObject*>(parent))
+LoadingThread::LoadingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))
 {
     this->m_cbctrecon = parent->m_cbctrecon.get();
     this->m_cbctregistration = parent->m_cbctregistration.get();
@@ -522,7 +522,7 @@ void LoadingThread::UpdateReconImage(UShortImageType::Pointer &spNewImg,
   emit Signal_ReConnectSlider(initVal);
 }
 
-// Is implemented in SLT_DrawProjImages() in MainWindow
+// Is implemented in SLT_DrawProjImages() in Scui
 void LoadingThread::SLT_UpdateTable() {
 
   // In Andreases code this was aldready checked so we outcommet this one (radioButton_graph_proj)

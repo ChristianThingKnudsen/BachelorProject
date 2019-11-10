@@ -55,7 +55,7 @@
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>SCUI Information </string>
+        <string>Scui Information </string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
