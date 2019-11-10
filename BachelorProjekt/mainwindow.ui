@@ -1545,7 +1545,7 @@ QPushButton:pressed{
    <sender>btnScatterCorrect</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>SLT_StartScatterCorrectThread()</slot>
+   <slot>SLT_StartScatterCorrectingThread()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>123</x>
@@ -1789,7 +1789,7 @@ QPushButton:pressed{
   <slot>SLT_DecreaseSliderValue()</slot>
   <slot>SLT_IncreaseSliderValue()</slot>
   <slot>SLT_StartLoadingThread()</slot>
-  <slot>SLT_StartScatterCorrectThread()</slot>
+  <slot>SLT_StartScatterCorrectingThread()</slot>
   <slot>SLT_WEPLcalc()</slot>
   <slot>SLT_UpdateLabelRaw(QString)</slot>
   <slot>SLT_UpdateLabelCor(QString)</slot>

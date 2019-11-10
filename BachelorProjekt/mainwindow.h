@@ -11,7 +11,7 @@
 #include "cbctregistration_test.hpp"
 #include "progressbar.h"
 //#include "loadingthread.h"
-//#include "scattercorrectthread.h"
+//#include "scattercorrectingthread.h"
 //#include "DlgRegistration.h"
 
 //Qt
@@ -22,7 +22,7 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class LoadingThread;
-class ScatterCorrectThread;
+class ScatterCorrectingThread;
 
 class MainWindow : public QMainWindow
 {
@@ -50,7 +50,7 @@ public:
   void whenFixedImgLoaded() const;
   //Threads
   LoadingThread *lThread;
-  ScatterCorrectThread *scThread;
+  ScatterCorrectingThread *scThread;
 
 public slots:
     void SLT_LoadRawImages(){}; // independent 2d projection files //not used in
@@ -150,7 +150,7 @@ public slots:
     void SLT_DecreaseSliderValue();
     void SLT_StartLoadingThread();
     void SLT_ShowMessageBox(int, QString, QString);
-    void SLT_StartScatterCorrectThread();
+    void SLT_StartScatterCorrectingThread();
     void SLT_InitializeSlider(FDK_options);
     void SLT_SetButtonsAfterLoad();
     void SLT_UpdateSlider(int);

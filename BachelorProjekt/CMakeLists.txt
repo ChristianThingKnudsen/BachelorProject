@@ -55,8 +55,8 @@ add_executable(BachelorProjekt
   MyQComboBox.hxx
   loadingthread.h
   loadingthread.cpp
-  scattercorrectthread.cpp
-  scattercorrectthread.h
+  scattercorrectingthread.cpp
+  scattercorrectingthread.h
 )
 
 if(USE_OPENCL)

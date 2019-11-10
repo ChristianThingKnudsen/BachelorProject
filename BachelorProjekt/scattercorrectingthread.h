@@ -1,5 +1,5 @@
-#ifndef SCATTERCORRECTTHREAD_H
-#define SCATTERCORRECTTHREAD_H
+#ifndef SCATTERCORRECTINGTHREAD_H
+#define SCATTERCORRECTINGTHREAD_H
 
 #include <QThread>
 
@@ -7,12 +7,12 @@
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
 
-class ScatterCorrectThread : public QThread
+class ScatterCorrectingThread : public QThread
 {
     Q_OBJECT
 public:
     // For threading
-    explicit ScatterCorrectThread(MainWindow *parent=nullptr);
+    explicit ScatterCorrectingThread(MainWindow *parent=nullptr);
     void run();
     bool Stop;
 
@@ -52,4 +52,4 @@ private:
     int m_enViewArrange{};
 };
 
-#endif // SCATTERCORRECTTHREAD_H
+#endif // SCATTERCORRECTINGTHREAD_H

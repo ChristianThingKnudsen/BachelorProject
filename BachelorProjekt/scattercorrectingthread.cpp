@@ -1,4 +1,4 @@
-#include "scattercorrectthread.h"
+#include "scattercorrectingthread.h"
 
 #include <QThread>
 #include <QtCore>
@@ -16,13 +16,13 @@ enum enCOLOR {
   GREEN,
 };
 
-ScatterCorrectThread::ScatterCorrectThread(MainWindow *parent) : QThread(dynamic_cast<QObject*>(parent))
+ScatterCorrectingThread::ScatterCorrectingThread(MainWindow *parent) : QThread(dynamic_cast<QObject*>(parent))
 {
     this->m_parent = parent;
     this->m_cbctrecon = parent->m_cbctrecon.get();
     this->m_cbctregistration = parent->m_cbctregistration.get();
 }
-void ScatterCorrectThread::run(){
+void ScatterCorrectingThread::run(){
     emit Signal_FixedImageSelected(QString("RAW_CBCT"));
     emit Signal_UpdateLabelCor(QString("Raw CBCT"));
     emit Signal_MovingImageSelected(QString("MANUAL_RIGID_CT"));
@@ -32,7 +32,7 @@ void ScatterCorrectThread::run(){
     this->SLT_DoRegistrationRigid();
 }
 
-void ScatterCorrectThread::SLT_ManualMoveByDCMPlanOpen() {
+void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() {
   auto filePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan\\RN.1.2.246.352.71.5.361940808526.11351.20190611075823.dcm");
   /*
   auto filePath = QFileDialog::getOpenFileName(
@@ -65,7 +65,7 @@ void ScatterCorrectThread::SLT_ManualMoveByDCMPlanOpen() {
   m_parent->ImageManualMoveOneShot(static_cast<float>(planIso.x),static_cast<float>(planIso.y),static_cast<float>(planIso.z));
 }
 
-void ScatterCorrectThread::SLT_ConfirmManualRegistration() {
+void ScatterCorrectingThread::SLT_ConfirmManualRegistration() {
   if (m_parent->m_spFixedImg == nullptr || m_parent->m_spMovingImg == nullptr) {
     return;
   }
@@ -131,7 +131,7 @@ void ScatterCorrectThread::SLT_ConfirmManualRegistration() {
 
 
 // External method implemented from DlgRegistration
-void ScatterCorrectThread::SLT_DoRegistrationRigid() // plastimatch auto registration
+void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto registration
 {
   // 1) Save current image files
    // m_spFixedImg replaced with m_spRawReconImg and m_spMovingImg replaced with m_spRefCTImg
@@ -288,7 +288,7 @@ void ScatterCorrectThread::SLT_DoRegistrationRigid() // plastimatch auto registr
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DoRegistrationRegid
-void ScatterCorrectThread::SLT_KeyMoving(const bool bChecked) // Key Moving check box
+void ScatterCorrectingThread::SLT_KeyMoving(const bool bChecked) // Key Moving check box
 {
   // In Andreases code he uses checkboxes therefore this is outcommented (radioButton_mse)
   //this->ui.lineEditMovingResol->setDisabled(bChecked);
@@ -298,7 +298,7 @@ void ScatterCorrectThread::SLT_KeyMoving(const bool bChecked) // Key Moving chec
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_MovingImageSelected
-ctType ScatterCorrectThread::get_ctType(const QString &selText) {
+ctType ScatterCorrectingThread::get_ctType(const QString &selText) {
   if (selText.compare("REF_CT") == 0) {
     return PLAN_CT;
   }
@@ -391,7 +391,7 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when deform registraion button is pushed. Find out where to implement this!
 
-void ScatterCorrectThread::SLT_DoRegistrationDeform() {
+void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   if (m_cbctrecon->m_spRawReconImg == nullptr || m_cbctrecon->m_spRefCTImg == nullptr) {
     return;
   }
@@ -634,7 +634,7 @@ void ScatterCorrectThread::SLT_DoRegistrationDeform() {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when norm CBCT button is pushed. Find out where to implement this!
-void ScatterCorrectThread::SLT_IntensityNormCBCT() {
+void ScatterCorrectingThread::SLT_IntensityNormCBCT() {
   //This code is added by us and is found from the callback from the comboboxes.
   emit Signal_FixedImageSelected(QString("RAW_CBCT"));
   emit Signal_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
@@ -670,7 +670,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT() {
   SLT_DoScatterCorrection_APRIORI();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
+void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() {
   //This code is adde by us and is found from the callback from the comboboxes.
   emit Signal_FixedImageSelected(QString("COR_CBCT"));
   emit Signal_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
@@ -713,7 +713,7 @@ void ScatterCorrectThread::SLT_IntensityNormCBCT_COR_CBCT() {
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when Scatter correct button is pushed. Find out where to implement this!
-void ScatterCorrectThread::SLT_DoScatterCorrection_APRIORI() {
+void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
   emit Signal_UpdateProgressBarSC(70);
   if ((this->m_cbctrecon->m_spRefCTImg == nullptr &&
        m_parent->m_spMovingImg == nullptr) ||//m_dlgRegistration->m_spMovingImg == nullptr) ||
@@ -876,7 +876,7 @@ this->ui.radioButton_UseCUDA->isChecked(),
 // Automatise that
 
 // Is implemented in SLT_LoadSelectedProjFiles()
-void ScatterCorrectThread::SLT_InitializeGraphLim() const {
+void ScatterCorrectingThread::SLT_InitializeGraphLim() const {
   // In Andreases code this was checked so we keep this one (radioButton_graph_proj)
   // Set Max Min at graph
   if (true){//this->ui.radioButton_graph_proj->isChecked()) {
@@ -944,7 +944,7 @@ void ScatterCorrectThread::SLT_InitializeGraphLim() const {
   }
   */
 }
-FDK_options ScatterCorrectThread::getFDKoptions() const {
+FDK_options ScatterCorrectingThread::getFDKoptions() const {
   FDK_options fdk_options;
   // In Andreases code this was initialized as 1.0
   fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble();

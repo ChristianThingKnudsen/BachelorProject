@@ -17,7 +17,7 @@
 //Local
 #include "cbctrecon_io.h"
 #include "loadingthread.h"
-#include "scattercorrectthread.h"
+#include "scattercorrectingthread.h"
 
 //For loading CBCTRecon
 #include <iostream>
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) // Constructor
     connect(lThread,SIGNAL(finished()),lThread,SLOT(quit()));
 
 
-    scThread = new ScatterCorrectThread(this);
+    scThread = new ScatterCorrectingThread(this);
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
     connect(scThread,SIGNAL(SignalPassFixedImg(QString)),this, SLOT(SLT_PassFixedImgForAnalysis(QString)));
@@ -138,7 +138,7 @@ void MainWindow::SLT_StartLoadingThread(){
     lThread->start();
 }
 
-void MainWindow::SLT_StartScatterCorrectThread(){
+void MainWindow::SLT_StartScatterCorrectingThread(){
     scThread->start();
 }
 
