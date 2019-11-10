@@ -6,10 +6,8 @@
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
 
-
 //QT
 #include <QStandardItemModel>
-
 
 class LoadingThread : public QThread
 {
@@ -21,8 +19,6 @@ public:
     bool Stop;
 
     // Relevant variables
-    //std::unique_ptr<CbctRecon> m_cbctrecon;
-
     CbctRecon* m_cbctrecon;
     CbctRegistration* m_cbctregistration; // just for convienience
     std::unique_ptr<QStandardItemModel> m_pTableModel;
@@ -48,10 +44,7 @@ private slots:
     void SLT_DoBowtieCorrection();
     void SLT_InitializeGraphLim() const;
     void SLT_DoReconstruction();
-    //void SLT_DrawReconImage();
     void SLT_UpdateTable();
-
-
 
 signals:
     void SignalMessageBox(int, QString,QString);
@@ -62,9 +55,4 @@ signals:
     void Signal_ReConnectSlider(int);
     void Signal_UpdateProgressBarLoad(int);
 };
-
-
-
-
-
 #endif // LOADINGTHREAD_H

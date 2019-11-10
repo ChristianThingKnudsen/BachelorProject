@@ -1793,5 +1793,7 @@ QPushButton:pressed{
   <slot>SLT_WEPLcalc()</slot>
   <slot>SLT_UpdateLabelRaw(QString)</slot>
   <slot>SLT_UpdateLabelCor(QString)</slot>
+  <slot>UpdateVOICombobox(const ctType)</slot>
+  <slot>ShowMessageBox(int, QString, Qstring)</slot>
  </slots>
 </ui>

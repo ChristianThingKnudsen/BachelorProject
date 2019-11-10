@@ -33,7 +33,6 @@ public:
     ~MainWindow();
 
 public:
-  //CbctRecon* myCBCT;
   std::unique_ptr<CbctRecon> m_cbctrecon;
   std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
   std::unique_ptr<QStandardItemModel> m_pTableModel;
@@ -49,18 +48,11 @@ public:
   void UpdateVOICombobox(const ctType ct_type) const;
   ctType get_ctType(const QString &selText);
   void whenFixedImgLoaded() const;
-
-
   //Threads
   LoadingThread *lThread;
   ScatterCorrectThread *scThread;
 
-
 public slots:
-
-    //void showProgressBar(std::text, std:_updateTime) {}
-    //Methods imported from CBCTRecon
-
     void SLT_LoadRawImages(){}; // independent 2d projection files //not used in
                               // clinical case
     void SLT_Load3DImage(){};   // indenepndent 3D mha file. UshortFormat. Do
@@ -73,8 +65,6 @@ public slots:
     void SLT_LoadCTrigidMHA(){};
     void SLT_LoadCTdeformMHA(){};
     void SLT_LoadNKIImage(){};
-    void SLT_LoadSelectedProjFiles(QString &path); // based on presetting values on GUI,
-                                      // including geometry files
     void SLT_ReloadProjections(){};
     void SLT_ExportHis(){};
 
@@ -98,19 +88,12 @@ public slots:
     void SLT_ApplyCalibration() const{};
 
     // Gain/ Offset correction
-    void SLT_SetHisDir();
     void SLT_OpenElektaGeomFile();
     void SLT_SetOutputPath(){};
-    void SLT_DoReconstruction();
-    // Profile table
-    // void SLT_GetProjectionProfile();
-    // void SLT_GetReconImgProfile(){};
     void SLT_CopyTableToClipBoard() const{};
     void SLT_DataProbeProj() const{};
     void SLT_DataProbeRecon() const{};
     void SLT_DrawGraph() const {};
-    void SLT_InitializeGraphLim() const;
-    void SLT_UpdateTable();
     void SLT_CalculateROI_Recon(){};
     void SLT_CalculateROI_Proj(){};
     void SLT_GoForcedProbePos(){};
@@ -121,12 +104,9 @@ public slots:
     void SLT_ExportReconSHORT_HU(){};
     void SLT_ExportALL_DCM_and_SHORT_HU_and_calc_WEPL(){};
     void SLT_DoBHC(){};
-    void SLT_DoBowtieCorrection();
     void SLT_Export2DDose_TIF(){};
     void SLTM_Export2DDoseMapAsMHA(){};
-    void SLT_ViewRegistration() const;
     void SLT_ViewHistogram() const{};
-    void SLT_DoScatterCorrection_APRIORI();
     void SLT_CalcAndSaveAngularWEPL(){};
     void SLT_DoScatterCorrectionUniform(){};
     void SLT_FileExportShortDICOM_CurrentImg(){};
@@ -158,22 +138,16 @@ public slots:
     void SLT_OutPathEdited() const{};  
     void SLT_SaveCurrentSetting() const{};
     void SLT_CropSupInf(){};
-
-    void SLT_DoRegistrationRigid();
-    void SLT_KeyMoving(const bool bChecked);
     void SLT_FixedImageSelected(QString selText);
     void SLT_MovingImageSelected(QString selText);
     void SLT_DrawImageWhenSliceChange();
     void SLT_DrawImageInFixedSlice() const;
-    void SLT_DoRegistrationDeform();
-    void SLT_IntensityNormCBCT();
     void SLT_OpenInfo();
     void SLT_OpenAdvancedMode();
     void SLT_Exit();
     void SLT_PreProcessCT();
     void SLT_IncreaseSliderValue();
     void SLT_DecreaseSliderValue();
-    void SLT_IntensityNormCBCT_COR_CBCT();
     void SLT_StartLoadingThread();
     void SLT_ShowMessageBox(int, QString, QString);
     void SLT_StartScatterCorrectThread();
@@ -187,19 +161,11 @@ public slots:
     void ImageManualMoveOneShot(
             const float shiftX, const float shiftY,
             const float shiftZ);
-    void SLT_ManualMoveByDCMPlanOpen();
     void SLT_PassFixedImgForAnalysis(QString);
     void SLT_UpdateProgressBarLoad(int);
     void SLT_UpdateProgressBarSC(int);
     void SLT_SCThreadIsDone();
     void SLT_WEPLcalc();
-
-/*
-private:
-    void on_btnLoadCT_clicked();
-
-    void on_btnInfo_clicked();
-    */
 
 private:
     Ui::MainWindow *ui;
@@ -215,8 +181,6 @@ public:
     AG17RGBAImage *m_DoseImgFixed;
     AG17RGBAImage *m_DoseImgMoving;
     AG17RGBAImage *m_AGDisp_Overlay;
-    Progressbar *progressbar;
-
-
+    //Progressbar *progressbar;
 };
 #endif // MAINWINDOW_H
