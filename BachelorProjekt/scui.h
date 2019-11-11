@@ -51,6 +51,7 @@ public:
   //Threads
   LoadingThread *lThread;
   ScatterCorrectingThread *scThread;
+  bool scatterCorrectingIsDone = false;
 
 public slots:
     void SLT_LoadRawImages(){}; // independent 2d projection files //not used in
@@ -165,7 +166,8 @@ public slots:
     void SLT_UpdateProgressBarLoad(int);
     void SLT_UpdateProgressBarSC(int);
     void SLT_SCThreadIsDone();
-    void SLT_WEPLcalc();
+    void SLT_WEPLcalc(QString);
+    void on_comboBoxWEPL_currentIndexChanged(const QString &arg1);
 
 private:
     Ui::Scui *ui;
@@ -182,5 +184,7 @@ public:
     AG17RGBAImage *m_DoseImgMoving;
     AG17RGBAImage *m_AGDisp_Overlay;
     //Progressbar *progressbar;
+private slots:
+
 };
 #endif // MAINWINDOW_H

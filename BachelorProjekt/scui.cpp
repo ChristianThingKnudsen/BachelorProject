@@ -34,6 +34,7 @@ Scui::Scui(QWidget *parent) // Constructor
 
 {   
     ui->setupUi(this);
+
     ui->comboBox_region->addItem("Head-Neck");
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
@@ -196,14 +197,14 @@ void Scui::SLT_UpdateProgressBarSC(int progress){
     ui->progressBarSC->setValue(progress);
 }
 void Scui::SLT_SCThreadIsDone(){
+    scatterCorrectingIsDone = true;
     ui->btnScatterCorrect->setEnabled(false);
     ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->comboBoxWEPL->setEnabled(true);
-    ui->btnWEPL->setEnabled(true);
-    ui->btnWEPL->setStyleSheet("QPushButton{background-color: #1367AB;font-weight: bold;color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
     ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
     ui->comboBoxWEPL->setEnabled(true);
     ui->comboBoxWEPL->setCurrentIndex(0);
+    SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1072,9 +1073,9 @@ void Scui::SLT_PassFixedImgForAnalysis(QString cur_fixed) {
   }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_WEPLcalc() {
+void Scui::SLT_WEPLcalc(QString structure) {
   //Get VIO
-  const auto voi_name = ui->comboBoxWEPL->currentText().toStdString();
+  const auto voi_name = structure.toStdString();
 
   const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
   const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
@@ -1090,3 +1091,12 @@ void Scui::SLT_WEPLcalc() {
   // Draw WEPL
   SLT_DrawImageWhenSliceChange();
 }
+
+void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &arg1)
+{
+    if(scatterCorrectingIsDone){
+        SLT_WEPLcalc(arg1);
+    }
+
+}
+

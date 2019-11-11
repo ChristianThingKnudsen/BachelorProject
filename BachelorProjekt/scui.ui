@@ -1088,49 +1088,6 @@ QComboBox::down-arrow {
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="btnWEPL">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>170</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>170</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
-	background-color: rgba(19,103,171,60%);
-	font-weight: bold;
-	color: rgba(255,255,255,60%);
-	font-size: 18px;
-	border-width: 1.4px;
-	border-color: rgba(0,0,0,60%);
-	border-style: solid;
-	border-radius: 7px;
-}
-QPushButton:pressed{
-	background-color: #E4A115
-}</string>
-            </property>
-            <property name="text">
-             <string>WEPL</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -1678,22 +1635,6 @@ QPushButton:pressed{
     <hint type="sourcelabel">
      <x>1011</x>
      <y>304</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>542</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnWEPL</sender>
-   <signal>pressed()</signal>
-   <receiver>Scui</receiver>
-   <slot>SLT_WEPLcalc()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>101</x>
-     <y>381</y>
     </hint>
     <hint type="destinationlabel">
      <x>542</x>
