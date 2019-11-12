@@ -38,9 +38,7 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->comboBox_region->addItem("Head-Neck");
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
-
     ui->comboBoxWEPL->addItem("No structures");
-
     // Icon for Load Data
     QPixmap pixmapLoad("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\upload.png");
     QIcon ButtonLoad(pixmapLoad);
@@ -72,7 +70,6 @@ Scui::Scui(QWidget *parent) // Constructor
 
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
-    //connect(lThread,SIGNAL(Signal_FDKoptions(FDK_options)),this,SLOT(SLT_SetSlider())); //???
     connect(lThread,SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
     connect(lThread,SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
     connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
@@ -136,6 +133,10 @@ void Scui::SLT_DecreaseSliderValue() // Is called when the - button is pushed
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 void Scui::SLT_StartLoadingThread(){
+    //SLT_GetCBCTPath();
+    CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
+    //SLT_GetCTPath();
+    CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
     lThread->start();
 }
 
@@ -1100,3 +1101,14 @@ void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &arg1)
 
 }
 
+void Scui::SLT_GetCBCTPath(){
+    CBCTPath = QFileDialog::getExistingDirectory(
+        this, tr("Open Directory with CBCT"), this->m_cbctrecon->m_strPathDirDefault,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+}
+void Scui::SLT_GetCTPath(){
+    CTPath = QFileDialog::getExistingDirectory(
+        this, tr("Open CT DICOM Directory"), this->m_cbctrecon->m_strPathDirDefault,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+}

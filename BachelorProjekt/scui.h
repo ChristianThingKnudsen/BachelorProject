@@ -168,6 +168,8 @@ public slots:
     void SLT_SCThreadIsDone();
     void SLT_WEPLcalc(QString);
     void on_comboBoxWEPL_currentIndexChanged(const QString &arg1);
+    void SLT_GetCBCTPath();
+    void SLT_GetCTPath();
 
 private:
     Ui::Scui *ui;
@@ -183,6 +185,8 @@ public:
     AG17RGBAImage *m_DoseImgFixed;
     AG17RGBAImage *m_DoseImgMoving;
     AG17RGBAImage *m_AGDisp_Overlay;
+    QString CBCTPath = QString("");
+    QString CTPath = QString("");
     //Progressbar *progressbar;
 private slots:
 

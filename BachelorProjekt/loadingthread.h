@@ -16,7 +16,8 @@ public:
     // For threading
     explicit LoadingThread(Scui *parent=nullptr);
     void run();
-    bool Stop;
+    Scui* m_parent;
+    bool Stop = false;
 
     // Relevant variables
     CbctRecon* m_cbctrecon;

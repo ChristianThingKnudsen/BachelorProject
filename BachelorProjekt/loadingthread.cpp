@@ -13,6 +13,7 @@
 
 LoadingThread::LoadingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))
 {
+    this->m_parent = parent;
     this->m_cbctrecon = parent->m_cbctrecon.get();
     this->m_cbctregistration = parent->m_cbctregistration.get();
 }
@@ -24,15 +25,7 @@ void LoadingThread::run(){
 void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
 {
   // Initializing..
-
-   // When we are testing we don't want to use file dialogs and this has therefore been commented out.
-  auto dirPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
-  /*
-  // Set folder --> then use RTK HIS Reader
-  auto dirPath = QFileDialog::getExistingDirectory(
-      this, tr("Open Directory"), "C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550",//this->m_cbctrecon->m_strPathDirDefault,
-      QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-      */
+  auto dirPath = m_parent->CBCTPath;
 
   if (dirPath.length() <= 1) {
     return;
@@ -103,12 +96,7 @@ QString getBowtiePath(QWidget *parent, const QDir &calDir) {
 //Is needed for the next method SLT_LoadSelectedProjFiles()
 std::tuple<bool, bool> LoadingThread::probeUser(const QString &guessDir) {
   // When we are testing we don't want to use file dialogs and this has therefore been commented out.
-  auto dirPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
-  /*
-  auto dirPath = QFileDialog::getExistingDirectory(
-      this, tr("Open CT DICOM Directory"), guessDir,
-      QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-      */
+  auto dirPath = m_parent->CTPath;
 
   auto dcm_success = false;
   if (!(dirPath.length() <= 1)) {
