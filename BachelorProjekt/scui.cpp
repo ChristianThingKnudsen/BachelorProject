@@ -18,6 +18,7 @@
 #include "cbctrecon_io.h"
 #include "loadingthread.h"
 #include "scattercorrectingthread.h"
+#include "weplthread.h"
 
 //For loading CBCTRecon
 #include <iostream>
@@ -95,6 +96,11 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(scThread,SIGNAL(Signal_ImageManualMoveOneShot(float,float,float)),this,SLOT(ImageManualMoveOneShot(const float,const float,const float)));
     connect(scThread,SIGNAL(finished()),lThread,SLOT(quit()));
 
+    weplThread = new WEPLThread(this);
+    connect(weplThread,SIGNAL(Signal_DrawWEPL()),this,SLOT(SLT_DrawImageWhenSliceChange()));
+    connect(weplThread,SIGNAL(finished()),lThread,SLOT(quit()));
+
+
 }
 
 Scui::~Scui() // Destructor
@@ -102,6 +108,7 @@ Scui::~Scui() // Destructor
     delete ui;
     delete lThread;
     delete scThread;
+    delete weplThread;
 }
 void Scui::SLT_OpenInfo() // Is called when the info button is pushed
 {
@@ -144,6 +151,10 @@ void Scui::SLT_StartLoadingThread(){
 
 void Scui::SLT_StartScatterCorrectingThread(){
     scThread->start();
+}
+
+void Scui::SLT_StartWEPLThread(){
+    weplThread->start();
 }
 
 void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){
@@ -208,6 +219,8 @@ void Scui::SLT_SCThreadIsDone(){
     ui->comboBoxWEPL->setEnabled(true);
     ui->comboBoxWEPL->setCurrentIndex(0);
     SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
+    ui->comboBoxPlanView->setEnabled(true);
+    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1096,9 +1109,10 @@ void Scui::SLT_WEPLcalc(QString structure) {
 }
 
 void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &arg1)
-{
+{ 
     if(scatterCorrectingIsDone){
-        SLT_WEPLcalc(arg1);
+        Structure = arg1;
+        SLT_StartWEPLThread();
     }
 
 }
@@ -1112,5 +1126,4 @@ void Scui::SLT_GetCTPath(){
     CTPath = QFileDialog::getExistingDirectory(
         this, tr("Open CT DICOM Directory"), this->m_cbctrecon->m_strPathDirDefault,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-
 }

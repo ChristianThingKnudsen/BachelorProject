@@ -23,6 +23,7 @@ QT_END_NAMESPACE
 
 class LoadingThread;
 class ScatterCorrectingThread;
+class WEPLThread;
 
 class Scui : public QMainWindow
 {
@@ -51,6 +52,7 @@ public:
   //Threads
   LoadingThread *lThread;
   ScatterCorrectingThread *scThread;
+  WEPLThread *weplThread;
   bool scatterCorrectingIsDone = false;
 
 public slots:
@@ -170,6 +172,7 @@ public slots:
     void on_comboBoxWEPL_currentIndexChanged(const QString &arg1);
     void SLT_GetCBCTPath();
     void SLT_GetCTPath();
+    void SLT_StartWEPLThread();
 
 private:
     Ui::Scui *ui;
@@ -187,6 +190,7 @@ public:
     AG17RGBAImage *m_AGDisp_Overlay;
     QString CBCTPath = QString("");
     QString CTPath = QString("");
+    QString Structure = QString("");
     //Progressbar *progressbar;
 private slots:
 

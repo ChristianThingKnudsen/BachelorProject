@@ -57,6 +57,8 @@ add_executable(BachelorProjekt
   loadingthread.cpp
   scattercorrectingthread.cpp
   scattercorrectingthread.h
+  weplthread.cpp
+  weplthread.h
 )
 
 if(USE_OPENCL)
