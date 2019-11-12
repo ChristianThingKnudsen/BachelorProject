@@ -39,6 +39,8 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
     ui->comboBoxWEPL->addItem("No structures");
+    ui->comboBoxPlanView->addItem("Axial");
+    ui->comboBoxPlanView->addItem("Frontal");
     // Icon for Load Data
     QPixmap pixmapLoad("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\upload.png");
     QIcon ButtonLoad(pixmapLoad);
