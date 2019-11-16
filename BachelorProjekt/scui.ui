@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1085</width>
-    <height>526</height>
+    <width>1714</width>
+    <height>809</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -203,8 +203,8 @@ QPushButton:pressed{
            </property>
            <property name="minimumSize">
             <size>
-             <width>256</width>
-             <height>256</height>
+             <width>675</width>
+             <height>675</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -271,8 +271,8 @@ QPushButton:pressed{
            </property>
            <property name="minimumSize">
             <size>
-             <width>256</width>
-             <height>256</height>
+             <width>675</width>
+             <height>675</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -1423,6 +1423,35 @@ QComboBox::down-arrow {
             </property>
             <property name="currentText">
              <string/>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QProgressBar" name="progressBarWEPL">
+            <property name="minimumSize">
+             <size>
+              <width>170</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>170</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QProgressBar{
+border: 1px solid transparent;
+font-weight: bold;
+text-align: center;
+color:rgba(255,255,255,70%);
+border-radius: 5px;
+background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(182, 182, 182, 100), stop:1 rgba(209, 209, 209, 100));
+}                               </string>
+            </property>
+            <property name="value">
+             <number>0</number>
             </property>
            </widget>
           </item>

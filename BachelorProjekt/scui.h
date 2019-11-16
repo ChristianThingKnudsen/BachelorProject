@@ -173,6 +173,8 @@ public slots:
     void SLT_GetCBCTPath();
     void SLT_GetCTPath();
     void SLT_StartWEPLThread();
+    void SLT_DrawReconInFixedSlice();
+    void SLT_UpdateProgressBarWEPL(int progress);
 
 private:
     Ui::Scui *ui;
@@ -191,8 +193,11 @@ public:
     QString CBCTPath = QString("");
     QString CTPath = QString("");
     QString Structure = QString("");
+    int View =0;
     //Progressbar *progressbar;
+    //UShortImageType::Pointer tempImg;
 private slots:
 
+    void on_comboBoxPlanView_currentIndexChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H

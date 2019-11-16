@@ -28,6 +28,7 @@ public slots:
     ctType get_ctType(const QString &selText);
 signals:
     void Signal_DrawWEPL();
+    void Signal_UpdateProgressBarWEPL(int);
 };
 
 #endif // WEPLTHREAD_H
