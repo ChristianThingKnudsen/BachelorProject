@@ -24,7 +24,7 @@
 #include <iostream>
 #include <shellapi.h>
 
-enum enCOLOR {
+enum enCOLOR { // Colors for WEPL display
   RED,
   BLUE,
 };
@@ -34,15 +34,21 @@ Scui::Scui(QWidget *parent) // Constructor
     , ui(new Ui::Scui)
 
 {   
-    ui->setupUi(this);
+    ui->setupUi(this); // Sets up the ui
 
+    // Adding ellements to the threatment region combobox
     ui->comboBox_region->addItem("Head-Neck");
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
+
+    // Initialising the structure combobox
     ui->comboBoxWEPL->addItem("No structures");
+
+    // Adding elements to the plan view combobox
     ui->comboBoxPlanView->addItem("Axial");
     ui->comboBoxPlanView->addItem("Frontal");
     ui->comboBoxPlanView->addItem("Sagital");
+
     // Icon for Load Data
     QPixmap pixmapLoad("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\upload.png");
     QIcon ButtonLoad(pixmapLoad);
@@ -55,27 +61,28 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->btnInfo->setIcon(ButtonInfo);
     ui->btnInfo->setIconSize(QSize(30,30));
 
-    //Color for combobox
+    //Color for combobox // Maybe not used..
     QPalette p = ui->comboBox_region->palette();
     p.setColor(QPalette::Highlight, Qt::transparent);
     ui->comboBox_region->setPalette(p);
 
-    this->m_cbctrecon = std::make_unique<CbctRecon>();
+    this->m_cbctrecon = std::make_unique<CbctRecon>(); // Creates a unique object of cbctrecon
     this->m_cbctregistration =
-        std::make_unique<CbctRegistration>(this->m_cbctrecon.get());
+        std::make_unique<CbctRegistration>(this->m_cbctrecon.get()); // Creates a unique object of cbctregistration
 
-    m_YKImgFixed = &m_cbctregistration->m_YKImgFixed[0];
-    m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];
-    m_YKDisp = &m_cbctregistration->m_YKDisp[0];
+    m_YKImgFixed = &m_cbctregistration->m_YKImgFixed[0]; // Pointer for display only
+    m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];// Pointer for display only
+    m_YKDisp = &m_cbctregistration->m_YKDisp[0];// Pointer for display only
 
     m_YKDispRaw = &m_cbctregistration->m_YKDisp[0];
     m_YKImgRawFixed = &m_cbctregistration->m_YKImgFixed[0];
     m_YKImgRawMoving = &m_cbctregistration->m_YKImgMoving[0];
 
-    m_DoseImgFixed = &m_cbctregistration->m_DoseImgFixed[0];
-    m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0];
-    m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0];
+    m_DoseImgFixed = &m_cbctregistration->m_DoseImgFixed[0]; // Pointer for display only
+    m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0]; // Pointer for display only
+    m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0]; // Pointer for display only
 
+    //Loading thread and signals:
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
     connect(lThread,SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
@@ -84,14 +91,12 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
     connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
     connect(lThread,SIGNAL(Signal_LThreadIsDone()),this,SLOT(SLT_LThreadIsDone()));
-    //connect(lThread,SIGNAL(finished()),lThread,SLOT(quit()));
 
-
+    //Scatter correcting thread and signals:
     scThread = new ScatterCorrectingThread(this);
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
     connect(scThread,SIGNAL(SignalPassFixedImg(QString)),this, SLOT(SLT_PassFixedImgForAnalysis(QString)));
-
     connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
     connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
@@ -100,14 +105,11 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(scThread,SIGNAL(Signal_FixedImageSelected(QString)),this,SLOT(SLT_FixedImageSelected(QString)));
     connect(scThread,SIGNAL(Signal_MovingImageSelected(QString)),this,SLOT(SLT_MovingImageSelected(QString)));
     connect(scThread,SIGNAL(Signal_ImageManualMoveOneShot(float,float,float)),this,SLOT(ImageManualMoveOneShot(const float,const float,const float)));
-    //connect(scThread,SIGNAL(finished()),lThread,SLOT(quit()));
 
+    //WEPL thread and signals:
     weplThread = new WEPLThread(this);
     connect(weplThread,SIGNAL(Signal_DrawWEPL()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(weplThread,SIGNAL(Signal_UpdateProgressBarWEPL(int)),this,SLOT(SLT_UpdateProgressBarWEPL(int)));
-    //connect(weplThread,SIGNAL(finished()),lThread,SLOT(quit()));
-
-
 }
 
 Scui::~Scui() // Destructor
@@ -117,34 +119,42 @@ Scui::~Scui() // Destructor
     delete scThread;
     delete weplThread;
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------UI methods ----------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 void Scui::SLT_OpenInfo() // Is called when the info button is pushed
 {
     InformationWindow infoWindow;
     infoWindow.setModal(true);
     infoWindow.exec();
-    ui->labelImageRaw->resize(675,675);
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_OpenAdvancedMode() // Is called when the advanced button is pushed
 {
     //Link: https://stackoverflow.com/questions/15435994/how-do-i-open-an-exe-from-another-c-exe
     ShellExecute(NULL, "open", "C:\\Users\\ct-10\\CbctRecon\\build-vs19-mt\\bin\\CbctRecon.exe", NULL, NULL, SW_MAXIMIZE);
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_Exit() // Is called when the exit button is pushed
 {
     delete ui;
-    delete ui;
+    delete ui; // Needs to delete to times before this is working...
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_IncreaseSliderValue() // Is called when the + button is pushed
 {
     auto curValue = ui->verticalSlider->value();
     ui->verticalSlider->setValue(curValue+1);
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_DecreaseSliderValue() // Is called when the - button is pushed
 {
     auto curValue = ui->verticalSlider->value();
     ui->verticalSlider->setValue(curValue-1);
 }
-void Scui::SLT_SliderValueChanged(){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_SliderValueChanged(){ // Is called when the slider value changes
     if(scatterCorrectingIsDone){
         SLT_DrawReconImageInSlices();
         SLT_DrawImageWhenSliceChange();
@@ -153,148 +163,142 @@ void Scui::SLT_SliderValueChanged(){
         SLT_DrawImageWhenSliceChange();
     }
 }
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------Threading methods -----------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &planView) // Is called when an item is chosen in the plan view
+{
+    if(scatterCorrectingIsDone){
 
+    if(planView.compare("Axial") == 0){
+        View = 0;
+      }
+    else if (planView.compare("Frontal") == 0){
+        View = 1;
+    }
+    else if (planView.compare("Sagital") == 0){
+        View = 2;
+    }
+    SLT_SliderValueChanged();
+    }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure) // Is called when a new structure is chosen
+{
+    if(scatterCorrectingIsDone){
+        Structure = structure;
+        SLT_StartWEPLThread();
+    }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------Loading methods ---------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_StartLoadingThread(){
     //SLT_GetCBCTPath();
+    // Only used for testing
     CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
     //SLT_GetCTPath();
+    // Only used for testing
     CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
     ui->btnLoadData->setEnabled(false);
     lThread->start();
 }
-
-void Scui::SLT_StartScatterCorrectingThread(){
-    ui->comboBox_region->setEnabled(false);
-    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-    ui->btnScatterCorrect->setEnabled(false);
-    scThread->start();
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_GetCBCTPath(){
+    CBCTPath = QFileDialog::getExistingDirectory(
+        this, tr("Open Directory with CBCT"), this->m_cbctrecon->m_strPathDirDefault,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 }
-
-void Scui::SLT_StartWEPLThread(){
-    weplThread->start();
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_GetCTPath(){
+    CTPath = QFileDialog::getExistingDirectory(
+        this, tr("Open CT DICOM Directory"), this->m_cbctrecon->m_strPathDirDefault,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 }
-
-void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){
-
-    if(idx == 1){
-        QMessageBox::warning(this, header, message);
-        return;
-    }
-    QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
-    return;
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateProgressBarLoad(int progress){ // Updates the loading progressbar
+    ui->progressBarLoad->setValue(progress);
 }
-
-void Scui::SLT_InitializeSlider(FDK_options fdkoptions){
-    this->ui->verticalSlider->setMinimum(1);//this->ui.spinBoxReconImgSliceNo->setMinimum(0);
-    this->ui->verticalSlider->setMaximum(fdkoptions.ct_size[1] - 1);//this->ui.spinBoxReconImgSliceNo->setMaximum(fdk_options.ct_size[1] - 1);
-    this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(qRound(fdkoptions.ct_size[1] / 2.0)));
-    this->ui->verticalSlider->setValue(qRound(fdkoptions.ct_size[1] / 2.0));
-}
-
-void Scui::SLT_SetButtonsAfterLoad(){
-    ui->btnLoadData->setEnabled(false);
-    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
-    ui->btnScatterCorrect->setEnabled(true);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
-    //SLT_PreProcessCT(); // Is added by us. Added for later use
-}
-
-void Scui::SLT_UpdateSlider(int max){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateSlider(int max){ // Sets minimum and maximum on the slider
     this->ui->verticalSlider->setMinimum(1);
     this->ui->verticalSlider->setMaximum(max-1);
 }
-
-void Scui::SLT_DisconnectSlider(){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_DisconnectSlider(){ // disconnect the slider
     disconnect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
 }
-
-void Scui::SLT_ReConnectSlider(int initVal){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_ReConnectSlider(int initVal){ // Connects the slider again
     this->ui->verticalSlider->setValue(initVal);
     connect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
     SLT_DrawReconImage();
     ui->btnScatterCorrect->setEnabled(true);
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
 }
-void Scui::SLT_UpdateLabelRaw(QString string){
-        ui->labelRawImgTitle->setText(string);
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_SetButtonsAfterLoad(){ // Sets the button after loading has finished
+    ui->btnLoadData->setEnabled(false);
+    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
+    ui->btnScatterCorrect->setEnabled(true);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
+    //SLT_PreProcessCT(); // Is added by us. Added for later use
 }
-void Scui::SLT_UpdateLabelCor(QString string){
-    ui->labelCorImgTitle->setText(string);
-}
-void Scui::SLT_UpdateProgressBarLoad(int progress){
-    ui->progressBarLoad->setValue(progress);
-}
-void Scui::SLT_UpdateProgressBarSC(int progress){
-    ui->progressBarSC->setValue(progress);
-}
-void Scui::SLT_UpdateProgressBarWEPL(int progress){
-    ui->progressBarWEPL->setValue(progress);
-}
-void Scui::SLT_SCThreadIsDone(){
-    scatterCorrectingIsDone = true;
-    ui->btnScatterCorrect->setEnabled(false);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
-    ui->comboBoxWEPL->setEnabled(true);
-    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-    ui->comboBoxWEPL->setEnabled(true);
-    ui->comboBoxWEPL->setCurrentIndex(0);
-    SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
-    ui->progressBarWEPL->setValue(100);
-    ui->comboBoxPlanView->setEnabled(true);
-    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-}
-void Scui::SLT_LThreadIsDone(){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
     ui->comboBox_region->setEnabled(true);
     ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------LOAD DATA FUNCTIONS---------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------WEPL methods ----------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-// Is called by SLT_DoReconstruction()
-void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg,
-                                       QString &fileName) {
-
-  m_cbctrecon->m_spCrntReconImg = spNewImg;
-
-
-  const auto &p_curimg = this->m_cbctrecon->m_spCrntReconImg;
-  const auto origin_new = p_curimg->GetOrigin();
-  const auto spacing_new = p_curimg->GetSpacing();
-  const auto size_new = p_curimg->GetBufferedRegion().GetSize();
-
-  std::cout << "New Origin" << origin_new << std::endl;
-  std::cout << "New spacing" << spacing_new << std::endl;
-  std::cout << "New size" << size_new << std::endl;
-
-  //this->ui.lineEdit_Cur3DFileName->setText(fileName);
-
-  auto size = p_curimg->GetBufferedRegion().GetSize();
-
-  this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0); // maybe 100 instead of 0.
-
-  disconnect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
-  this->ui->verticalSlider->setMinimum(1);
-  this->ui->verticalSlider->setMaximum(size[2] - 1);
-
-  const auto initVal = qRound((size[2] - 1) / 2.0);
-
-  //SLT_InitializeGraphLim(); // What about this???
-
-
-  this->ui->verticalSlider->setValue(initVal);
-  //this->ui.radioButton_graph_recon->setChecked(true);
-
-  connect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
-
-  SLT_DrawReconImage();
+void Scui::SLT_StartWEPLThread(){ // Starts the WEPL thread
+    weplThread->start();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by set_points_by_slice()
+void Scui::SLT_UpdateProgressBarWEPL(int progress){ // Updates the progressbar for WEPL
+    ui->progressBarWEPL->setValue(progress);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
+  //Get VIO
+  const auto voi_name = structure.toStdString();
+
+  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
+  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
+
+  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
+  const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
+  m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
+
+  const auto wepl_voi =
+      CalculateWEPLtoVOI(m_cbctregistration->cur_voi.get(), gantry_angle,
+                         couch_angle, m_spMovingImg, m_spFixedImg);
+  m_cbctregistration->WEPL_voi = std::make_unique<Rtss_roi_modern>(*wepl_voi);
+  // Draw WEPL
+  SLT_DrawImageWhenSliceChange();
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//Is called by SLT_MovingImageSelected
+void Scui::UpdateVOICombobox(const ctType ct_type) const {
+  auto struct_set =
+      m_cbctregistration->m_pParent->m_structures->get_ss(ct_type);
+  if (struct_set == nullptr) {
+    return;
+  }
+  if (struct_set->slist.empty()) {
+    std::cerr << "Structures not initialized yet" << std::endl;
+    return;
+  }
+  // In Andreases code he uses checkboxes therefore this is outcommented (comboBox_VOI)
+  ui->comboBoxWEPL->clear();//this->ui.comboBox_VOI->clear();
+  for (const auto &voi : struct_set->slist) {
+    this->ui->comboBoxWEPL->addItem(QString(voi.name.c_str()));
+    //this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
+    //this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
+  }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//Is called by set_points_by_slice(). Is used to visualize WEPL
 template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
   switch (color) {
   case RED:
@@ -304,9 +308,8 @@ template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
     return &window->m_vPt_green;
   }
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DrawImageWhenSliceChange()
-template <typename ImageBase, enPLANE plane, enCOLOR color>
+template <typename ImageBase, enPLANE plane, enCOLOR color> // Is also used to visualize WEPL
 auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
                          std::array<double, 3> curPhysPos,
                          typename ImageBase::SpacingType imgSpacing,
@@ -368,7 +371,110 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
   window->m_bDrawPoints = true;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_DrawReconImage() {
+//----------------------------------------------------------Scatter correcting methods -----------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_StartScatterCorrectingThread(){ // Set buttons and starts the scatter correcting thread
+    ui->comboBox_region->setEnabled(false);
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->btnScatterCorrect->setEnabled(false);
+    scThread->start();
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateLabelRaw(QString string){ // Sets the title on the image on the left
+        ui->labelRawImgTitle->setText(string);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateLabelCor(QString string){ // Sets the title on the image on the right
+    ui->labelCorImgTitle->setText(string);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateProgressBarSC(int progress){ // Updates the scatter correcting progressbar
+    ui->progressBarSC->setValue(progress);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread has finished. Sets buttons
+    scatterCorrectingIsDone = true;
+    ui->btnScatterCorrect->setEnabled(false);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
+    ui->comboBoxWEPL->setEnabled(true);
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setEnabled(true);
+    ui->comboBoxWEPL->setCurrentIndex(0);
+    SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
+    ui->progressBarWEPL->setValue(100);
+    ui->comboBoxPlanView->setEnabled(true);
+    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------N/A methods------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+//....
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------Threading methods -----------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){ // Not used at the moment..
+
+    if(idx == 1){
+        QMessageBox::warning(this, header, message);
+        return;
+    }
+    QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
+    return;
+}
+
+
+
+
+
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------LOAD DATA FUNCTIONS---------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg, // Updates the image on the left. by seeting the input image as the current image
+                                       QString &fileName) {
+  m_cbctrecon->m_spCrntReconImg = spNewImg;
+
+  const auto &p_curimg = this->m_cbctrecon->m_spCrntReconImg;
+  const auto origin_new = p_curimg->GetOrigin();
+  const auto spacing_new = p_curimg->GetSpacing();
+  const auto size_new = p_curimg->GetBufferedRegion().GetSize();
+
+  std::cout << "New Origin" << origin_new << std::endl;
+  std::cout << "New spacing" << spacing_new << std::endl;
+  std::cout << "New size" << size_new << std::endl;
+
+  //this->ui.lineEdit_Cur3DFileName->setText(fileName);
+
+  auto size = p_curimg->GetBufferedRegion().GetSize();
+
+  this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0); // maybe 100 instead of 0.
+
+  disconnect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
+  this->ui->verticalSlider->setMinimum(1);
+  this->ui->verticalSlider->setMaximum(size[2] - 1);
+
+  const auto initVal = qRound((size[2] - 1) / 2.0);
+
+  //SLT_InitializeGraphLim(); // What about this???
+
+
+  this->ui->verticalSlider->setValue(initVal);
+  //this->ui.radioButton_graph_recon->setChecked(true);
+
+  connect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
+
+  SLT_DrawReconImage();
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the current image.
 
   if (m_cbctrecon->m_dspYKReconImage == nullptr) {
     return;
@@ -592,7 +698,7 @@ void Scui::SLT_DrawReconInFixedSlice(){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //Is called by SLT_LoadSelectedProjFiles
-void Scui::SLT_OpenElektaGeomFile() {
+void Scui::SLT_OpenElektaGeomFile() { // I don't think this is used at the moment
   auto strPath = QFileDialog::getOpenFileName(
       this, "Select a single file to open",
       this->m_cbctrecon->m_strPathDirDefault, "Geometry file (*.xml)");
@@ -730,26 +836,6 @@ void Scui::SLT_MovingImageSelected(QString selText) {
   UpdateVOICombobox(cur_ct);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by SLT_MovingImageSelected
-void Scui::UpdateVOICombobox(const ctType ct_type) const {
-  auto struct_set =
-      m_cbctregistration->m_pParent->m_structures->get_ss(ct_type);
-  if (struct_set == nullptr) {
-    return;
-  }
-  if (struct_set->slist.empty()) {
-    std::cerr << "Structures not initialized yet" << std::endl;
-    return;
-  }
-  // In Andreases code he uses checkboxes therefore this is outcommented (comboBox_VOI)
-  ui->comboBoxWEPL->clear();//this->ui.comboBox_VOI->clear();
-  for (const auto &voi : struct_set->slist) {
-    this->ui->comboBoxWEPL->addItem(QString(voi.name.c_str()));
-    //this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
-    //this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
-  }
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_FixedImageSelected and SLT_MovingImageSelected
 void Scui::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt) // -->when fixed image loaded will be called here!
 {
@@ -797,9 +883,7 @@ void Scui::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt) // -
     // In Andreases code this does nothing so far and is therefore  outcommented (whenMovingImgLoaded())
     //whenMovingImgLoaded();
   }
-  //if(scatterCorrectingIsDone == false){
-      SLT_DrawImageWhenSliceChange();
-  //}
+  SLT_DrawImageWhenSliceChange();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
@@ -1275,69 +1359,12 @@ void Scui::ImageManualMoveOneShot(
   //this->ui.lineEditOriginChanged->setText(strDelta);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_PassFixedImgForAnalysis(QString cur_fixed) {
+void Scui::SLT_PassFixedImgForAnalysis(QString cur_fixed) { // Is passing the image from the right to the left.
   if (m_cbctrecon->m_spRawReconImg != nullptr) {
     this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, cur_fixed);
   }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_WEPLcalc(QString structure) {
-  //Get VIO
-  const auto voi_name = structure.toStdString();
-
-  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
-  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
-
-  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
-  const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
-  m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
-
-  const auto wepl_voi =
-      CalculateWEPLtoVOI(m_cbctregistration->cur_voi.get(), gantry_angle,
-                         couch_angle, m_spMovingImg, m_spFixedImg);
-  m_cbctregistration->WEPL_voi = std::make_unique<Rtss_roi_modern>(*wepl_voi);
-  // Draw WEPL
-  SLT_DrawImageWhenSliceChange();
-}
-
-void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure)
-{ 
-    if(scatterCorrectingIsDone){
-        Structure = structure;
-        SLT_StartWEPLThread();
-    }
-
-}
-
-void Scui::SLT_GetCBCTPath(){
-    CBCTPath = QFileDialog::getExistingDirectory(
-        this, tr("Open Directory with CBCT"), this->m_cbctrecon->m_strPathDirDefault,
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-}
-void Scui::SLT_GetCTPath(){
-    CTPath = QFileDialog::getExistingDirectory(
-        this, tr("Open CT DICOM Directory"), this->m_cbctrecon->m_strPathDirDefault,
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-}
-
-
-void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &planView)
-{
-    if(scatterCorrectingIsDone){
-
-    if(planView.compare("Axial") == 0){
-        View = 0;       
-      }
-    else if (planView.compare("Frontal") == 0){
-        View = 1;
-    }
-    else if (planView.compare("Sagital") == 0){
-        View = 2;
-    }
-    SLT_SliderValueChanged();
-    }
-}
-
 void Scui::SLT_DrawReconImageInSlices(){
     // init fixed and moving images
     //m_spFixedImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();

@@ -69,7 +69,6 @@ public slots:
     void SLT_StartLoadingThread();
     void SLT_ShowMessageBox(int, QString, QString);
     void SLT_StartScatterCorrectingThread();
-    void SLT_InitializeSlider(FDK_options);
     void SLT_SetButtonsAfterLoad();
     void SLT_UpdateSlider(int);
     void SLT_DisconnectSlider();
