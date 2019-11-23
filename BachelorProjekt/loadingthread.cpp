@@ -17,12 +17,13 @@ LoadingThread::LoadingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(pare
 
 void LoadingThread::run(){ // Method which is called when the start method is called on the thread
     this->SLT_SetHisDir();
+    this->SLT_LoadSelectedProjFiles(m_parent->CBCTPath);
 }
 
 void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
 {
   // Initializing..
-  auto dirPath = m_parent->CBCTPath;
+  auto dirPath = m_parent->CBCTPath; // Path for CBCT projections
 
   if (dirPath.length() <= 1) { // If no directory chosen, jump out
     return;
@@ -31,6 +32,7 @@ void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
   this->m_cbctrecon->SetProjDir(dirPath);
   init_DlgRegistration(this->m_cbctrecon->m_strDCMUID);
 
+  //std::cout << "Look here!!! = " << this->m_cbctrecon->m_strDCMUID.toDouble() << std::endl;
   float kVp = 0.0;
   float mA = 0.0;
   float ms = 0.0;
@@ -60,7 +62,6 @@ void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
   this->m_cbctrecon->m_vSelectedFileNames.clear();
 
   std::cout << "Push Load button to load projection images" << std::endl;
-  SLT_LoadSelectedProjFiles(dirPath);
 }
 
 void LoadingThread::init_DlgRegistration(QString &str_dcm_uid) const// init dlgRegistration. Sets pointers en scui to zero
@@ -82,14 +83,6 @@ void LoadingThread::init_DlgRegistration(QString &str_dcm_uid) const// init dlgR
     p_parent->m_spDeformedCT_Final = spNull; // AutoDeformCT3
 
 }
-/*
-QString getBowtiePath(QWidget *parent, const QDir &calDir) {
-  return QFileDialog::getOpenFileName(
-      parent, "Find air(+bowtie) filter image for subtraction",
-      calDir.absolutePath(), "Projection (*.xim)", nullptr, nullptr);
-}
-*/
-
 //Is needed for the next method SLT_LoadSelectedProjFiles()
 std::tuple<bool, bool> LoadingThread::probeUser(const QString &guessDir) {
   // When we are testing we don't want to use file dialogs and this has therefore been commented out.
@@ -169,6 +162,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   if (this->m_cbctrecon->m_projFormat == HIS_FORMAT &&
       !this->m_cbctrecon->IsFileNameOrderCorrect(names)) {
     std::cout << "Check the file name order" << std::endl;
+
     //QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
     //return;
     emit SignalMessageBox(1,"warning","Error on File Name Sorting!");
@@ -333,7 +327,6 @@ void LoadingThread::SLT_DoBowtieCorrection() { // Function for applying the bowt
   this->m_cbctrecon->BowtieByFit(false,strList);//this->ui.checkBox_Fullfan->isChecked(),strList);
 
   this->m_cbctrecon->SetMaxAndMinValueOfProjectionImage();
-  //SLT_DrawProjImages();
   std::cout << "Bow-tie correction done." << std::endl;
 }
 // Is implemented in SLT_LoadSelectedProjFiles()
@@ -371,5 +364,3 @@ void LoadingThread::SLT_DoReconstruction() { // Functions responsible for the re
   emit Signal_SetButtonsAfterLoad(); // Signal to set buttons after load on scui
   emit Signal_LThreadIsDone(); // Signal which indicates that the loading threads run method has finished
 }
-
-

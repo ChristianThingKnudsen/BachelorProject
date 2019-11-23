@@ -32,13 +32,9 @@ void ScatterCorrectingThread::run(){
     this->SLT_DoRegistrationRigid();
 }
 
-void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() {
+void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() { // Method is only needed in this class for testing reasons
   auto filePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan\\RN.1.2.246.352.71.5.361940808526.11351.20190611075823.dcm");
-  /*
-  auto filePath = QFileDialog::getOpenFileName(
-      this, "Open DCMRT Plan file", p_parent->m_strPathDirDefault,
-      "DCMRT Plan (*.dcm)", nullptr, nullptr);
-  */
+
   if (filePath.length() < 1) {
     return;
   }
