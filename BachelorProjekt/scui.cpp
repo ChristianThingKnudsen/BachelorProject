@@ -42,6 +42,7 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->comboBoxWEPL->addItem("No structures");
     ui->comboBoxPlanView->addItem("Axial");
     ui->comboBoxPlanView->addItem("Frontal");
+    ui->comboBoxPlanView->addItem("Sagital");
     // Icon for Load Data
     QPixmap pixmapLoad("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\upload.png");
     QIcon ButtonLoad(pixmapLoad);
@@ -67,6 +68,10 @@ Scui::Scui(QWidget *parent) // Constructor
     m_YKImgMoving = &m_cbctregistration->m_YKImgMoving[0];
     m_YKDisp = &m_cbctregistration->m_YKDisp[0];
 
+    m_YKDispRaw = &m_cbctregistration->m_YKDisp[0];
+    m_YKImgRawFixed = &m_cbctregistration->m_YKImgFixed[0];
+    m_YKImgRawMoving = &m_cbctregistration->m_YKImgMoving[0];
+
     m_DoseImgFixed = &m_cbctregistration->m_DoseImgFixed[0];
     m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0];
     m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0];
@@ -78,6 +83,7 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
     connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
+    connect(lThread,SIGNAL(Signal_LThreadIsDone()),this,SLOT(SLT_LThreadIsDone()));
     //connect(lThread,SIGNAL(finished()),lThread,SLOT(quit()));
 
 
@@ -116,6 +122,7 @@ void Scui::SLT_OpenInfo() // Is called when the info button is pushed
     InformationWindow infoWindow;
     infoWindow.setModal(true);
     infoWindow.exec();
+    ui->labelImageRaw->resize(675,675);
 }
 void Scui::SLT_OpenAdvancedMode() // Is called when the advanced button is pushed
 {
@@ -137,6 +144,15 @@ void Scui::SLT_DecreaseSliderValue() // Is called when the - button is pushed
     auto curValue = ui->verticalSlider->value();
     ui->verticalSlider->setValue(curValue-1);
 }
+void Scui::SLT_SliderValueChanged(){
+    if(scatterCorrectingIsDone){
+        SLT_DrawReconImageInSlices();
+        SLT_DrawImageWhenSliceChange();
+    }else{
+        SLT_DrawReconImage();
+        SLT_DrawImageWhenSliceChange();
+    }
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------Threading methods -----------------------------------------------------------------------------------//
@@ -147,10 +163,14 @@ void Scui::SLT_StartLoadingThread(){
     CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
     //SLT_GetCTPath();
     CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
+    ui->btnLoadData->setEnabled(false);
     lThread->start();
 }
 
 void Scui::SLT_StartScatterCorrectingThread(){
+    ui->comboBox_region->setEnabled(false);
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->btnScatterCorrect->setEnabled(false);
     scThread->start();
 }
 
@@ -227,7 +247,10 @@ void Scui::SLT_SCThreadIsDone(){
     ui->comboBoxPlanView->setEnabled(true);
     ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
 }
-
+void Scui::SLT_LThreadIsDone(){
+    ui->comboBox_region->setEnabled(true);
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------LOAD DATA FUNCTIONS---------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -235,7 +258,9 @@ void Scui::SLT_SCThreadIsDone(){
 // Is called by SLT_DoReconstruction()
 void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg,
                                        QString &fileName) {
-  this->m_cbctrecon->m_spCrntReconImg = spNewImg;
+
+  m_cbctrecon->m_spCrntReconImg = spNewImg;
+
 
   const auto &p_curimg = this->m_cbctrecon->m_spCrntReconImg;
   const auto origin_new = p_curimg->GetOrigin();
@@ -365,7 +390,10 @@ void Scui::SLT_DrawReconImage() {
 
   using DuplicatorType = itk::ImageDuplicator<UShortImageType>;
   auto duplicator = DuplicatorType::New();
+
   duplicator->SetInputImage(m_cbctrecon->m_spCrntReconImg);
+
+
   duplicator->Update();
   const auto clonedImage = duplicator->GetOutput();
 
@@ -434,240 +462,23 @@ void Scui::SLT_DrawReconImage() {
 
   p_dspykimg->FillPixMapMinMax(0,2031);//this->ui.sliderReconImgMin->value(),
                                //this->ui.sliderReconImgMax->value());
+/*
+  if(scatterCorrectingIsDone){
+      if(View ==0){
+          this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]);
+      }else if(View ==1){
+          this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[1]);
+      }
+      else{
+        return;
+      }
+  }else{
+      this->ui->labelImageRaw->SetBaseImage(p_dspykimg);
+  }
+  */
   this->ui->labelImageRaw->SetBaseImage(p_dspykimg);
-
   this->ui->labelImageRaw->update();
 
-  // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-
-
-  // SLT_DrawGraph();
-  //SLT_UpdateTable();
-
-
-/*
-    if (m_cbctrecon->m_spCrntReconImg == nullptr) {
-      return;
-    }
-    // Added by us:
-    if(m_cbctrecon->m_spRawReconImg == nullptr){
-        return;
-    }
-    auto imgSize = m_cbctrecon->m_spCrntReconImg->GetBufferedRegion().GetSize();
-    const auto curPosZ = static_cast<int>(imgSize[2]/2);
-    const auto curPosY = static_cast<int>(imgSize[1]/2);
-    const auto curPosX = static_cast<int>(imgSize[0]/2);
-    //
-
-    int sliderPosIdxZ, sliderPosIdxY, sliderPosIdxX;
-    switch (m_enViewArrange) {
-    case AXIAL_FRONTAL_SAGITTAL:
-      if(View ==0){
-          sliderPosIdxZ = ui->verticalSlider->value();
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-      }else{
-          sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-      }
-      sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
-      break;
-    case FRONTAL_SAGITTAL_AXIAL:
-        if(View ==0){
-            sliderPosIdxZ = ui->verticalSlider->value();
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-        }else{
-            sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-        }
-        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
-      break;
-    case SAGITTAL_AXIAL_FRONTAL:
-        if(View ==0){
-            sliderPosIdxZ = ui->verticalSlider->value();
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-        }else{
-            sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-        }
-        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
-      break;
-    default:
-        if(View ==0){
-            sliderPosIdxZ = ui->verticalSlider->value();
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-        }else{
-            sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-        }
-        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
-      break;
-    }
-
-    //auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
-    auto imgOrigin = m_cbctrecon->m_spCrntReconImg->GetOrigin();
-    auto imgSpacing = m_cbctrecon->m_spCrntReconImg->GetSpacing();
-
-    auto curPhysPos = std::array<double, 3>{{
-        imgOrigin[2] + sliderPosIdxZ * imgSpacing[2], // Z in default setting
-        imgOrigin[1] + sliderPosIdxY * imgSpacing[1], // Y
-        imgOrigin[0] + sliderPosIdxX * imgSpacing[0]  // Z
-    }};
-
-    const auto refIdx = 3 - m_enViewArrange;
-    // In Andreases code this checkbox was checked (checkBoxDrawCrosshair)
-    if (false){//this->ui.checkBoxDrawCrosshair->isChecked()) {
-      m_YKDisp[refIdx % 3].m_bDrawCrosshair = true;
-      m_YKDisp[(refIdx + 1) % 3].m_bDrawCrosshair = true;
-      m_YKDisp[(refIdx + 2) % 3].m_bDrawCrosshair = true;
-
-      // m_YKDisp[0]// Left Top image, the largest
-
-      m_YKDisp[refIdx % 3].m_ptCrosshair.setX(sliderPosIdxX); // axial
-      m_YKDisp[refIdx % 3].m_ptCrosshair.setY(sliderPosIdxY);
-
-      m_YKDisp[(refIdx + 1) % 3].m_ptCrosshair.setX(sliderPosIdxX); // Frontal
-      m_YKDisp[(refIdx + 1) % 3].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
-                                                    sliderPosIdxZ - 1);
-
-      m_YKDisp[(refIdx + 2) % 3].m_ptCrosshair.setX(sliderPosIdxY); // Sagittal
-      m_YKDisp[(refIdx + 2) % 3].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
-                                                    sliderPosIdxZ - 1);
-
-      m_YKImgFixed[0].m_bDrawCrosshair = true;
-      m_YKImgFixed[1].m_bDrawCrosshair = true;
-      m_YKImgFixed[2].m_bDrawCrosshair = true;
-
-      m_YKImgFixed[0].m_ptCrosshair.setX(sliderPosIdxX); // sagittal slider
-      m_YKImgFixed[0].m_ptCrosshair.setY(sliderPosIdxY);
-
-      m_YKImgFixed[1].m_ptCrosshair.setX(sliderPosIdxX); // sagittal slider
-      m_YKImgFixed[1].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
-                                         sliderPosIdxZ - 1);
-
-      m_YKImgFixed[2].m_ptCrosshair.setX(sliderPosIdxY); // sagittal slider
-      m_YKImgFixed[2].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
-                                         sliderPosIdxZ - 1);
-    } else {
-      m_YKDisp[0].m_bDrawCrosshair = false;
-      m_YKDisp[1].m_bDrawCrosshair = false;
-      m_YKDisp[2].m_bDrawCrosshair = false;
-
-      m_YKImgFixed[0].m_bDrawCrosshair = false;
-      m_YKImgFixed[1].m_bDrawCrosshair = false;
-      m_YKImgFixed[2].m_bDrawCrosshair = false;
-    }
-
-    // center of the split value is passed by m_YKImgFixed;
-
-    if (m_spMovingImg != nullptr) {
-      this->m_cbctrecon->Draw2DFrom3DDouble(
-          m_spFixedImg, m_spMovingImg, PLANE_AXIAL, curPhysPos[0], m_YKImgFixed[0],
-          m_YKImgMoving[0]);
-      this->m_cbctrecon->Draw2DFrom3DDouble(
-          m_spFixedImg, m_spMovingImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgFixed[1],
-          m_YKImgMoving[1]);
-      this->m_cbctrecon->Draw2DFrom3DDouble(
-          m_spFixedImg, m_spMovingImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgFixed[2],
-          m_YKImgMoving[2]);
-      if (m_cbctregistration->dose_loaded) {
-        this->m_cbctrecon->Draw2DFrom3DDouble(
-            m_spFixedDose, m_spMovingDose, PLANE_AXIAL, curPhysPos[0],
-            m_DoseImgFixed[0], m_DoseImgMoving[0]);
-        this->m_cbctrecon->Draw2DFrom3DDouble(
-            m_spFixedDose, m_spMovingDose, PLANE_FRONTAL, curPhysPos[1],
-            m_DoseImgFixed[1], m_DoseImgMoving[1]);
-        this->m_cbctrecon->Draw2DFrom3DDouble(
-            m_spFixedDose, m_spMovingDose, PLANE_SAGITTAL, curPhysPos[2],
-            m_DoseImgFixed[2], m_DoseImgMoving[2]);
-      }
-    } else {
-      this->m_cbctrecon->Draw2DFrom3DDouble(
-          m_spFixedImg, m_spFixedImg, PLANE_AXIAL, curPhysPos[0], m_YKImgFixed[0],
-          m_YKImgMoving[0]);
-      this->m_cbctrecon->Draw2DFrom3DDouble(
-          m_spFixedImg, m_spFixedImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgFixed[1],
-          m_YKImgMoving[1]);
-      this->m_cbctrecon->Draw2DFrom3DDouble(
-          m_spFixedImg, m_spFixedImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgFixed[2],
-          m_YKImgMoving[2]);
-      if (m_cbctregistration->dose_loaded) {
-        this->m_cbctrecon->Draw2DFrom3DDouble(
-            m_spFixedDose, m_spFixedDose, PLANE_AXIAL, curPhysPos[0],
-            m_DoseImgFixed[0], m_DoseImgMoving[0]);
-        this->m_cbctrecon->Draw2DFrom3DDouble(
-            m_spFixedDose, m_spFixedDose, PLANE_FRONTAL, curPhysPos[1],
-            m_DoseImgFixed[1], m_DoseImgMoving[1]);
-        this->m_cbctrecon->Draw2DFrom3DDouble(
-            m_spFixedDose, m_spFixedDose, PLANE_SAGITTAL, curPhysPos[2],
-            m_DoseImgFixed[2], m_DoseImgMoving[2]);
-      }
-    }
-
-    // Update position lineEdit
-    QString strPos1, strPos2, strPos3;
-    strPos1.sprintf("%3.1f", curPhysPos[0]);
-    strPos2.sprintf("%3.1f", curPhysPos[1]);
-    strPos3.sprintf("%3.1f", curPhysPos[2]);
-    // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
-
-    this->ui.lineEditCurPosX->setText(strPos3);
-    this->ui.lineEditCurPosY->setText(strPos2);
-    this->ui.lineEditCurPosZ->setText(strPos1);
-
-    ////Update Origin text box
-    auto imgOriginFixed = m_spFixedImg->GetOrigin();
-    QString strOriFixed;
-    strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0], imgOriginFixed[1], imgOriginFixed[2]);
-    // In Andreases code he set the text on the ui. Therefore we outcomment this (lineEditOriginFixed)
-    //this->ui.lineEditOriginFixed->setText(strOriFixed);
-
-    if (m_spMovingImg != nullptr) {
-      const auto imgOriginMoving = m_spMovingImg->GetOrigin();
-      QString strOriMoving;
-      strOriMoving.sprintf("%3.4f, %3.4f, %3.4f", imgOriginMoving[0],
-                           imgOriginMoving[1], imgOriginMoving[2]);
-      // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
-      //this->ui.lineEditOriginMoving->setText(strOriMoving);
-    }
-    // In Andreases code he have 3 labels on the registration ui, but we only have one. Therefor the below has been changed.
-
-    auto arr_wnd = std::array<qyklabel *, 3>{{this->ui.labelOverlapWnd1,
-                                              this->ui.labelOverlapWnd2,
-                                              this->ui.labelOverlapWnd3}};
-
-    auto wnd = this->ui->labelImageRaw;
-
-    if (m_cbctregistration->cur_voi != nullptr) {
-      const auto p_cur_voi = m_cbctregistration->cur_voi.get();
-
-      if(View==0){
-          set_points_by_slice<UShortImageType, PLANE_AXIAL, RED>(
-              wnd, p_cur_voi, curPhysPos, imgSpacing,
-              imgOriginFixed, imgSize);
-      }else{
-          set_points_by_slice<UShortImageType, PLANE_FRONTAL, RED>(
-              wnd, p_cur_voi, curPhysPos, imgSpacing,
-              imgOriginFixed, imgSize);
-      }
-
-    }
-
-    if (m_cbctregistration->WEPL_voi != nullptr) {
-      const auto p_wepl_voi = m_cbctregistration->WEPL_voi.get();
-
-      if(View==0){
-          set_points_by_slice<UShortImageType, PLANE_AXIAL, BLUE>(
-              wnd, p_wepl_voi, curPhysPos, imgSpacing,
-              imgOriginFixed, imgSize);
-      }else{
-          set_points_by_slice<UShortImageType, PLANE_FRONTAL, BLUE>(
-              wnd, p_wepl_voi, curPhysPos, imgSpacing,
-              imgOriginFixed, imgSize);
-      }
-    }
-
-    SLT_DrawReconInFixedSlice();
-    */
 }
 void Scui::SLT_DrawReconInFixedSlice(){
     // Constitute m_YKDisp from Fixed and Moving
@@ -986,8 +797,9 @@ void Scui::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt) // -
     // In Andreases code this does nothing so far and is therefore  outcommented (whenMovingImgLoaded())
     //whenMovingImgLoaded();
   }
-
-  SLT_DrawImageWhenSliceChange();
+  //if(scatterCorrectingIsDone == false){
+      SLT_DrawImageWhenSliceChange();
+  //}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
@@ -999,6 +811,12 @@ void Scui::SLT_DrawImageWhenSliceChange() {
   if(m_cbctrecon->m_spRawReconImg == nullptr){
       return;
   }
+
+  if(scatterCorrectingIsDone){
+      m_spFixedImg = m_cbctregistration->m_pParent->m_spScatCorrReconImg.GetPointer();
+      m_spMovingImg = m_cbctregistration->m_pParent->m_spScatCorrReconImg.GetPointer();
+  }
+
   auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize();
   const auto curPosZ = static_cast<int>(imgSize[2]/2);
   const auto curPosY = static_cast<int>(imgSize[1]/2);
@@ -1011,41 +829,61 @@ void Scui::SLT_DrawImageWhenSliceChange() {
     if(View ==0){
         sliderPosIdxZ = ui->verticalSlider->value();
         sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-    }else{
+        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+    }else if (View ==1){
         sliderPosIdxZ = curPosZ;
         sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+    }else if(View ==2){
+        sliderPosIdxZ = curPosZ;
+        sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+        sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
     }
-    sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   case FRONTAL_SAGITTAL_AXIAL:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
           sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-      }else{
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if (View ==1){
           sliderPosIdxZ = curPosZ;
           sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if(View ==2){
+          sliderPosIdxZ = curPosZ;
+          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
       }
-      sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   case SAGITTAL_AXIAL_FRONTAL:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
           sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-      }else{
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if (View ==1){
           sliderPosIdxZ = curPosZ;
           sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if(View ==2){
+          sliderPosIdxZ = curPosZ;
+          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
       }
-      sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   default:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
           sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-      }else{
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if (View ==1){
           sliderPosIdxZ = curPosZ;
           sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if(View ==2){
+          sliderPosIdxZ = curPosZ;
+          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
       }
-      sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
     break;
   }
 
@@ -1180,8 +1018,9 @@ void Scui::SLT_DrawImageWhenSliceChange() {
   auto arr_wnd = std::array<qyklabel *, 3>{{this->ui.labelOverlapWnd1,
                                             this->ui.labelOverlapWnd2,
                                             this->ui.labelOverlapWnd3}};
-                                            */
+                                           */
   auto wnd = this->ui->labelImageCor;
+
 
   if (m_cbctregistration->cur_voi != nullptr) {
     const auto p_cur_voi = m_cbctregistration->cur_voi.get();
@@ -1190,8 +1029,12 @@ void Scui::SLT_DrawImageWhenSliceChange() {
         set_points_by_slice<UShortImageType, PLANE_AXIAL, RED>(
             wnd, p_cur_voi, curPhysPos, imgSpacing,
             imgOriginFixed, imgSize);
-    }else{
+    }else if (View ==1){
         set_points_by_slice<UShortImageType, PLANE_FRONTAL, RED>(
+            wnd, p_cur_voi, curPhysPos, imgSpacing,
+            imgOriginFixed, imgSize);
+    }else if (View==2){
+        set_points_by_slice<UShortImageType, PLANE_SAGITTAL, RED>(
             wnd, p_cur_voi, curPhysPos, imgSpacing,
             imgOriginFixed, imgSize);
     }
@@ -1205,8 +1048,12 @@ void Scui::SLT_DrawImageWhenSliceChange() {
         set_points_by_slice<UShortImageType, PLANE_AXIAL, BLUE>(
             wnd, p_wepl_voi, curPhysPos, imgSpacing,
             imgOriginFixed, imgSize);
-    }else{
+    }else if(View ==1){
         set_points_by_slice<UShortImageType, PLANE_FRONTAL, BLUE>(
+            wnd, p_wepl_voi, curPhysPos, imgSpacing,
+            imgOriginFixed, imgSize);
+    }else if(View==2){
+        set_points_by_slice<UShortImageType, PLANE_SAGITTAL, BLUE>(
             wnd, p_wepl_voi, curPhysPos, imgSpacing,
             imgOriginFixed, imgSize);
     }
@@ -1292,10 +1139,13 @@ void Scui::SLT_DrawImageInFixedSlice() const
   m_YKDisp[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
 
   // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+
   if(View ==0){
-      this->ui->labelImageCor->SetBaseImage(&m_YKDisp[0]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
-  }else{
-      this->ui->labelImageCor->SetBaseImage(&m_YKDisp[1]); //this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
+      this->ui->labelImageCor->SetBaseImage(&m_YKDisp[0]);
+  }else if(View==1){
+      this->ui->labelImageCor->SetBaseImage(&m_YKDisp[1]);
+  }else if(View==2){
+      this->ui->labelImageCor->SetBaseImage(&m_YKDisp[2]);
   }
 
   /*
@@ -1310,18 +1160,22 @@ void Scui::SLT_DrawImageInFixedSlice() const
     m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-    if(View ==0){
-        this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[0]); //this->ui.labelOverlapWnd1->SetOverlayImage(&m_AGDisp_Overlay[0]);
-    }else{
-        this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[1]); //this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
+
+    if(View==0){
+        this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[0]);
+    }else if(View==1){
+        this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[1]);
+    }else if(View==2){
+        this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[2]);
     }
+
     /*
     this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
     this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
     */
   }
   // In Andreases code he plots this on the registration ui, but we only have one window
-  this->ui->labelImageCor->update();//this->ui.labelOverlapWnd1->update();
+  this->ui->labelImageCor->update();
   /*
   this->ui.labelOverlapWnd2->update();
   this->ui.labelOverlapWnd3->update();
@@ -1446,10 +1300,10 @@ void Scui::SLT_WEPLcalc(QString structure) {
   SLT_DrawImageWhenSliceChange();
 }
 
-void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &arg1)
+void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure)
 { 
     if(scatterCorrectingIsDone){
-        Structure = arg1;
+        Structure = structure;
         SLT_StartWEPLThread();
     }
 
@@ -1467,32 +1321,431 @@ void Scui::SLT_GetCTPath(){
 }
 
 
-void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &arg1)
+void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &planView)
 {
     if(scatterCorrectingIsDone){
-    int equal = QString::compare(arg1, QString("Axial"), Qt::CaseInsensitive); // returns 0 if equal
-    if(equal==0){
-        View = 0;
-        SLT_FixedImageSelected("RAW_CBCT");
-        SLT_MovingImageSelected("RAW_CBCT");
-        //SLT_DrawReconImage();
-        //this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
-        //this->ui->labelImageRaw->update();
-        SLT_PassFixedImgForAnalysis("RAW_CBCT");
-        SLT_FixedImageSelected("COR_CBCT");
-        SLT_MovingImageSelected("COR_CBCT");
-      }else{
-        View =1;
-        SLT_FixedImageSelected("RAW_CBCT");
-        SLT_MovingImageSelected("RAW_CBCT");
-        //SLT_DrawReconImage();
-        //this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[1]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
-        //this->ui->labelImageRaw->update();
-        SLT_PassFixedImgForAnalysis("RAW_CBCT");
 
-        SLT_FixedImageSelected("COR_CBCT");
-        SLT_MovingImageSelected("COR_CBCT");
+    if(planView.compare("Axial") == 0){
+        View = 0;       
+      }
+    else if (planView.compare("Frontal") == 0){
+        View = 1;
     }
+    else if (planView.compare("Sagital") == 0){
+        View = 2;
     }
-    //SLT_DrawImageWhenSliceChange();
+    SLT_SliderValueChanged();
+    }
+}
+
+void Scui::SLT_DrawReconImageInSlices(){
+    // init fixed and moving images
+    //m_spFixedImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
+    //m_spMovingImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer() ;
+    m_spRawFixedImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
+    m_spRawMovingImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
+
+    if(m_spRawFixedImg == nullptr){
+        return;
+    }
+    auto imgSize = m_spRawFixedImg->GetBufferedRegion().GetSize();
+    const auto curPosZ = static_cast<int>(imgSize[2]/2);
+    const auto curPosY = static_cast<int>(imgSize[1]/2);
+    const auto curPosX = static_cast<int>(imgSize[0]/2);
+    //
+
+    int sliderPosIdxZ, sliderPosIdxY, sliderPosIdxX;
+    switch (m_enViewArrangeRaw) {
+    case AXIAL_FRONTAL_SAGITTAL:
+      if(View ==0){
+          sliderPosIdxZ = ui->verticalSlider->value();
+          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      }else if(View ==1){
+          sliderPosIdxZ = curPosZ;
+          sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+      } else if(View==2){
+          sliderPosIdxZ = curPosZ;
+          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+      }
+      break;
+    case FRONTAL_SAGITTAL_AXIAL:
+        if(View ==0){
+            sliderPosIdxZ = ui->verticalSlider->value();
+            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        }else if(View ==1){
+            sliderPosIdxZ = curPosZ;
+            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        } else if(View==2){
+            sliderPosIdxZ = curPosZ;
+            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+        }
+      break;
+    case SAGITTAL_AXIAL_FRONTAL:
+        if(View ==0){
+            sliderPosIdxZ = ui->verticalSlider->value();
+            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        }else if(View ==1){
+            sliderPosIdxZ = curPosZ;
+            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        } else if(View==2){
+            sliderPosIdxZ = curPosZ;
+            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+        }
+      break;
+    default:
+        if(View ==0){
+            sliderPosIdxZ = ui->verticalSlider->value();
+            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        }else if(View ==1){
+            sliderPosIdxZ = curPosZ;
+            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        } else if(View==2){
+            sliderPosIdxZ = curPosZ;
+            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
+            sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+        }
+      break;
+    }
+
+    //auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
+    auto imgOrigin = m_spRawFixedImg->GetOrigin();
+    auto imgSpacing = m_spRawFixedImg->GetSpacing();
+
+    auto curPhysPos = std::array<double, 3>{{
+        imgOrigin[2] + sliderPosIdxZ * imgSpacing[2], // Z in default setting
+        imgOrigin[1] + sliderPosIdxY * imgSpacing[1], // Y
+        imgOrigin[0] + sliderPosIdxX * imgSpacing[0]  // Z
+    }};
+
+    const auto refIdx = 3 - m_enViewArrangeRaw;
+    // In Andreases code this checkbox was checked (checkBoxDrawCrosshair)
+    if (false){//this->ui.checkBoxDrawCrosshair->isChecked()) {
+      m_YKDispRaw[refIdx % 3].m_bDrawCrosshair = true;
+      m_YKDispRaw[(refIdx + 1) % 3].m_bDrawCrosshair = true;
+      m_YKDispRaw[(refIdx + 2) % 3].m_bDrawCrosshair = true;
+
+      // m_YKDisp[0]// Left Top image, the largest
+
+      m_YKDispRaw[refIdx % 3].m_ptCrosshair.setX(sliderPosIdxX); // axial
+      m_YKDispRaw[refIdx % 3].m_ptCrosshair.setY(sliderPosIdxY);
+
+      m_YKDispRaw[(refIdx + 1) % 3].m_ptCrosshair.setX(sliderPosIdxX); // Frontal
+      m_YKDispRaw[(refIdx + 1) % 3].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
+                                                    sliderPosIdxZ - 1);
+
+      m_YKDispRaw[(refIdx + 2) % 3].m_ptCrosshair.setX(sliderPosIdxY); // Sagittal
+      m_YKDispRaw[(refIdx + 2) % 3].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
+                                                    sliderPosIdxZ - 1);
+
+      m_YKImgRawFixed[0].m_bDrawCrosshair = true;
+      m_YKImgRawFixed[1].m_bDrawCrosshair = true;
+      m_YKImgRawFixed[2].m_bDrawCrosshair = true;
+
+      m_YKImgRawFixed[0].m_ptCrosshair.setX(sliderPosIdxX); // sagittal slider
+      m_YKImgRawFixed[0].m_ptCrosshair.setY(sliderPosIdxY);
+
+      m_YKImgRawFixed[1].m_ptCrosshair.setX(sliderPosIdxX); // sagittal slider
+      m_YKImgRawFixed[1].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
+                                         sliderPosIdxZ - 1);
+
+      m_YKImgRawFixed[2].m_ptCrosshair.setX(sliderPosIdxY); // sagittal slider
+      m_YKImgRawFixed[2].m_ptCrosshair.setY(static_cast<int>(imgSize[2]) -
+                                         sliderPosIdxZ - 1);
+    } else {
+      m_YKDispRaw[0].m_bDrawCrosshair = false;
+      m_YKDispRaw[1].m_bDrawCrosshair = false;
+      m_YKDispRaw[2].m_bDrawCrosshair = false;
+
+      m_YKImgRawFixed[0].m_bDrawCrosshair = false;
+      m_YKImgRawFixed[1].m_bDrawCrosshair = false;
+      m_YKImgRawFixed[2].m_bDrawCrosshair = false;
+    }
+
+    // center of the split value is passed by m_YKImgFixed;
+
+    if (m_spRawFixedImg != nullptr) {
+      this->m_cbctrecon->Draw2DFrom3DDouble(
+          m_spRawFixedImg, m_spRawMovingImg, PLANE_AXIAL, curPhysPos[0], m_YKImgRawFixed[0],
+          m_YKImgRawMoving[0]);
+      this->m_cbctrecon->Draw2DFrom3DDouble(
+          m_spRawFixedImg, m_spRawMovingImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgRawFixed[1],
+          m_YKImgRawMoving[1]);
+      this->m_cbctrecon->Draw2DFrom3DDouble(
+          m_spRawFixedImg, m_spRawMovingImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgRawFixed[2],
+          m_YKImgRawMoving[2]);
+      if (false){//m_cbctregistration->dose_loaded) {
+        this->m_cbctrecon->Draw2DFrom3DDouble(
+            m_spFixedDose, m_spMovingDose, PLANE_AXIAL, curPhysPos[0],
+            m_DoseImgFixed[0], m_DoseImgMoving[0]);
+        this->m_cbctrecon->Draw2DFrom3DDouble(
+            m_spFixedDose, m_spMovingDose, PLANE_FRONTAL, curPhysPos[1],
+            m_DoseImgFixed[1], m_DoseImgMoving[1]);
+        this->m_cbctrecon->Draw2DFrom3DDouble(
+            m_spFixedDose, m_spMovingDose, PLANE_SAGITTAL, curPhysPos[2],
+            m_DoseImgFixed[2], m_DoseImgMoving[2]);
+      }
+    } else {
+      this->m_cbctrecon->Draw2DFrom3DDouble(
+          m_spRawFixedImg, m_spRawFixedImg, PLANE_AXIAL, curPhysPos[0], m_YKImgRawFixed[0],
+          m_YKImgRawMoving[0]);
+      this->m_cbctrecon->Draw2DFrom3DDouble(
+          m_spRawFixedImg, m_spRawFixedImg, PLANE_FRONTAL, curPhysPos[1], m_YKImgRawFixed[1],
+          m_YKImgRawMoving[1]);
+      this->m_cbctrecon->Draw2DFrom3DDouble(
+          m_spRawFixedImg, m_spRawFixedImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgRawFixed[2],
+          m_YKImgRawMoving[2]);
+      if (false){//m_cbctregistration->dose_loaded) {
+        this->m_cbctrecon->Draw2DFrom3DDouble(
+            m_spFixedDose, m_spFixedDose, PLANE_AXIAL, curPhysPos[0],
+            m_DoseImgFixed[0], m_DoseImgMoving[0]);
+        this->m_cbctrecon->Draw2DFrom3DDouble(
+            m_spFixedDose, m_spFixedDose, PLANE_FRONTAL, curPhysPos[1],
+            m_DoseImgFixed[1], m_DoseImgMoving[1]);
+        this->m_cbctrecon->Draw2DFrom3DDouble(
+            m_spFixedDose, m_spFixedDose, PLANE_SAGITTAL, curPhysPos[2],
+            m_DoseImgFixed[2], m_DoseImgMoving[2]);
+      }
+    }
+
+    // Update position lineEdit
+    QString strPos1, strPos2, strPos3;
+    strPos1.sprintf("%3.1f", curPhysPos[0]);
+    strPos2.sprintf("%3.1f", curPhysPos[1]);
+    strPos3.sprintf("%3.1f", curPhysPos[2]);
+    // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
+    /*
+    this->ui.lineEditCurPosX->setText(strPos3);
+    this->ui.lineEditCurPosY->setText(strPos2);
+    this->ui.lineEditCurPosZ->setText(strPos1);
+    */
+    ////Update Origin text box
+    auto imgOriginFixed = m_spRawFixedImg->GetOrigin();
+    QString strOriFixed;
+    strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0], imgOriginFixed[1], imgOriginFixed[2]);
+    // In Andreases code he set the text on the ui. Therefore we outcomment this (lineEditOriginFixed)
+    //this->ui.lineEditOriginFixed->setText(strOriFixed);
+
+    if (m_spRawMovingImg != nullptr) {
+      const auto imgOriginMoving = m_spRawMovingImg->GetOrigin();
+      QString strOriMoving;
+      strOriMoving.sprintf("%3.4f, %3.4f, %3.4f", imgOriginMoving[0],
+                           imgOriginMoving[1], imgOriginMoving[2]);
+      // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
+      //this->ui.lineEditOriginMoving->setText(strOriMoving);
+    }
+    // In Andreases code he have 3 labels on the registration ui, but we only have one. Therefor the below has been changed.
+    /*
+    auto arr_wnd = std::array<qyklabel *, 3>{{this->ui.labelOverlapWnd1,
+                                              this->ui.labelOverlapWnd2,
+                                              this->ui.labelOverlapWnd3}};
+                                             */
+    auto wnd = this->ui->labelImageRaw;
+
+
+    if (m_cbctregistration->cur_voi != nullptr) {
+      const auto p_cur_voi = m_cbctregistration->cur_voi.get();
+
+      if(View==0){
+          set_points_by_slice<UShortImageType, PLANE_AXIAL, RED>(
+              wnd, p_cur_voi, curPhysPos, imgSpacing,
+              imgOriginFixed, imgSize);
+      }else if(View==1){
+          set_points_by_slice<UShortImageType, PLANE_FRONTAL, RED>(
+              wnd, p_cur_voi, curPhysPos, imgSpacing,
+              imgOriginFixed, imgSize);
+      }else if(View==2){
+          set_points_by_slice<UShortImageType, PLANE_SAGITTAL, RED>(
+              wnd, p_cur_voi, curPhysPos, imgSpacing,
+              imgOriginFixed, imgSize);
+      }
+
+    }
+
+    if (m_cbctregistration->WEPL_voi != nullptr) {
+      const auto p_wepl_voi = m_cbctregistration->WEPL_voi.get();
+
+      if(View==0){
+          set_points_by_slice<UShortImageType, PLANE_AXIAL, BLUE>(
+              wnd, p_wepl_voi, curPhysPos, imgSpacing,
+              imgOriginFixed, imgSize);
+      }else if(View==1){
+          set_points_by_slice<UShortImageType, PLANE_FRONTAL, BLUE>(
+              wnd, p_wepl_voi, curPhysPos, imgSpacing,
+              imgOriginFixed, imgSize);
+      }else if(View==2){
+          set_points_by_slice<UShortImageType, PLANE_SAGITTAL, BLUE>(
+              wnd, p_wepl_voi, curPhysPos, imgSpacing,
+              imgOriginFixed, imgSize);
+      }
+    }
+
+    // Constitute m_YKDisp from Fixed and Moving
+    // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
+    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+      for (auto i = 0; i < 3; i++) {
+        auto idxAdd = m_enViewArrangeRaw; // m_iViewArrange = 0,1,2
+        if (idxAdd + i >= 3) {
+          idxAdd = idxAdd - 3;
+        }
+
+        m_YKDispRaw[i].SetSpacing(m_YKImgRawFixed[i + idxAdd].m_fSpacingX,
+                               m_YKImgRawFixed[i + idxAdd].m_fSpacingY);
+
+        m_YKDispRaw[i].SetSplitOption(PRI_LEFT_TOP);
+        if (!m_YKDispRaw[i].ConstituteFromTwo(m_YKImgRawFixed[i + idxAdd],
+                                           m_YKImgRawMoving[i + idxAdd])) {
+            std::cout << "Image error " << i + 1 << " th view" << std::endl;
+        }
+      }
+    } else {
+      for (auto i = 0; i < 3; i++) {
+        auto addedViewIdx = m_enViewArrangeRaw;
+        if (i + addedViewIdx >= 3) {
+          addedViewIdx = addedViewIdx - 3;
+        }
+
+        m_YKDispRaw[i].CloneImage(m_YKImgRawFixed[i + addedViewIdx]);
+      }
+    }
+
+    // For dose overlay
+    if (false){//m_cbctregistration->dose_loaded) {
+        // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
+      if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
+        for (auto i = 0; i < 3; i++) {
+          auto idxAdd = m_enViewArrangeRaw; // m_iViewArrange = 0,1,2
+          if (idxAdd + i >= 3) {
+            idxAdd = idxAdd - 3;
+          }
+
+          m_AGDisp_Overlay[i].SetSpacing(m_DoseImgFixed[i + idxAdd].m_fSpacingX,
+                                         m_DoseImgFixed[i + idxAdd].m_fSpacingY);
+
+          m_AGDisp_Overlay[i].SetSplitOption(PRI_LEFT_TOP);
+          if (!m_AGDisp_Overlay[i].ConstituteFromTwo(
+                  m_DoseImgFixed[i + idxAdd], m_DoseImgMoving[i + idxAdd])) {
+            std::cout << "Dose Image error " << i + 1 << " th view" << std::endl;
+          }
+        }
+      } else {
+        for (auto i = 0; i < 3; i++) {
+          auto addedViewIdx = m_enViewArrangeRaw;
+          if (i + addedViewIdx >= 3) {
+            addedViewIdx = addedViewIdx - 3;
+          }
+
+          m_AGDisp_Overlay[i].CloneImage(m_DoseImgFixed[i + addedViewIdx]);
+        }
+      }
+    }
+    // In Andreases code this is set to 2000 (sliderFixedW)
+    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
+    // In Andreases code this is set to 2000 (sliderMovingW)
+    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
+    // In Andreases code this is set to 1024 (sliderFixedL)
+    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
+    // In Andreases code this is set to 1024 (sliderMovingL)
+    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
+
+    m_YKDispRaw[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    m_YKDispRaw[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    m_YKDispRaw[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+
+    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+
+    if(View ==0){
+        this->ui->labelImageRaw->SetBaseImage(&m_YKDispRaw[0]);
+    }else if(View==1){
+        this->ui->labelImageRaw->SetBaseImage(&m_YKDispRaw[1]);
+    }else if(View ==2){
+        this->ui->labelImageRaw->SetBaseImage(&m_YKDispRaw[2]);
+    }
+
+    /*
+    this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
+    this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
+    */
+
+    // here gPMC results could be checked for and displayed, possibly with
+    // modification to the qyklabel class /AGA 02/08/2017
+    if (false){//m_cbctregistration->dose_loaded) {
+      m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+      m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+      m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+      // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+
+      if(View==0){
+          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[0]);
+      }else if(View==1){
+          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[1]);
+      }else if(View ==2){
+          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[2]);
+      }
+
+      /*
+      this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
+      this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
+      */
+    }
+    // In Andreases code he plots this on the registration ui, but we only have one window
+    this->ui->labelImageRaw->update();
+    /*
+    this->ui.labelOverlapWnd2->update();
+    this->ui.labelOverlapWnd3->update();
+    */
+}
+
+FDK_options Scui::getFDKoptions() const {
+  FDK_options fdk_options;
+  // In Andreases code this was initialized as 1.0
+  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble();
+  // In Andreases code this was initialized as 0.5
+  fdk_options.HannCutX = 0.5;//this->ui.lineEdit_Ramp_HannCut->text().toDouble();
+  // In Andreases code this was initialized as 0.5
+  fdk_options.HannCutY = 0.5;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble();
+  // In Andreases code this was initialized as 0.0
+  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble();
+  // In Andreases code this was initialized as 0.0
+  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble();
+  // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
+  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked();
+  // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
+  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked();
+  // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
+  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked();
+
+  // In Andreases code thesse three was initialized as 1
+  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble();
+  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble();
+  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble();
+
+  // In Andreases code thesse three was initialized as 400
+  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt();
+  // In Andreases code thesse three was initialized as 200
+  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt();
+  // In Andreases code thesse three was initialized as 400
+  fdk_options.ct_size[2] = 200;//this->ui.lineEdit_outImgDim_LR->text().toInt();
+
+  // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
+  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x
+  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y
+  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z
+
+  // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
+  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();
+
+  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
+
+  return fdk_options;
 }

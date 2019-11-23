@@ -9,11 +9,6 @@
 #include "cbctrecon.h"
 #include "cbctregistration.h"
 #include "cbctregistration_test.hpp"
-#include "progressbar.h"
-//#include "loadingthread.h"
-//#include "scattercorrectingthread.h"
-//#include "DlgRegistration.h"
-
 //Qt
 #include <QStandardItemModel>
 
@@ -54,6 +49,7 @@ public:
   ScatterCorrectingThread *scThread;
   WEPLThread *weplThread;
   bool scatterCorrectingIsDone = false;
+
 
 public slots:
     void SLT_LoadRawImages(){}; // independent 2d projection files //not used in
@@ -175,10 +171,14 @@ public slots:
     void SLT_StartWEPLThread();
     void SLT_DrawReconInFixedSlice();
     void SLT_UpdateProgressBarWEPL(int progress);
+    void SLT_LThreadIsDone();
+    void SLT_SliderValueChanged();
+    void SLT_DrawReconImageInSlices();
 
 private:
     Ui::Scui *ui;
     int m_enViewArrange{};
+    int m_enViewArrangeRaw{};
 public:
     YK16GrayImage *m_YKDisp;
     YK16GrayImage *m_YKImgFixed;
@@ -194,8 +194,12 @@ public:
     QString CTPath = QString("");
     QString Structure = QString("");
     int View =0;
-    //Progressbar *progressbar;
-    //UShortImageType::Pointer tempImg;
+    YK16GrayImage *m_YKDispRaw;
+    YK16GrayImage *m_YKImgRawFixed;
+    YK16GrayImage *m_YKImgRawMoving;
+    UShortImageType::Pointer m_spRawFixedImg;  // pointer only, for display
+    UShortImageType::Pointer m_spRawMovingImg; // pointer only, for display
+
 private slots:
 
     void on_comboBoxPlanView_currentIndexChanged(const QString &arg1);

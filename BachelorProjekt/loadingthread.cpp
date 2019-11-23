@@ -8,17 +8,14 @@
 #include "cbctrecon_io.h"
 #include "scui.h"
 
-
-
-
-LoadingThread::LoadingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))
+LoadingThread::LoadingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))//Construtor
 {
-    this->m_parent = parent;
-    this->m_cbctrecon = parent->m_cbctrecon.get();
-    this->m_cbctregistration = parent->m_cbctregistration.get();
+    this->m_parent = parent; // Object of scui (Same object)
+    this->m_cbctrecon = parent->m_cbctrecon.get(); // Object of cbctrecon (Same object)
+    this->m_cbctregistration = parent->m_cbctregistration.get(); // Object of cbctregistration (Same object)
 }
 
-void LoadingThread::run(){
+void LoadingThread::run(){ // Method which is called when the start method is called on the thread
     this->SLT_SetHisDir();
 }
 
@@ -27,7 +24,7 @@ void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
   // Initializing..
   auto dirPath = m_parent->CBCTPath;
 
-  if (dirPath.length() <= 1) {
+  if (dirPath.length() <= 1) { // If no directory chosen, jump out
     return;
   }
 
@@ -66,7 +63,7 @@ void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
   SLT_LoadSelectedProjFiles(dirPath);
 }
 
-void LoadingThread::init_DlgRegistration(QString &str_dcm_uid) const// init dlgRegistrations
+void LoadingThread::init_DlgRegistration(QString &str_dcm_uid) const// init dlgRegistration. Sets pointers en scui to zero
 {
     QString strDCMUID = str_dcm_uid;
     m_cbctregistration->SetPlmOutputDir(strDCMUID);
@@ -116,7 +113,7 @@ std::tuple<bool, bool> LoadingThread::probeUser(const QString &guessDir) {
 
 FilterReaderType::Pointer
 LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
-                                            std::tuple<bool, bool> &answers) {
+                                            std::tuple<bool, bool> &answers) { // Function for reading the bowtie filter
 
   auto bowtiereader =
       FilterReaderType::New(); // we use is because we need the projections to
@@ -137,7 +134,7 @@ LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
       std::vector<std::string> filepath;
       filepath.push_back(bowtiePath.toStdString());
       bowtiereader->SetFileNames(filepath);
-      emit Signal_UpdateProgressBarLoad(20);
+      emit Signal_UpdateProgressBarLoad(20); // Signal to update the progressbar on scui
       std::thread calc_thread_bowtie(
           [&bowtiereader] { bowtiereader->Update(); });
       answers = probeUser(guessDir.absolutePath());
@@ -277,7 +274,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   auto bowtie_reader = ReadBowtieFileWhileProbing(geopath, answers);
 
   calc_thread.join();
-  emit Signal_UpdateProgressBarLoad(40);
+  emit Signal_UpdateProgressBarLoad(40); // Signal to update the progressbar on scui
   std::cout << "Reader re-attached to main thread" << std::endl;
 
   this->m_cbctrecon->m_spProjImg3DFloat =
@@ -308,10 +305,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   this->m_cbctrecon
       ->SetMaxAndMinValueOfProjectionImage(); // update min max projection image
 
-  SLT_InitializeGraphLim();
-
-  //this->SLT_DrawProjImages(); // Update Table is called Maybe comment this in later on
-   emit Signal_UpdateProgressBarLoad(60);
+  emit Signal_UpdateProgressBarLoad(60); // Signal to update the progressbar on scui
   if (!std::get<0>(answers)) { // instaRecon
     std::cout
         << "FINISHED!: Loading projection files. Proceed to reconstruction"
@@ -319,13 +313,9 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   } else {
     SLT_DoReconstruction();
   }
-
-  if (std::get<0>(answers) && std::get<1>(answers)) { // CT DCM dir was found
-    //SLT_ViewRegistration();
-  }
 }
 // Is implemented in SLT_LoadSelectedProjFiles()
-void LoadingThread::SLT_DoBowtieCorrection() {
+void LoadingThread::SLT_DoBowtieCorrection() { // Function for applying the bowtiefilter on the raw projections.
   if (this->m_cbctrecon->m_spProjImg3DFloat == nullptr) {
     return;
   }
@@ -346,113 +336,14 @@ void LoadingThread::SLT_DoBowtieCorrection() {
   //SLT_DrawProjImages();
   std::cout << "Bow-tie correction done." << std::endl;
 }
-
 // Is implemented in SLT_LoadSelectedProjFiles()
-void LoadingThread::SLT_InitializeGraphLim() const {
-  // In Andreases code this was checked so we keep this one (radioButton_graph_proj)
-  // Set Max Min at graph
-  if (true){//this->ui.radioButton_graph_proj->isChecked()) {
-    if (this->m_cbctrecon->m_iImgCnt > 0) // if indep raw his images are loaded
-    {
-      const auto horLen = this->m_cbctrecon->m_dspYKImgProj->m_iWidth;
-      const auto strXMin = QString("%1").arg(horLen);
-      const auto strYMin =
-          QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMin, 0, 'f', 1);
-      const auto strYMax =
-          QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMax, 0, 'f', 1);
-    }
-
-    if (this->m_cbctrecon->m_spProjImg3DFloat == nullptr) {
-      return;
-    }
-
-    const auto horLen =
-        this->m_cbctrecon->m_spProjImg3DFloat->GetBufferedRegion().GetSize()[0];
-
-    // set edit maxium min
-    const auto strXMin = QString("%1").arg(horLen);
-
-    const auto strYMin =
-        QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMin, 0, 'f', 1);
-    const auto strYMax =
-        QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMax, 0, 'f', 1);
-
-
-    // In Andreases code this was not checked so we outcommet this one (radioButton_graph_recon)
-  } else if (false){//this->ui.radioButton_graph_recon->isChecked()) {
-    if (this->m_cbctrecon->m_spCrntReconImg == nullptr) {
-      return;
-    }
-
-    const auto horLen =
-        this->m_cbctrecon->m_spCrntReconImg->GetBufferedRegion().GetSize()[0];
-    // int verLen = m_spCrntReconImg->GetBufferedRegion().GetSize()[1];
-
-    // set edit maxium min
-
-    const auto strXMax = QString("%1").arg(horLen);
-    //this->ui.lineEditXMin->setText("0");
-    //this->ui.lineEditXMax->setText(strXMax);
-
-    const auto strYMin = QString("%1").arg(0.0, 0, 'f', 1);
-    const auto strYMax = QString("%1").arg(2000.0, 0, 'f', 1);
-
-    //this->ui.lineEditYMin->setText(strYMin);
-    //this->ui.lineEditYMax->setText(strYMax);
-  }
-}
-// Is called by SLT_DoReconstruction()
-FDK_options LoadingThread::getFDKoptions() const {
-  FDK_options fdk_options;
-  // In Andreases code this was initialized as 1.0
-  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble();
-  // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutX = 0.5;//this->ui.lineEdit_Ramp_HannCut->text().toDouble();
-  // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutY = 0.5;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble();
-  // In Andreases code this was initialized as 0.0
-  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble();
-  // In Andreases code this was initialized as 0.0
-  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble();
-  // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
-  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked();
-  // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
-  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked();
-  // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
-  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked();
-
-  // In Andreases code thesse three was initialized as 1
-  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble();
-  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble();
-  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble();
-
-  // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt();
-  // In Andreases code thesse three was initialized as 200
-  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt();
-  // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[2] = 200;//this->ui.lineEdit_outImgDim_LR->text().toInt();
-
-  // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
-  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x
-  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y
-  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z
-
-  // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
-  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();
-
-  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
-
-  return fdk_options;
-}
-// Is implemented in SLT_LoadSelectedProjFiles()
-void LoadingThread::SLT_DoReconstruction() {
-  const auto fdk_options = getFDKoptions();
+void LoadingThread::SLT_DoReconstruction() { // Functions responsible for the reconstruction
+  const auto fdk_options = m_parent->getFDKoptions();
   itk::TimeProbe reconTimeProbe;
   reconTimeProbe.Start();
   // In Andreases UI he uses Cuda, but we use OpenCL.
   this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT, fdk_options);
-  emit Signal_UpdateProgressBarLoad(80);
+  emit Signal_UpdateProgressBarLoad(80); // Signal to update the progressbar on scui
   /*
   if (this->ui.radioButton_UseCUDA->isChecked()) {
     this->m_cbctrecon->DoReconstructionFDK<CUDA_DEVT>(REGISTER_RAW_CBCT,
@@ -470,156 +361,15 @@ void LoadingThread::SLT_DoReconstruction() {
             << reconTimeProbe.GetUnit() << std::endl;
 
   QString update_text("RAW_CBCT");
-  UpdateReconImage(this->m_cbctrecon->m_spCrntReconImg, update_text);
-
-  m_dlgRegistration->UpdateListOfComboBox(0); // combo selection
-                                              // signalis called
-  m_dlgRegistration->UpdateListOfComboBox(1);
-
-  emit Signal_UpdateProgressBarLoad(100);
-  emit Signal_SetButtonsAfterLoad();
-
+  auto size = m_parent->m_cbctrecon->m_spCrntReconImg->GetBufferedRegion().GetSize();
+  m_parent->UpdateReconImage(this->m_cbctrecon->m_spCrntReconImg, update_text); // Updates the recon image
+  emit Signal_DisconnectSlider(); // Signal to disconnect the slider
+  const auto initVal = qRound((size[2] - 1) / 2.0); // Finding the middle of the image to use this as the slider value
+  emit Signal_ReConnectSlider(initVal); // Signal to reconnect the slider
+  emit Signal_UpdateSlider(size[2] - 1); // Signal to update the slider
+  emit Signal_UpdateProgressBarLoad(100); // Signal to update the progressbar on scui
+  emit Signal_SetButtonsAfterLoad(); // Signal to set buttons after load on scui
+  emit Signal_LThreadIsDone(); // Signal which indicates that the loading threads run method has finished
 }
 
-// Is called by SLT_DoReconstruction()
-void LoadingThread::UpdateReconImage(UShortImageType::Pointer &spNewImg,
-                                       QString &fileName) {
-  this->m_cbctrecon->m_spCrntReconImg = spNewImg;
-
-  const auto &p_curimg = this->m_cbctrecon->m_spCrntReconImg;
-  const auto origin_new = p_curimg->GetOrigin();
-  const auto spacing_new = p_curimg->GetSpacing();
-  const auto size_new = p_curimg->GetBufferedRegion().GetSize();
-
-  std::cout << "New Origin" << origin_new << std::endl;
-  std::cout << "New spacing" << spacing_new << std::endl;
-  std::cout << "New size" << size_new << std::endl;
-
-  auto size = p_curimg->GetBufferedRegion().GetSize();
-
-  this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0); // maybe 100 instead of 0.
-
-  emit Signal_DisconnectSlider();
-
-  emit Signal_UpdateSlider(size[2] - 1);
-
-  const auto initVal = qRound((size[2] - 1) / 2.0);
-
-  //SLT_InitializeGraphLim();
-
-  emit Signal_ReConnectSlider(initVal);
-}
-
-// Is implemented in SLT_DrawProjImages() in Scui
-void LoadingThread::SLT_UpdateTable() {
-
-  // In Andreases code this was aldready checked so we outcommet this one (radioButton_graph_proj)
-    /*
-  if (this->m_cbctrecon->m_spCrntReconImg == nullptr) {
-    this->ui.radioButton_graph_proj->setChecked(true);
-  }
-  */
-
-  // std::cout << "check 1" << std::endl;
-  YK16GrayImage *pYKImg;
-  auto fMultiPlyFactor = 1.0;
-  auto fMinValue = 0.0;
-
-  // In Andreases code this was aldready checked so we replace with true (radioButton_graph_proj)
-  if (true){//this->ui.radioButton_graph_proj->isChecked()) {
-    pYKImg = this->m_cbctrecon->m_dspYKImgProj.get(); // you may look, but no touching!
-
-    if (this->m_cbctrecon->m_iImgCnt > 0) { // if indep image
-      fMultiPlyFactor = 1.0;
-    } else {
-      fMultiPlyFactor = this->m_cbctrecon->m_multiplyFactor;
-      fMinValue = this->m_cbctrecon->m_fProjImgValueMin;
-    }
-  } else {
-    pYKImg = this->m_cbctrecon->m_dspYKReconImage.get();
-    fMinValue = 0.0;
-  }
-  if (pYKImg == nullptr) {
-    return;
-  }
-
-  auto columnSize = 2;
-  auto rowSize = pYKImg->m_iHeight;
-
-  /// int rowSize = pYKImg->m_iWidth;
-  // In Andreases code this was aldready checked so we replace with true (radioButton_Profile_Hor)
-  if (true){//this->ui.radioButton_Profile_Hor->isChecked()) {
-    // columnSize = 2;
-    rowSize = pYKImg->m_iWidth;
-  }
-
-  // std::cout << "check 4" << std::endl;
-  m_pTableModel = std::make_unique<QStandardItemModel>(
-      rowSize, columnSize, this); // 2 Rows and 3 Columns
-
-  auto pos_item = std::make_unique<QStandardItem>(QString("Position(mm)"));
-  auto val_item = std::make_unique<QStandardItem>(QString("Value"));
-
-  m_pTableModel->setHorizontalHeaderItem(0, pos_item.release());
-  m_pTableModel->setHorizontalHeaderItem(1, val_item.release());
-
-  auto originX = 0.0;
-  auto originY = 0.0;
-  auto spacingX = 1.0;
-  auto spacingY = 1.0;
-  // In Andreases code this is used for the graph so therefore we out comment this section
-  /*
-  if (!this->ui.radioButton_graph_proj->isChecked()) {
-    if (this->m_cbctrecon->m_spCrntReconImg != nullptr) {
-      auto tmpOrigin = this->m_cbctrecon->m_spCrntReconImg->GetOrigin();
-      auto tmpSpacing = this->m_cbctrecon->m_spCrntReconImg->GetSpacing();
-      originX = tmpOrigin[0];
-      originY = tmpOrigin[1];
-      spacingX = tmpSpacing[0];
-      spacingY = tmpSpacing[1];
-    }
-  }
-  */
-
-  // std::cout << "check 6" << std::endl;
-  // In Andreases code this was aldready checked so we replace with true (radioButton_Profile_Hor)
-  QVector<qreal> vPos;
-  if (true){//this->ui.radioButton_Profile_Hor->isChecked()) {
-    for (auto i = 0; i < rowSize; i++) {
-      vPos.push_back(originX + i * spacingX);
-    }
-  } else {
-    for (auto i = 0; i < rowSize; i++) {
-      vPos.push_back(originY + i * spacingY);
-    }
-  }
-  // In Andreases code this was aldready checked so we replace with true (radioButton_Profile_Hor)
-  QVector<qreal> vProfile;
-  if (true){//this->ui.radioButton_Profile_Hor->isChecked()) {
-    pYKImg->GetProfileData(vProfile, DIRECTION_HOR);
-  } else {
-    pYKImg->GetProfileData(vProfile, DIRECTION_VER);
-  }
-
-  // int i = fixedY;
-  for (auto i = 0; i < rowSize; i++) {
-    const auto tmpVal1 = vPos[i];
-    auto xpos_item =
-        std::make_unique<QStandardItem>(QString("%1").arg(tmpVal1));
-    m_pTableModel->setItem(i, 0, xpos_item.release());
-
-    const auto tmpVal2 = vProfile[i] / fMultiPlyFactor + fMinValue;
-    auto profval_item =
-        std::make_unique<QStandardItem>(QString("%1").arg(tmpVal2));
-    m_pTableModel->setItem(i, 1, profval_item.release());
-  }
-  // In Andreases code this is for visualising dose and this is therefore out commented
-  /*
-  this->ui.tableViewReconImgProfile->setModel(
-      m_pTableModel.get()); // also for proj
-      */
-
-  // In Andreases code this is for visualising dose and this is therefore out commented
-  //SLT_DrawGraph();
-}
 

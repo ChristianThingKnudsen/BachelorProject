@@ -17,8 +17,8 @@ public:
     bool Stop;
 
     // Relevant variables
-    Scui* m_parent;
-    CbctRecon* m_cbctrecon;
+    Scui* m_parent; // Used to call objects and methods in the main class
+    CbctRecon* m_cbctrecon; // Main object to acces
     CbctRegistration* m_cbctregistration; // just for convienience
 
 private slots:
@@ -35,7 +35,6 @@ private slots:
     void SLT_ConfirmManualRegistration();
 
 signals:
-    //Some signals...
     void Signal_UpdateLabelRaw(QString);
     void Signal_UpdateLabelCor(QString);
     void SignalPassFixedImg(QString);

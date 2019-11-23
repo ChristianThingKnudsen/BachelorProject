@@ -16,16 +16,14 @@ public:
     // For threading
     explicit LoadingThread(Scui *parent=nullptr);
     void run();
-    Scui* m_parent;
+    Scui* m_parent; // Used to call objects and methods in the main class
     bool Stop = false;
 
     // Relevant variables
-    CbctRecon* m_cbctrecon;
+    CbctRecon* m_cbctrecon; // Main object to acces
     CbctRegistration* m_cbctregistration; // just for convienience
     std::unique_ptr<QStandardItemModel> m_pTableModel;
     std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
-    FDK_options getFDKoptions() const;
-    void UpdateReconImage(UShortImageType::Pointer &spNewImg, QString &fileName);
     void init_DlgRegistration(QString &str_dcm_uid) const;
     FilterReaderType::Pointer ReadBowtieFileWhileProbing(const QString &proj_path, std::tuple<bool, bool> &answers);
     std::tuple<bool, bool> probeUser(const QString &guessDir);
@@ -43,17 +41,15 @@ private slots:
     void SLT_SetHisDir();
     void SLT_LoadSelectedProjFiles(QString &path);
     void SLT_DoBowtieCorrection();
-    void SLT_InitializeGraphLim() const;
     void SLT_DoReconstruction();
-    void SLT_UpdateTable();
 
 signals:
     void SignalMessageBox(int, QString,QString);
-    void Signal_FDKoptions(FDK_options);
     void Signal_SetButtonsAfterLoad();
     void Signal_UpdateSlider(int);
     void Signal_DisconnectSlider();
     void Signal_ReConnectSlider(int);
     void Signal_UpdateProgressBarLoad(int);
+    void Signal_LThreadIsDone();
 };
 #endif // LOADINGTHREAD_H
