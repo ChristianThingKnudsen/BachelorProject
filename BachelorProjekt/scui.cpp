@@ -133,7 +133,7 @@ void Scui::SLT_OpenInfo() // Is called when the info button is pushed
 void Scui::SLT_OpenAdvancedMode() // Is called when the advanced button is pushed
 {
     //Link: https://stackoverflow.com/questions/15435994/how-do-i-open-an-exe-from-another-c-exe
-    ShellExecute(NULL, "open", "C:\\Users\\ct-10\\CbctRecon\\build-vs19-mt\\bin\\CbctRecon.exe", NULL, NULL, SW_MAXIMIZE);
+    ShellExecute(NULL, "open", "C:\\Users\\ct-10\\CbctRecon\\build-vs19-mt\\bin\\CbctRecon.exe", NULL, NULL, SW_SHOW);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_Exit() // Is called when the exit button is pushed
@@ -235,209 +235,6 @@ void Scui::SLT_ReConnectSlider(int initVal){ // Connects the slider again
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_SetButtonsAfterLoad(){ // Sets the button after loading has finished
-    ui->btnLoadData->setEnabled(false);
-    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
-    ui->btnScatterCorrect->setEnabled(true);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
-    //SLT_PreProcessCT(); // Is added by us. Added for later use
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
-    ui->comboBox_region->setEnabled(true);
-    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------WEPL methods ----------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-void Scui::SLT_StartWEPLThread(){ // Starts the WEPL thread
-    weplThread->start();
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_UpdateProgressBarWEPL(int progress){ // Updates the progressbar for WEPL
-    ui->progressBarWEPL->setValue(progress);
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
-  //Get VIO
-  const auto voi_name = structure.toStdString();
-
-  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
-  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
-
-  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
-  const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
-  m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
-
-  const auto wepl_voi =
-      CalculateWEPLtoVOI(m_cbctregistration->cur_voi.get(), gantry_angle,
-                         couch_angle, m_spMovingImg, m_spFixedImg);
-  m_cbctregistration->WEPL_voi = std::make_unique<Rtss_roi_modern>(*wepl_voi);
-  // Draw WEPL
-  SLT_DrawImageWhenSliceChange();
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by SLT_MovingImageSelected
-void Scui::UpdateVOICombobox(const ctType ct_type) const {
-  auto struct_set =
-      m_cbctregistration->m_pParent->m_structures->get_ss(ct_type);
-  if (struct_set == nullptr) {
-    return;
-  }
-  if (struct_set->slist.empty()) {
-    std::cerr << "Structures not initialized yet" << std::endl;
-    return;
-  }
-  // In Andreases code he uses checkboxes therefore this is outcommented (comboBox_VOI)
-  ui->comboBoxWEPL->clear();//this->ui.comboBox_VOI->clear();
-  for (const auto &voi : struct_set->slist) {
-    this->ui->comboBoxWEPL->addItem(QString(voi.name.c_str()));
-    //this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
-    //this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
-  }
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by set_points_by_slice(). Is used to visualize WEPL
-template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
-  switch (color) {
-  case RED:
-    return &window->m_vPt;
-  case BLUE:
-  default:
-    return &window->m_vPt_green;
-  }
-}
-//Is called by SLT_DrawImageWhenSliceChange()
-template <typename ImageBase, enPLANE plane, enCOLOR color> // Is also used to visualize WEPL
-auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
-                         std::array<double, 3> curPhysPos,
-                         typename ImageBase::SpacingType imgSpacing,
-                         typename ImageBase::PointType imgOriginFixed,
-                         typename ImageBase::SizeType imgSize) {
-  auto *Wnd_contour = get_qtpoint_vector<color>(window);
-  Wnd_contour->clear();
-
-  auto wnd_size = window->size();
-  auto wnd_height = wnd_size.rheight();
-  const auto wnd_width = wnd_size.rwidth();
-  auto x_scale = 1.0 / static_cast<double>(wnd_width);
-  auto y_scale = 1.0 / static_cast<double>(wnd_height);
-  switch (plane) {
-  case PLANE_AXIAL:
-    x_scale *= imgSpacing[0] * imgSize[0];
-    y_scale *= imgSpacing[1] * imgSize[1];
-    break;
-  case PLANE_FRONTAL:
-    x_scale *= imgSpacing[0] * imgSize[0];
-    y_scale *= imgSpacing[2] * imgSize[2];
-    break;
-  case PLANE_SAGITTAL:
-    x_scale *= imgSpacing[1] * imgSize[1];
-    y_scale *= imgSpacing[2] * imgSize[2];
-  }
-
-  for (auto contour : voi->pslist) {
-    if (contour.coordinates.empty()) {
-      continue;
-    }
-    const auto first_point = contour.coordinates.at(0);
-    // Axial
-    if (first_point.z > curPhysPos[0] - imgSpacing[2] &&
-        first_point.z < curPhysPos[0] + imgSpacing[2] && plane == PLANE_AXIAL) {
-      for (auto point : contour.coordinates) {
-        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
-                                  (point.y - imgOriginFixed[1]) / y_scale);
-      }
-    }
-    for (auto &point : contour.coordinates) {
-      // Frontal
-      if (point.y > curPhysPos[1] - imgSpacing[1] &&
-          point.y < curPhysPos[1] + imgSpacing[1] && plane == PLANE_FRONTAL) {
-        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
-                                  wnd_height -
-                                      (point.z - imgOriginFixed[2]) / y_scale);
-      }
-      // Sagittal
-      if (point.x > curPhysPos[2] - imgSpacing[0] &&
-          point.x < curPhysPos[2] + imgSpacing[0] && plane == PLANE_SAGITTAL) {
-        Wnd_contour->emplace_back((point.y - imgOriginFixed[1]) / x_scale,
-                                  wnd_height -
-                                      (point.z - imgOriginFixed[2]) / y_scale);
-      }
-    }
-  }
-
-  window->m_bDrawPoints = true;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//----------------------------------------------------------Scatter correcting methods -----------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_StartScatterCorrectingThread(){ // Set buttons and starts the scatter correcting thread
-    ui->comboBox_region->setEnabled(false);
-    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-    ui->btnScatterCorrect->setEnabled(false);
-    scThread->start();
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_UpdateLabelRaw(QString string){ // Sets the title on the image on the left
-        ui->labelRawImgTitle->setText(string);
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_UpdateLabelCor(QString string){ // Sets the title on the image on the right
-    ui->labelCorImgTitle->setText(string);
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_UpdateProgressBarSC(int progress){ // Updates the scatter correcting progressbar
-    ui->progressBarSC->setValue(progress);
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread has finished. Sets buttons
-    scatterCorrectingIsDone = true;
-    ui->btnScatterCorrect->setEnabled(false);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
-    ui->comboBoxWEPL->setEnabled(true);
-    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-    ui->comboBoxWEPL->setEnabled(true);
-    ui->comboBoxWEPL->setCurrentIndex(0);
-    SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
-    ui->progressBarWEPL->setValue(100);
-    ui->comboBoxPlanView->setEnabled(true);
-    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------N/A methods------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-//....
-
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------Threading methods -----------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){ // Not used at the moment..
-
-    if(idx == 1){
-        QMessageBox::warning(this, header, message);
-        return;
-    }
-    QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
-    return;
-}
-
-
-
-
-
-
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------LOAD DATA FUNCTIONS---------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
 void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg, // Updates the image on the left. by seeting the input image as the current image
                                        QString &fileName) {
   m_cbctrecon->m_spCrntReconImg = spNewImg;
@@ -586,223 +383,165 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   this->ui->labelImageRaw->update();
 
 }
-void Scui::SLT_DrawReconInFixedSlice(){
-    // Constitute m_YKDisp from Fixed and Moving
-    // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
-      for (auto i = 0; i < 3; i++) {
-        auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
-        if (idxAdd + i >= 3) {
-          idxAdd = idxAdd - 3;
-        }
-
-        m_YKDisp[i].SetSpacing(m_YKImgFixed[i + idxAdd].m_fSpacingX,
-                               m_YKImgFixed[i + idxAdd].m_fSpacingY);
-
-        m_YKDisp[i].SetSplitOption(PRI_LEFT_TOP);
-        if (!m_YKDisp[i].ConstituteFromTwo(m_YKImgFixed[i + idxAdd],
-                                           m_YKImgMoving[i + idxAdd])) {
-            std::cout << "Image error " << i + 1 << " th view" << std::endl;
-        }
-      }
-    } else {
-      for (auto i = 0; i < 3; i++) {
-        auto addedViewIdx = m_enViewArrange;
-        if (i + addedViewIdx >= 3) {
-          addedViewIdx = addedViewIdx - 3;
-        }
-
-        m_YKDisp[i].CloneImage(m_YKImgFixed[i + addedViewIdx]);
-      }
-    }
-
-    // For dose overlay
-    if (m_cbctregistration->dose_loaded) {
-        // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-      if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
-        for (auto i = 0; i < 3; i++) {
-          auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
-          if (idxAdd + i >= 3) {
-            idxAdd = idxAdd - 3;
-          }
-
-          m_AGDisp_Overlay[i].SetSpacing(m_DoseImgFixed[i + idxAdd].m_fSpacingX,
-                                         m_DoseImgFixed[i + idxAdd].m_fSpacingY);
-
-          m_AGDisp_Overlay[i].SetSplitOption(PRI_LEFT_TOP);
-          if (!m_AGDisp_Overlay[i].ConstituteFromTwo(
-                  m_DoseImgFixed[i + idxAdd], m_DoseImgMoving[i + idxAdd])) {
-            std::cout << "Dose Image error " << i + 1 << " th view" << std::endl;
-          }
-        }
-      } else {
-        for (auto i = 0; i < 3; i++) {
-          auto addedViewIdx = m_enViewArrange;
-          if (i + addedViewIdx >= 3) {
-            addedViewIdx = addedViewIdx - 3;
-          }
-
-          m_AGDisp_Overlay[i].CloneImage(m_DoseImgFixed[i + addedViewIdx]);
-        }
-      }
-    }
-    // In Andreases code this is set to 2000 (sliderFixedW)
-    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
-    // In Andreases code this is set to 2000 (sliderMovingW)
-    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
-    // In Andreases code this is set to 1024 (sliderFixedL)
-    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
-    // In Andreases code this is set to 1024 (sliderMovingL)
-    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
-
-    m_YKDisp[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-    m_YKDisp[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-    m_YKDisp[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-
-    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-    if(View ==0){
-        this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
-    }else{
-        this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[1]); //this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
-    }
-
-    /*
-    this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
-    this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
-    */
-
-    // here gPMC results could be checked for and displayed, possibly with
-    // modification to the qyklabel class /AGA 02/08/2017
-    if (m_cbctregistration->dose_loaded) {
-      m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-      if(View ==0){
-          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[0]); //this->ui.labelOverlapWnd1->SetOverlayImage(&m_AGDisp_Overlay[0]);
-      }else{
-          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[1]); //this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
-      }
-      /*
-      this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
-      this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
-      */
-    }
-    // In Andreases code he plots this on the registration ui, but we only have one window
-    this->ui->labelImageRaw->update();//this->ui.labelOverlapWnd1->update();
-    /*
-    this->ui.labelOverlapWnd2->update();
-    this->ui.labelOverlapWnd3->update();
-    */
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_SetButtonsAfterLoad(){ // Sets the button after loading has finished
+    ui->labelRawImgTitle->setText("Raw CBCT");
+    ui->btnLoadData->setEnabled(false);
+    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
+    ui->btnScatterCorrect->setEnabled(true);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
+    //SLT_PreProcessCT(); // Is added by us. Added for later use
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-//Is called by SLT_LoadSelectedProjFiles
-void Scui::SLT_OpenElektaGeomFile() { // I don't think this is used at the moment
-  auto strPath = QFileDialog::getOpenFileName(
-      this, "Select a single file to open",
-      this->m_cbctrecon->m_strPathDirDefault, "Geometry file (*.xml)");
-
-  if (strPath.length() <= 1) {
-    return;
-  }
-  //this->ui.lineEdit_ElektaGeomPath->setText(strPath);
+void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
+    ui->comboBox_region->setEnabled(true);
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_PreProcessCT() {
-    /*
-  if (!true){//this->ui.checkBoxCropBkgroundCT->isChecked()) {
-    std::cout << "Preprocessing is not selected." << std::endl;
-    return;
-  }
+//-------------------------------------------------------------------WEPL methods ----------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-  const auto iAirThresholdShort = 500;//this->ui.spinBoxBkDetectCT->value();
+void Scui::SLT_StartWEPLThread(){ // Starts the WEPL thread
+    weplThread->start();
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateProgressBarWEPL(int progress){ // Updates the progressbar for WEPL
+    ui->progressBarWEPL->setValue(progress);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
+  //Get VIO
+  const auto voi_name = structure.toStdString();
 
-  if (false){//this->ui.comboBox_VOItoCropBy->count() < 1) {
-    std::cout
-        << "Reference CT DIR should be specified for structure based cropping"
-        << std::endl;
-    if (m_spMovingImg == nullptr || m_spFixedImg == nullptr) {
-      return;
-    }
-    const auto fixed_size = m_spFixedImg->GetLargestPossibleRegion().GetSize();
-    const auto moving_size = m_spMovingImg->GetLargestPossibleRegion().GetSize();
-    if (fixed_size[0] != moving_size[0] || fixed_size[1] != moving_size[1] ||
-        fixed_size[2] != moving_size[2]) {
-      std::cout
-          << "Fixed and moving image is not the same size, consider using "
-             "a platimatch registration to solve this."
-          << std::endl;
-      return;
-    }
+  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
+  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
 
-    const auto reply =
-        QMessageBox::question(this, "No reference structures found!",
-                              "Do you wan't to attempt an auto correction "
-                              "of air and excessive circumference?",
-                              QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-      std::cout << "Attempting automatic air filling and skin cropping..."
-                << std::endl;
-      m_cbctregistration->autoPreprocessCT(iAirThresholdShort, m_spFixedImg,
-                                           m_spMovingImg);
-    }
-    return;
-  }
+  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
+  const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
+  m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
 
-  const auto strRSName = this->ui.comboBox_VOItoCropBy->currentText();
-  const auto fill_bubble = this->ui.checkBoxFillBubbleCT->isChecked();
-  const auto iBubbleFillingVal =
-      this->ui.spinBoxBubFillCT->value(); // 1000 = soft tissue
-  const auto iAirFillValShort = this->ui.spinBoxBkFillCT->value(); // 0 = air
-
-  const auto cur_ct_text = ui.comboBoxImgMoving->currentText();
-  const auto cur_ct = get_ctType(cur_ct_text);
-  const auto &rt_structs =
-      m_cbctregistration->m_pParent->m_structures->get_ss(cur_ct);
-
-  QString image_str;
-  if (ui.comboBoxImToCropFill->currentText().compare("Moving") == 0) {
-    image_str = ui.comboBoxImgMoving->currentText();
-  } else {
-    image_str = ui.comboBoxImgFixed->currentText();
-  }
-
-  auto &image = m_cbctregistration->get_image_from_combotext(image_str);
-
-  if (!m_cbctregistration->PreprocessCT(image, iAirThresholdShort, rt_structs,
-                                        strRSName, fill_bubble,
-                                        iBubbleFillingVal, iAirFillValShort)) {
-    std::cout
-        << "Error in PreprocessCT!!!scatter correction would not work out."
-        << std::endl;
-    m_cbctregistration->m_pParent->m_bMacroContinue = false;
-  }
-
-  show();
-
-  UpdateListOfComboBox(0); // combo selection signalis called
-  UpdateListOfComboBox(1);
-  // if not found, just skip
-  SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
-  SelectComboExternal(1, REGISTER_MANUAL_RIGID);
+  const auto wepl_voi =
+      CalculateWEPLtoVOI(m_cbctregistration->cur_voi.get(), gantry_angle,
+                         couch_angle, m_spMovingImg, m_spFixedImg);
+  m_cbctregistration->WEPL_voi = std::make_unique<Rtss_roi_modern>(*wepl_voi);
+  // Draw WEPL
   SLT_DrawImageWhenSliceChange();
-
-  std::cout << "FINISHED!: Pre-processing of CT image" << std::endl;
-
-  ////Load DICOM plan
-  if (m_cbctregistration->m_pParent->m_strPathPlan.isEmpty()) {
-    std::cout << "No DCM plan file was found. Skipping dcm plan." << std::endl;
-    return;
-  }
-  // QString dcmplanPath = m_pParent->m_strPathPlan;
-  m_cbctregistration->LoadRTPlan(
-      m_cbctregistration->m_pParent->m_strPathPlan); // fill RT_studyplan
-      */
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------SCATTER CORRECT FUNCTIONS---------------------------------------------------------------------------------------//
+//Is called by SLT_MovingImageSelected
+void Scui::UpdateVOICombobox(const ctType ct_type) const {
+  auto struct_set =
+      m_cbctregistration->m_pParent->m_structures->get_ss(ct_type);
+  if (struct_set == nullptr) {
+    return;
+  }
+  if (struct_set->slist.empty()) {
+    std::cerr << "Structures not initialized yet" << std::endl;
+    return;
+  }
+  // In Andreases code he uses checkboxes therefore this is outcommented (comboBox_VOI)
+  ui->comboBoxWEPL->clear();//this->ui.comboBox_VOI->clear();
+  for (const auto &voi : struct_set->slist) {
+    this->ui->comboBoxWEPL->addItem(QString(voi.name.c_str()));
+    //this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
+    //this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
+  }
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//Is called by set_points_by_slice(). Is used to visualize WEPL
+template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
+  switch (color) {
+  case RED:
+    return &window->m_vPt;
+  case BLUE:
+  default:
+    return &window->m_vPt_green;
+  }
+}
+//Is called by SLT_DrawImageWhenSliceChange()
+template <typename ImageBase, enPLANE plane, enCOLOR color> // Is also used to visualize WEPL
+auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
+                         std::array<double, 3> curPhysPos,
+                         typename ImageBase::SpacingType imgSpacing,
+                         typename ImageBase::PointType imgOriginFixed,
+                         typename ImageBase::SizeType imgSize) {
+  auto *Wnd_contour = get_qtpoint_vector<color>(window);
+  Wnd_contour->clear();
+
+  auto wnd_size = window->size();
+  auto wnd_height = wnd_size.rheight();
+  const auto wnd_width = wnd_size.rwidth();
+  auto x_scale = 1.0 / static_cast<double>(wnd_width);
+  auto y_scale = 1.0 / static_cast<double>(wnd_height);
+  switch (plane) {
+  case PLANE_AXIAL:
+    x_scale *= imgSpacing[0] * imgSize[0];
+    y_scale *= imgSpacing[1] * imgSize[1];
+    break;
+  case PLANE_FRONTAL:
+    x_scale *= imgSpacing[0] * imgSize[0];
+    y_scale *= imgSpacing[2] * imgSize[2];
+    break;
+  case PLANE_SAGITTAL:
+    x_scale *= imgSpacing[1] * imgSize[1];
+    y_scale *= imgSpacing[2] * imgSize[2];
+  }
+
+  for (auto contour : voi->pslist) {
+    if (contour.coordinates.empty()) {
+      continue;
+    }
+    const auto first_point = contour.coordinates.at(0);
+    // Axial
+    if (first_point.z > curPhysPos[0] - imgSpacing[2] &&
+        first_point.z < curPhysPos[0] + imgSpacing[2] && plane == PLANE_AXIAL) {
+      for (auto point : contour.coordinates) {
+        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
+                                  (point.y - imgOriginFixed[1]) / y_scale);
+      }
+    }
+    for (auto &point : contour.coordinates) {
+      // Frontal
+      if (point.y > curPhysPos[1] - imgSpacing[1] &&
+          point.y < curPhysPos[1] + imgSpacing[1] && plane == PLANE_FRONTAL) {
+        Wnd_contour->emplace_back((point.x - imgOriginFixed[0]) / x_scale,
+                                  wnd_height -
+                                      (point.z - imgOriginFixed[2]) / y_scale);
+      }
+      // Sagittal
+      if (point.x > curPhysPos[2] - imgSpacing[0] &&
+          point.x < curPhysPos[2] + imgSpacing[0] && plane == PLANE_SAGITTAL) {
+        Wnd_contour->emplace_back((point.y - imgOriginFixed[1]) / x_scale,
+                                  wnd_height -
+                                      (point.z - imgOriginFixed[2]) / y_scale);
+      }
+    }
+  }
+
+  window->m_bDrawPoints = true;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------Scatter correcting methods -----------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+void Scui::SLT_StartScatterCorrectingThread(){ // Set buttons and starts the scatter correcting thread
+    ui->comboBox_region->setEnabled(false);
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->btnScatterCorrect->setEnabled(false);
+    scThread->start();
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateLabelRaw(QString string){ // Sets the title on the image on the left
+        ui->labelRawImgTitle->setText(string);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateLabelCor(QString string){ // Sets the title on the image on the right
+    ui->labelCorImgTitle->setText(string);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_UpdateProgressBarSC(int progress){ // Updates the scatter correcting progressbar
+    ui->progressBarSC->setValue(progress);
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ctType Scui::get_ctType(const QString &selText) {
   if (selText.compare("REF_CT") == 0) {
@@ -1365,6 +1104,299 @@ void Scui::SLT_PassFixedImgForAnalysis(QString cur_fixed) { // Is passing the im
   }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread has finished. Sets buttons
+    scatterCorrectingIsDone = true;
+    ui->btnScatterCorrect->setEnabled(false);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
+    ui->comboBoxWEPL->setEnabled(true);
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setEnabled(true);
+    ui->comboBoxWEPL->setCurrentIndex(0);
+    SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
+    ui->progressBarWEPL->setValue(100);
+    ui->comboBoxPlanView->setEnabled(true);
+    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------N/A methods------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+FDK_options Scui::getFDKoptions() const {
+  FDK_options fdk_options;
+  // In Andreases code this was initialized as 1.0
+  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble();
+  // In Andreases code this was initialized as 0.5
+  fdk_options.HannCutX = 0.5;//this->ui.lineEdit_Ramp_HannCut->text().toDouble();
+  // In Andreases code this was initialized as 0.5
+  fdk_options.HannCutY = 0.5;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble();
+  // In Andreases code this was initialized as 0.0
+  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble();
+  // In Andreases code this was initialized as 0.0
+  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble();
+  // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
+  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked();
+  // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
+  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked();
+  // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
+  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked();
+
+  // In Andreases code thesse three was initialized as 1
+  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble();
+  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble();
+  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble();
+
+  // In Andreases code thesse three was initialized as 400
+  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt();
+  // In Andreases code thesse three was initialized as 200
+  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt();
+  // In Andreases code thesse three was initialized as 400
+  fdk_options.ct_size[2] = 200;//this->ui.lineEdit_outImgDim_LR->text().toInt();
+
+  // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
+  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x
+  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y
+  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z
+
+  // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
+  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();
+
+  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
+
+  return fdk_options;
+}
+//....
+
+
+
+void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){ // Not used at the moment..
+
+    if(idx == 1){
+        QMessageBox::warning(this, header, message);
+        return;
+    }
+    QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
+    return;
+}
+
+/*
+void Scui::SLT_DrawReconInFixedSlice(){
+    // Constitute m_YKDisp from Fixed and Moving
+    // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
+    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+      for (auto i = 0; i < 3; i++) {
+        auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
+        if (idxAdd + i >= 3) {
+          idxAdd = idxAdd - 3;
+        }
+
+        m_YKDisp[i].SetSpacing(m_YKImgFixed[i + idxAdd].m_fSpacingX,
+                               m_YKImgFixed[i + idxAdd].m_fSpacingY);
+
+        m_YKDisp[i].SetSplitOption(PRI_LEFT_TOP);
+        if (!m_YKDisp[i].ConstituteFromTwo(m_YKImgFixed[i + idxAdd],
+                                           m_YKImgMoving[i + idxAdd])) {
+            std::cout << "Image error " << i + 1 << " th view" << std::endl;
+        }
+      }
+    } else {
+      for (auto i = 0; i < 3; i++) {
+        auto addedViewIdx = m_enViewArrange;
+        if (i + addedViewIdx >= 3) {
+          addedViewIdx = addedViewIdx - 3;
+        }
+
+        m_YKDisp[i].CloneImage(m_YKImgFixed[i + addedViewIdx]);
+      }
+    }
+
+    // For dose overlay
+    if (m_cbctregistration->dose_loaded) {
+        // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
+      if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
+        for (auto i = 0; i < 3; i++) {
+          auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
+          if (idxAdd + i >= 3) {
+            idxAdd = idxAdd - 3;
+          }
+
+          m_AGDisp_Overlay[i].SetSpacing(m_DoseImgFixed[i + idxAdd].m_fSpacingX,
+                                         m_DoseImgFixed[i + idxAdd].m_fSpacingY);
+
+          m_AGDisp_Overlay[i].SetSplitOption(PRI_LEFT_TOP);
+          if (!m_AGDisp_Overlay[i].ConstituteFromTwo(
+                  m_DoseImgFixed[i + idxAdd], m_DoseImgMoving[i + idxAdd])) {
+            std::cout << "Dose Image error " << i + 1 << " th view" << std::endl;
+          }
+        }
+      } else {
+        for (auto i = 0; i < 3; i++) {
+          auto addedViewIdx = m_enViewArrange;
+          if (i + addedViewIdx >= 3) {
+            addedViewIdx = addedViewIdx - 3;
+          }
+
+          m_AGDisp_Overlay[i].CloneImage(m_DoseImgFixed[i + addedViewIdx]);
+        }
+      }
+    }
+    // In Andreases code this is set to 2000 (sliderFixedW)
+    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
+    // In Andreases code this is set to 2000 (sliderMovingW)
+    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
+    // In Andreases code this is set to 1024 (sliderFixedL)
+    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
+    // In Andreases code this is set to 1024 (sliderMovingL)
+    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
+
+    m_YKDisp[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    m_YKDisp[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+    m_YKDisp[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+
+    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+    if(View ==0){
+        this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
+    }else{
+        this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[1]); //this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
+    }
+
+
+    this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
+    this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
+
+
+    // here gPMC results could be checked for and displayed, possibly with
+    // modification to the qyklabel class /AGA 02/08/2017
+    if (m_cbctregistration->dose_loaded) {
+      m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+      m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+      m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
+      // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
+      if(View ==0){
+          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[0]); //this->ui.labelOverlapWnd1->SetOverlayImage(&m_AGDisp_Overlay[0]);
+      }else{
+          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[1]); //this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
+      }
+
+      this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
+      this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
+
+    }
+    // In Andreases code he plots this on the registration ui, but we only have one window
+    this->ui->labelImageRaw->update();//this->ui.labelOverlapWnd1->update();
+
+    this->ui.labelOverlapWnd2->update();
+    this->ui.labelOverlapWnd3->update();
+
+}
+*/
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+//Is called by SLT_LoadSelectedProjFiles
+void Scui::SLT_OpenElektaGeomFile() { // I don't think this is used at the moment
+  auto strPath = QFileDialog::getOpenFileName(
+      this, "Select a single file to open",
+      this->m_cbctrecon->m_strPathDirDefault, "Geometry file (*.xml)");
+
+  if (strPath.length() <= 1) {
+    return;
+  }
+  //this->ui.lineEdit_ElektaGeomPath->setText(strPath);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::SLT_PreProcessCT() { // I don't think this is used at the moment
+    /*
+  if (!true){//this->ui.checkBoxCropBkgroundCT->isChecked()) {
+    std::cout << "Preprocessing is not selected." << std::endl;
+    return;
+  }
+
+  const auto iAirThresholdShort = 500;//this->ui.spinBoxBkDetectCT->value();
+
+  if (false){//this->ui.comboBox_VOItoCropBy->count() < 1) {
+    std::cout
+        << "Reference CT DIR should be specified for structure based cropping"
+        << std::endl;
+    if (m_spMovingImg == nullptr || m_spFixedImg == nullptr) {
+      return;
+    }
+    const auto fixed_size = m_spFixedImg->GetLargestPossibleRegion().GetSize();
+    const auto moving_size = m_spMovingImg->GetLargestPossibleRegion().GetSize();
+    if (fixed_size[0] != moving_size[0] || fixed_size[1] != moving_size[1] ||
+        fixed_size[2] != moving_size[2]) {
+      std::cout
+          << "Fixed and moving image is not the same size, consider using "
+             "a platimatch registration to solve this."
+          << std::endl;
+      return;
+    }
+
+    const auto reply =
+        QMessageBox::question(this, "No reference structures found!",
+                              "Do you wan't to attempt an auto correction "
+                              "of air and excessive circumference?",
+                              QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+      std::cout << "Attempting automatic air filling and skin cropping..."
+                << std::endl;
+      m_cbctregistration->autoPreprocessCT(iAirThresholdShort, m_spFixedImg,
+                                           m_spMovingImg);
+    }
+    return;
+  }
+
+  const auto strRSName = this->ui.comboBox_VOItoCropBy->currentText();
+  const auto fill_bubble = this->ui.checkBoxFillBubbleCT->isChecked();
+  const auto iBubbleFillingVal =
+      this->ui.spinBoxBubFillCT->value(); // 1000 = soft tissue
+  const auto iAirFillValShort = this->ui.spinBoxBkFillCT->value(); // 0 = air
+
+  const auto cur_ct_text = ui.comboBoxImgMoving->currentText();
+  const auto cur_ct = get_ctType(cur_ct_text);
+  const auto &rt_structs =
+      m_cbctregistration->m_pParent->m_structures->get_ss(cur_ct);
+
+  QString image_str;
+  if (ui.comboBoxImToCropFill->currentText().compare("Moving") == 0) {
+    image_str = ui.comboBoxImgMoving->currentText();
+  } else {
+    image_str = ui.comboBoxImgFixed->currentText();
+  }
+
+  auto &image = m_cbctregistration->get_image_from_combotext(image_str);
+
+  if (!m_cbctregistration->PreprocessCT(image, iAirThresholdShort, rt_structs,
+                                        strRSName, fill_bubble,
+                                        iBubbleFillingVal, iAirFillValShort)) {
+    std::cout
+        << "Error in PreprocessCT!!!scatter correction would not work out."
+        << std::endl;
+    m_cbctregistration->m_pParent->m_bMacroContinue = false;
+  }
+
+  show();
+
+  UpdateListOfComboBox(0); // combo selection signalis called
+  UpdateListOfComboBox(1);
+  // if not found, just skip
+  SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
+  SelectComboExternal(1, REGISTER_MANUAL_RIGID);
+  SLT_DrawImageWhenSliceChange();
+
+  std::cout << "FINISHED!: Pre-processing of CT image" << std::endl;
+
+  ////Load DICOM plan
+  if (m_cbctregistration->m_pParent->m_strPathPlan.isEmpty()) {
+    std::cout << "No DCM plan file was found. Skipping dcm plan." << std::endl;
+    return;
+  }
+  // QString dcmplanPath = m_pParent->m_strPathPlan;
+  m_cbctregistration->LoadRTPlan(
+      m_cbctregistration->m_pParent->m_strPathPlan); // fill RT_studyplan
+      */
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_DrawReconImageInSlices(){
     // init fixed and moving images
     //m_spFixedImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
@@ -1733,46 +1765,4 @@ void Scui::SLT_DrawReconImageInSlices(){
     */
 }
 
-FDK_options Scui::getFDKoptions() const {
-  FDK_options fdk_options;
-  // In Andreases code this was initialized as 1.0
-  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble();
-  // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutX = 0.5;//this->ui.lineEdit_Ramp_HannCut->text().toDouble();
-  // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutY = 0.5;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble();
-  // In Andreases code this was initialized as 0.0
-  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble();
-  // In Andreases code this was initialized as 0.0
-  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble();
-  // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
-  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked();
-  // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
-  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked();
-  // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
-  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked();
 
-  // In Andreases code thesse three was initialized as 1
-  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble();
-  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble();
-  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble();
-
-  // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt();
-  // In Andreases code thesse three was initialized as 200
-  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt();
-  // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[2] = 200;//this->ui.lineEdit_outImgDim_LR->text().toInt();
-
-  // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
-  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x
-  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y
-  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z
-
-  // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
-  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();
-
-  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
-
-  return fdk_options;
-}

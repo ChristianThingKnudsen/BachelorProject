@@ -87,7 +87,7 @@ public slots:
     void SLT_GetCBCTPath();
     void SLT_GetCTPath();
     void SLT_StartWEPLThread();
-    void SLT_DrawReconInFixedSlice();
+    //void SLT_DrawReconInFixedSlice();
     void SLT_UpdateProgressBarWEPL(int progress);
     void SLT_LThreadIsDone();
     void SLT_SliderValueChanged();
