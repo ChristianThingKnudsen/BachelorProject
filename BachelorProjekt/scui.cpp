@@ -10,8 +10,16 @@
 #include <qmessagebox.h>
 #include <qstandarditemmodel.h>
 
+// ITK
+#ifdef OF
+#undef OF
+#endif
+#include "itkGDCMSeriesFileNames.h"
 
 // PLM
+#ifdef OF
+#undef OF
+#endif
 #include "mha_io.h"
 
 //Local
@@ -191,6 +199,20 @@ void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure) // Is c
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-----------------------------------------------------------------Loading methods ---------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+QString get_dcm_uid(QString &dcm_path){
+    using NamesGeneratorType = itk::GDCMSeriesFileNames;
+    auto nameGenerator = NamesGeneratorType::New();
+
+    nameGenerator->SetUseSeriesDetails(true);
+    nameGenerator->AddSeriesRestriction("0008|0021");
+    nameGenerator->SetGlobalWarningDisplay(false);
+    nameGenerator->SetDirectory(dcm_path.toStdString());
+
+    const auto &seriesUID = nameGenerator->GetSeriesUIDs();
+    auto seriesItr = seriesUID.begin();
+return QString(seriesItr->c_str());
+}
+
 void Scui::SLT_StartLoadingThread(){
     //SLT_GetCBCTPath();
     // Only used for testing
@@ -198,6 +220,10 @@ void Scui::SLT_StartLoadingThread(){
     //SLT_GetCTPath();
     // Only used for testing
     CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
+    auto dcm_uid_str = get_dcm_uid(CTPath);
+    ui->label_Id->setText("ID: "+dcm_uid_str);
+    std::cerr << dcm_uid_str.toStdString() << "\n";
+    //m_cbctrecon->m_strDCMUID = dcm_uid_str;
     ui->btnLoadData->setEnabled(false);
     lThread->start();
 }
@@ -252,7 +278,7 @@ void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg, // Updates the i
 
   auto size = p_curimg->GetBufferedRegion().GetSize();
 
-  this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0); // maybe 100 instead of 0.
+  this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0);
 
   disconnect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
   this->ui->verticalSlider->setMinimum(1);
@@ -345,10 +371,10 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
       std::move(m_cbctrecon->m_dspYKReconImage)); // dimension should be
                                                         // same automatically.
 
-  const auto physPosX = 0;//this->ui.lineEdit_PostFOV_X->text().toFloat();
-  const auto physPosY = 0;//this->ui.lineEdit_PostFOV_Y->text().toFloat();
-  const auto physRadius = 190;//this->ui.lineEdit_PostFOV_R->text().toFloat();
-  const auto physTablePosY = 120;//this->ui.lineEdit_PostTablePosY->text().toFloat();
+  const auto physPosX = 0;//this->ui.lineEdit_PostFOV_X->text().toFloat(); //Hardcoded value
+  const auto physPosY = 0;//this->ui.lineEdit_PostFOV_Y->text().toFloat(); //Hardcoded value
+  const auto physRadius = 190;//this->ui.lineEdit_PostFOV_R->text().toFloat(); //Hardcoded value
+  const auto physTablePosY = 120;//this->ui.lineEdit_PostTablePosY->text().toFloat(); //Hardcoded value
   m_cbctrecon->PostApplyFOVDispParam(physPosX, physPosY, physRadius,
                                            physTablePosY);
 
@@ -363,7 +389,7 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
     p_dspykimg->m_bDrawTableLine = false;
   }
 
-  p_dspykimg->FillPixMapMinMax(0,2031);//this->ui.sliderReconImgMin->value(),
+  p_dspykimg->FillPixMapMinMax(0,2031);//this->ui.sliderReconImgMin->value(), //Hardcoded value
                                //this->ui.sliderReconImgMax->value());
 /*
   if(scatterCorrectingIsDone){
@@ -390,10 +416,14 @@ void Scui::SLT_SetButtonsAfterLoad(){ // Sets the button after loading has finis
     ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->btnScatterCorrect->setEnabled(true);
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
-    //SLT_PreProcessCT(); // Is added by us. Added for later use
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
+    ui->labelRawImgTitle->setText("Raw CBCT");
+    ui->btnLoadData->setEnabled(false);
+    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
+    ui->btnScatterCorrect->setEnabled(true);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
     ui->comboBox_region->setEnabled(true);
     ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
 }
@@ -409,12 +439,13 @@ void Scui::SLT_UpdateProgressBarWEPL(int progress){ // Updates the progressbar f
     ui->progressBarWEPL->setValue(progress);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
   //Get VIO
   const auto voi_name = structure.toStdString();
 
-  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
-  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
+  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value(); //Hardcoded value
+  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value(); //Hardcoded value
 
   const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
   const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
@@ -949,13 +980,13 @@ void Scui::SLT_DrawImageInFixedSlice() const
     }
   }
   // In Andreases code this is set to 2000 (sliderFixedW)
-  const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
+  const auto sliderW1 = 2000;//this->ui.sliderFixedW->value(); //Hardcoded value
   // In Andreases code this is set to 2000 (sliderMovingW)
-  const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
+  const auto sliderW2 = 2000;//this->ui.sliderMovingW->value(); //Hardcoded value
   // In Andreases code this is set to 1024 (sliderFixedL)
-  const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
+  const auto sliderL1 = 1024;//this->ui.sliderFixedL->value(); //Hardcoded value
   // In Andreases code this is set to 1024 (sliderMovingL)
-  const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
+  const auto sliderL2 = 1024;//this->ui.sliderMovingL->value(); //Hardcoded value
 
   m_YKDisp[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
   m_YKDisp[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
@@ -1054,16 +1085,6 @@ void Scui::whenFixedImgLoaded() const {
   m_YKDisp[1].SetSplitCenter(y_split);
   m_YKDisp[2].SetSplitCenter(z_split);
 
-  const auto iSliderW = 2000;
-  const auto iSliderL = 1024;
-  // In Andreases code he uses slider but we don't. Therefore this is outcommented
-  /*
-  this->ui.sliderFixedW->setValue(iSliderW);
-  this->ui.sliderMovingW->setValue(iSliderW);
-
-  this->ui.sliderFixedL->setValue(iSliderL);
-  this->ui.sliderMovingL->setValue(iSliderL);
-  */
   SLT_DrawImageInFixedSlice();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1113,6 +1134,7 @@ void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread
     ui->comboBoxWEPL->setEnabled(true);
     ui->comboBoxWEPL->setCurrentIndex(0);
     SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
+
     ui->progressBarWEPL->setValue(100);
     ui->comboBoxPlanView->setEnabled(true);
     ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
@@ -1124,43 +1146,43 @@ void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread
 FDK_options Scui::getFDKoptions() const {
   FDK_options fdk_options;
   // In Andreases code this was initialized as 1.0
-  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble();
+  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble(); //Hardcoded value
   // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutX = 0.5;//this->ui.lineEdit_Ramp_HannCut->text().toDouble();
+  fdk_options.HannCutX = 5.0;//this->ui.lineEdit_Ramp_HannCut->text().toDouble(); //Hardcoded value
   // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutY = 0.5;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble();
+  fdk_options.HannCutY = 5.0;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble(); //Hardcoded value
   // In Andreases code this was initialized as 0.0
-  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble();
+  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble(); //Hardcoded value
   // In Andreases code this was initialized as 0.0
-  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble();
+  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble(); //Hardcoded value
   // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
-  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked();
+  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked(); //Hardcoded value
   // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
-  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked();
+  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked(); //Hardcoded value
   // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
-  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked();
+  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked(); //Hardcoded value
 
   // In Andreases code thesse three was initialized as 1
-  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble();
-  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble();
-  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble();
+  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble(); //Hardcoded value
+  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble(); //Hardcoded value
+  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble(); //Hardcoded value
 
   // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt();
+  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt(); //Hardcoded value
   // In Andreases code thesse three was initialized as 200
-  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt();
+  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt(); //Hardcoded value
   // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[2] = 200;//this->ui.lineEdit_outImgDim_LR->text().toInt();
+  fdk_options.ct_size[2] = 400;//this->ui.lineEdit_outImgDim_LR->text().toInt(); //Hardcoded value
 
   // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
-  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x
-  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y
-  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z
+  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x //Hardcoded value
+  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y //Hardcoded value
+  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z //Hardcoded value
 
   // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
-  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();
+  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();//Hardcoded value
 
-  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); // In Andreases UI it says that this is optional
+  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); //Hardcoded value // In Andreases UI it says that this is optional
 
   return fdk_options;
 }
@@ -1709,13 +1731,13 @@ void Scui::SLT_DrawReconImageInSlices(){
       }
     }
     // In Andreases code this is set to 2000 (sliderFixedW)
-    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
+    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value(); //Hardcoded value
     // In Andreases code this is set to 2000 (sliderMovingW)
-    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
+    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value(); //Hardcoded value
     // In Andreases code this is set to 1024 (sliderFixedL)
-    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
+    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value(); //Hardcoded value
     // In Andreases code this is set to 1024 (sliderMovingL)
-    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
+    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value(); //Hardcoded value
 
     m_YKDispRaw[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     m_YKDispRaw[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);

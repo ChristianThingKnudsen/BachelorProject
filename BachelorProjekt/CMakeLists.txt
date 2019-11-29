@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(USE_OPENCL "Use opencl for fdk and forward projection" ON)
+option(USE_CUDA "Use opencl for fdk and forward projection" OFF)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(DCMTK_wrap)
@@ -63,6 +64,9 @@ add_executable(BachelorProjekt
 
 if(USE_OPENCL)
     target_compile_definitions(BachelorProjekt PUBLIC RTK_USE_OPENCL)
+endif()
+if(USE_CUDA)
+    target_compile_definitions(BachelorProjekt PUBLIC USE_CUDA)
 endif()
 target_compile_definitions(BachelorProjekt PUBLIC "SLAB_SIZE=16")
 

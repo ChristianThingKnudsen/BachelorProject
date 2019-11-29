@@ -36,7 +36,6 @@ public:
     ctType get_ctType(const QString &selText);
     void whenFixedImgLoaded() const;
 
-
 private slots:
     void SLT_SetHisDir();
     void SLT_LoadSelectedProjFiles(QString &path);

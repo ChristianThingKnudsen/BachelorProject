@@ -24,8 +24,8 @@ void WEPLThread::SLT_WEPLcalc(QString structure) {
 
   const auto voi_name = structure.toStdString();
 
-  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value();
-  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value();
+  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value(); //Hardcoded value
+  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value(); //Hardcoded value
 
   const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
   const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);

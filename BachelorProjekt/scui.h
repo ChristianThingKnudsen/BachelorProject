@@ -95,8 +95,9 @@ public slots:
 
 private:
     Ui::Scui *ui;
-    int m_enViewArrange{};
-    int m_enViewArrangeRaw{};
+    int m_enViewArrange = 0;
+    int m_enViewArrangeRaw = 0;
+
 public:
     YK16GrayImage *m_YKDisp;
     YK16GrayImage *m_YKImgFixed;
@@ -117,6 +118,17 @@ public:
     YK16GrayImage *m_YKImgRawMoving;
     UShortImageType::Pointer m_spRawFixedImg;  // pointer only, for display
     UShortImageType::Pointer m_spRawMovingImg; // pointer only, for display
+
+#ifdef USE_CUDA
+    bool m_UseCUDA = true;
+    bool m_UseOpenCL = false;
+#elif RTK_USE_OPENCL
+    bool m_UseOpenCL = true;
+    bool m_UseCUDA = false;
+#else
+    bool m_UseOpenCL = false;
+    bool m_UseCUDA = false;
+#endif
 
 private slots:
 

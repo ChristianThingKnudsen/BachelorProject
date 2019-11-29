@@ -29,10 +29,11 @@ void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
     return;
   }
 
+  //auto tmp_dcm_uid = this->m_cbctrecon->m_strDCMUID;
   this->m_cbctrecon->SetProjDir(dirPath);
-  init_DlgRegistration(this->m_cbctrecon->m_strDCMUID);
+  init_DlgRegistration(this->m_cbctrecon->m_strDCMUID);//tmp_dcm_uid);
+  //this->m_cbctrecon->m_strDCMUID = tmp_dcm_uid;
 
-  //std::cout << "Look here!!! = " << this->m_cbctrecon->m_strDCMUID.toDouble() << std::endl;
   float kVp = 0.0;
   float mA = 0.0;
   float ms = 0.0;
@@ -120,6 +121,7 @@ LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
 
   switch (this->m_cbctrecon->m_projFormat) {
   case XIM_FORMAT:
+    //Hardcoded value
     bowtiePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Calibrations\\AIR-Full-Bowtie-100KV-Scattergrid-SAD-SID_0\\Current\\FilterBowtie.xim");//getBowtiePath(this, calDir);
     if (bowtiePath.length() > 1) {
 
@@ -132,7 +134,6 @@ LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
           [&bowtiereader] { bowtiereader->Update(); });
       answers = probeUser(guessDir.absolutePath());
       calc_thread_bowtie.join();
-
     } else {
       answers = probeUser(
           guessDir.absolutePath()); // looks ugly, but allows threading
@@ -226,7 +227,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
 
   std::cout << "AngularGaps Sum (deg):" << sum_gap
             << ", Mean (deg): " << mean_gap << std::endl;
-  double gantryAngelIntervalValue = 30;
+  double gantryAngelIntervalValue = 30; //Hardcoded value
   const auto gantryAngleInterval = gantryAngelIntervalValue; //this->ui.lineEdit_ManualProjAngleGap->text().toDouble();
 
   // In Andreases code this was not checked so we outcommet this one (Radio_KeepOriginalAngles)
@@ -286,7 +287,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   }
 
   saveImageAsMHA<FloatImageType>(this->m_cbctrecon->m_spProjImg3DFloat);
-  auto res_factor = 0.5;//this->ui.lineEdit_DownResolFactor->text().toDouble();
+  auto res_factor = 0.5;//this->ui.lineEdit_DownResolFactor->text().toDouble(); //Hardcoded value
   if (!this->m_cbctrecon->ResampleProjections(res_factor)) { // 0.5
     // reset factor if image was not resampled
     auto res_factor =1.0;//this->ui.lineEdit_DownResolFactor->setText("1.0");
@@ -321,7 +322,7 @@ void LoadingThread::SLT_DoBowtieCorrection() { // Function for applying the bowt
     return;
   }
   // In Andreases UI he uses this string. Hope this works
-  QString comboBox_fBTcor_String = "1.4571;2.4506;2.6325;0.0095;4.1181";
+  QString comboBox_fBTcor_String = "1.4571;2.4506;2.6325;0.0095;4.1181"; //Hardcoded value
   const auto strList = comboBox_fBTcor_String.split(';'); //this->ui.comboBox_fBTcor->currentText().split(';');
 
   this->m_cbctrecon->BowtieByFit(false,strList);//this->ui.checkBox_Fullfan->isChecked(),strList);
@@ -334,20 +335,14 @@ void LoadingThread::SLT_DoReconstruction() { // Functions responsible for the re
   const auto fdk_options = m_parent->getFDKoptions();
   itk::TimeProbe reconTimeProbe;
   reconTimeProbe.Start();
-  // In Andreases UI he uses Cuda, but we use OpenCL.
-  this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT, fdk_options);
   emit Signal_UpdateProgressBarLoad(80); // Signal to update the progressbar on scui
-  /*
-  if (this->ui.radioButton_UseCUDA->isChecked()) {
-    this->m_cbctrecon->DoReconstructionFDK<CUDA_DEVT>(REGISTER_RAW_CBCT,
-                                                      fdk_options);
-  } else if (this->ui.radioButton_UseOpenCL->isChecked()) {
-    this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT,
-                                                        fdk_options);
+  if (this->m_parent->m_UseCUDA) {
+    this->m_cbctrecon->DoReconstructionFDK<CUDA_DEVT>(REGISTER_RAW_CBCT,fdk_options);
+  } else if (this->m_parent->m_UseOpenCL) {
+    this->m_cbctrecon->DoReconstructionFDK<OPENCL_DEVT>(REGISTER_RAW_CBCT,fdk_options);
   } else {
-    this->m_cbctrecon->DoReconstructionFDK<CPU_DEVT>(REGISTER_RAW_CBCT,                                                     fdk_options);
+    this->m_cbctrecon->DoReconstructionFDK<CPU_DEVT>(REGISTER_RAW_CBCT,fdk_options);
   }
-  */
 
   reconTimeProbe.Stop();
   std::cout << "It took " << reconTimeProbe.GetMean() << ' '
@@ -361,6 +356,6 @@ void LoadingThread::SLT_DoReconstruction() { // Functions responsible for the re
   emit Signal_ReConnectSlider(initVal); // Signal to reconnect the slider
   emit Signal_UpdateSlider(size[2] - 1); // Signal to update the slider
   emit Signal_UpdateProgressBarLoad(100); // Signal to update the progressbar on scui
-  emit Signal_SetButtonsAfterLoad(); // Signal to set buttons after load on scui
+  //emit Signal_SetButtonsAfterLoad(); // Signal to set buttons after load on scui
   emit Signal_LThreadIsDone(); // Signal which indicates that the loading threads run method has finished
 }
