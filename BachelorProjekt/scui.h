@@ -50,8 +50,6 @@ public:
   WEPLThread *weplThread;
   bool scatterCorrectingIsDone = false;
 
-
-
 public slots:
     void SLT_DrawReconImage();
 
@@ -64,13 +62,11 @@ public slots:
     void SLT_OpenInfo();
     void SLT_OpenAdvancedMode();
     void SLT_Exit();
-    //void SLT_PreProcessCT();
     void SLT_IncreaseSliderValue();
     void SLT_DecreaseSliderValue();
     void SLT_StartLoadingThread();
     void SLT_ShowMessageBox(int, QString, QString);
     void SLT_StartScatterCorrectingThread();
-    void SLT_SetButtonsAfterLoad();
     void SLT_UpdateSlider(int);
     void SLT_DisconnectSlider();
     void SLT_ReConnectSlider(int);
@@ -116,6 +112,8 @@ public:
     QString Structure = QString("");
     int View = 0;
     int RegionChosen = 0;
+    QString Root;
+    QString DownArrow;
     YK16GrayImage *m_YKDispRaw;
     YK16GrayImage *m_YKImgRawFixed;
     YK16GrayImage *m_YKImgRawMoving;

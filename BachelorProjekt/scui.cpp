@@ -57,14 +57,17 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->comboBoxPlanView->addItem("Frontal");
     ui->comboBoxPlanView->addItem("Sagital");
 
+    //Getting application root folder
+    Root = QCoreApplication::applicationDirPath() + QString("\\..");
+
     // Icon for Load Data
-    QPixmap pixmapLoad("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\upload.png");
+    QPixmap pixmapLoad(Root+"\\pictures\\upload.png");
     QIcon ButtonLoad(pixmapLoad);
     ui->btnLoadData->setIcon(ButtonLoad);
     ui->btnLoadData->setIconSize(QSize(20,20));//pixmap.rect().size();
 
     // Icon for Info button
-    QPixmap pixmapInfo("C:\\Users\\ct-10\\OneDrive - Aarhus universitet\\7 Semester ST\\Bachelor\\UI_Kode\\BachelorProject\\pictures\\information.png");
+    QPixmap pixmapInfo(Root+"\\pictures\\information.png");
     QIcon ButtonInfo(pixmapInfo);
     ui->btnInfo->setIcon(ButtonInfo);
     ui->btnInfo->setIconSize(QSize(30,30));
@@ -93,7 +96,6 @@ Scui::Scui(QWidget *parent) // Constructor
     //Loading thread and signals:
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
-    connect(lThread,SIGNAL(Signal_SetButtonsAfterLoad()),this, SLOT(SLT_SetButtonsAfterLoad()));
     connect(lThread,SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
     connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
@@ -118,6 +120,13 @@ Scui::Scui(QWidget *parent) // Constructor
     weplThread = new WEPLThread(this);
     connect(weplThread,SIGNAL(Signal_DrawWEPL()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(weplThread,SIGNAL(Signal_UpdateProgressBarWEPL(int)),this,SLOT(SLT_UpdateProgressBarWEPL(int)));
+
+    // Setting stylesheet for comboboxes
+    DownArrow = QString("/Users/ct-10/Desktop/down.png");//Root+QString("\\pictures\\down.png");
+    std::cout << DownArrow.toStdString() << std::endl;
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
+    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
 }
 
 Scui::~Scui() // Destructor
@@ -248,10 +257,11 @@ void Scui::SLT_StartLoadingThread(){
     CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
     CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
     //
+    ui->btnLoadData->setEnabled(false);
+    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     auto dcm_uid_str = get_dcm_uid(CTPath); // Get the unique DICOM ID from the CT images
     ui->label_Id->setText("ID: "+dcm_uid_str); // Sets the ID based on the unique ID
     //m_cbctrecon->m_strDCMUID = dcm_uid_str; //Maybe incomment this later
-    ui->btnLoadData->setEnabled(false);
     QString structureFilename = getStructureFile(CTPath);
     StructurePath = CTPath + "\\" + structureFilename;
     if(CBCTPath != QString("") && CTPath != QString("") && StructurePath != QString("")){
@@ -412,22 +422,12 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
 
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_SetButtonsAfterLoad(){ // Sets the button after loading has finished
-    ui->labelRawImgTitle->setText("Raw CBCT");
-    ui->btnLoadData->setEnabled(false);
-    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
-    ui->btnScatterCorrect->setEnabled(true);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
     ui->labelRawImgTitle->setText("Raw CBCT");
-    ui->btnLoadData->setEnabled(false);
-    ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->btnScatterCorrect->setEnabled(true);
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
     ui->comboBox_region->setEnabled(true);
-    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------WEPL methods ----------------------------------------------------------------------------------------//
@@ -556,8 +556,10 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 void Scui::SLT_StartScatterCorrectingThread(){ // Set buttons and starts the scatter correcting thread
+    ui->btnScatterCorrect->setEnabled(false);
+    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->comboBox_region->setEnabled(false);
-    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
     ui->btnScatterCorrect->setEnabled(false);
     scThread->start();
 }
@@ -1045,17 +1047,15 @@ void Scui::SLT_PassFixedImgForAnalysis() { // Is passing the image from the righ
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread has finished. Sets buttons
     scatterCorrectingIsDone = true;
-    ui->btnScatterCorrect->setEnabled(false);
-    ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     ui->comboBoxWEPL->setEnabled(true);
-    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
     ui->comboBoxWEPL->setEnabled(true);
     ui->comboBoxWEPL->setCurrentIndex(0);
     SLT_WEPLcalc(ui->comboBoxWEPL->currentText());
 
     ui->progressBarWEPL->setValue(100);
     ui->comboBoxPlanView->setEnabled(true);
-    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
+    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------N/A methods------------------------------------------------------------------------------------------//

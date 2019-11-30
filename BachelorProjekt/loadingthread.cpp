@@ -319,6 +319,5 @@ void LoadingThread::SLT_DoReconstruction() { // Functions responsible for the re
   emit Signal_ReConnectSlider(initVal); // Signal to reconnect the slider
   emit Signal_UpdateSlider(size[2] - 1); // Signal to update the slider
   emit Signal_UpdateProgressBarLoad(100); // Signal to update the progressbar on scui
-  //emit Signal_SetButtonsAfterLoad(); // Signal to set buttons after load on scui
   emit Signal_LThreadIsDone(); // Signal which indicates that the loading threads run method has finished
 }
