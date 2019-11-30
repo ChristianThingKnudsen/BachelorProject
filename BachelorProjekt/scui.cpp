@@ -32,6 +32,10 @@
 #include <iostream>
 #include <shellapi.h>
 
+//For restarting
+#include <QApplication>
+#include <QProcess>
+
 enum enCOLOR { // Colors for WEPL display
   RED,
   BLUE,
@@ -95,7 +99,6 @@ Scui::Scui(QWidget *parent) // Constructor
 
     //Loading thread and signals:
     lThread = new LoadingThread(this);
-    connect(lThread,SIGNAL(SignalMessageBox(int,QString,QString)), this, SLOT(ShowMessageBox(int, QString, Qstring)));
     connect(lThread,SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
     connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
@@ -215,6 +218,11 @@ void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure) // Is c
         Structure = structure;
         SLT_StartWEPLThread();
     }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void::Scui::SLT_RestartSCUI(){
+    qApp->quit();
+    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-----------------------------------------------------------------Loading methods ---------------------------------------------------------------------------------------//
@@ -1082,17 +1090,6 @@ FDK_options Scui::getFDKoptions() const {
   fdk_options.medianFilter = true;//Hardcoded value (from trail and error, see checkBox_PostMedianOn)
   fdk_options.outputFilePath = QString("");//Hardcoded value (from trail and error, see lineEdit_OutputFilePath)
   return fdk_options;
-}
-
-
-void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){ // Not used at the moment..
-
-    if(idx == 1){
-        QMessageBox::warning(this, header, message);
-        return;
-    }
-    QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
-    return;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 

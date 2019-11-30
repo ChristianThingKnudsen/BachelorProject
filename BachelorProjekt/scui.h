@@ -41,7 +41,6 @@ public:
   void SelectComboExternal(const int idx, const enREGI_IMAGES iImage);
   void UpdateListOfComboBox(const int idx) const;
   void LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt);
-  void UpdateVOICombobox(const ctType ct_type) const;
   ctType get_ctType(const QString &selText);
   void whenFixedImgLoaded() const;
   //Threads
@@ -65,7 +64,6 @@ public slots:
     void SLT_IncreaseSliderValue();
     void SLT_DecreaseSliderValue();
     void SLT_StartLoadingThread();
-    void SLT_ShowMessageBox(int, QString, QString);
     void SLT_StartScatterCorrectingThread();
     void SLT_UpdateSlider(int);
     void SLT_DisconnectSlider();
@@ -89,6 +87,8 @@ public slots:
     void SLT_LThreadIsDone();
     void SLT_SliderValueChanged();
     void SLT_DrawReconImageInSlices();
+    void SLT_RestartSCUI();
+    void UpdateVOICombobox(const ctType ct_type) const;
 
 private:
     Ui::Scui *ui;

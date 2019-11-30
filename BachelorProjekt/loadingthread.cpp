@@ -2,7 +2,6 @@
 
 #include <QThread>
 #include <QtCore>
-#include <qmessagebox.h>
 #include <qfiledialog.h>
 #include "mha_io.h"
 #include "cbctrecon_io.h"
@@ -160,7 +159,6 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // Main loading fuc
   if (this->m_cbctrecon->m_projFormat == HIS_FORMAT &&
       !this->m_cbctrecon->IsFileNameOrderCorrect(names)) {
     std::cout << "Check the file name order" << std::endl;
-    emit SignalMessageBox(1,"warning","Error on File Name Sorting!");
   }
 
   std::cout << "File name order was cross-checked and found to be OK!"

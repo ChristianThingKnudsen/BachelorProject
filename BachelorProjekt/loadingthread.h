@@ -43,7 +43,6 @@ private slots:
     void SLT_DoReconstruction();
 
 signals:
-    void SignalMessageBox(int, QString,QString);
     void Signal_UpdateSlider(int);
     void Signal_DisconnectSlider();
     void Signal_ReConnectSlider(int);
