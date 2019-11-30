@@ -34,7 +34,7 @@ public:
   std::unique_ptr<QStandardItemModel> m_pTableModel;
   std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
   FDK_options getFDKoptions() const;
-  void UpdateReconImage(UShortImageType::Pointer &spNewImg, QString &fileName);
+  void UpdateReconImage(UShortImageType::Pointer &spNewImg);
   void init_DlgRegistration(QString &str_dcm_uid) const;
   FilterReaderType::Pointer ReadBowtieFileWhileProbing(const QString &proj_path, std::tuple<bool, bool> &answers);
   std::tuple<bool, bool> probeUser(const QString &guessDir);
@@ -49,6 +49,7 @@ public:
   ScatterCorrectingThread *scThread;
   WEPLThread *weplThread;
   bool scatterCorrectingIsDone = false;
+
 
 
 public slots:
@@ -78,7 +79,7 @@ public slots:
     void ImageManualMoveOneShot(
             const float shiftX, const float shiftY,
             const float shiftZ);
-    void SLT_PassFixedImgForAnalysis(QString);
+    void SLT_PassFixedImgForAnalysis();
     void SLT_UpdateProgressBarLoad(int);
     void SLT_UpdateProgressBarSC(int);
     void SLT_SCThreadIsDone();
@@ -112,7 +113,8 @@ public:
     QString CBCTPath = QString("");
     QString CTPath = QString("");
     QString Structure = QString("");
-    int View =0;
+    int View = 0;
+    int RegionChosen = 0;
     YK16GrayImage *m_YKDispRaw;
     YK16GrayImage *m_YKImgRawFixed;
     YK16GrayImage *m_YKImgRawMoving;
@@ -133,5 +135,6 @@ public:
 private slots:
 
     void on_comboBoxPlanView_currentIndexChanged(const QString &arg1);
+    void on_comboBox_region_currentIndexChanged(const QString &arg1);
 };
 #endif // MAINWINDOW_H

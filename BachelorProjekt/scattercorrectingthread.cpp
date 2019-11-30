@@ -236,7 +236,13 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
   const auto strDummy = QString("");
 
   // In Andreases code this was not checked so we make it false (radioButton_mse)
-  const auto mse = false;//this->ui.radioButton_mse->isChecked(); //Hardcoded value
+  auto mse = true;
+  if(m_parent->RegionChosen==0){
+      mse = true;
+  }else{
+      mse = false;
+  }
+  //this->ui.radioButton_mse->isChecked(); //Hardcoded value
   // In Andreases code this was checked but we do not use cuda, so we make it false (radioButton_UseCUDA)
   auto cuda = false;
   if(this->m_parent->m_UseCUDA){
@@ -522,7 +528,12 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   strDeformableStage2.append(", ").append(filePathOutputStage2);
   strDeformableStage3.append(", ").append(filePathOutputStage3);
 
-  const auto mse = true;//this->ui.radioButton_mse->isChecked();//Hardcoded value
+  auto mse = true;//this->ui.radioButton_mse->isChecked();//Hardcoded value
+  if(m_parent->RegionChosen == 0){
+      mse = true;
+  }else{
+      mse = false;
+  }
   auto cuda = false;
   if(this->m_parent->m_UseCUDA){
        cuda = true;//m_pParent->ui.radioButton_UseCUDA->isChecked(); //Hardcoded value
@@ -709,7 +720,7 @@ void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() {
 
   emit Signal_FixedImageSelected(QString("RAW_CBCT"));
   emit Signal_MovingImageSelected(QString("RAW_CBCT"));
-  emit SignalPassFixedImg(QString("RAW_CBCT"));
+  emit Signal_PassFixedImg();
   emit Signal_UpdateLabelRaw(QString("Norm Raw CBCT"));
   emit Signal_FixedImageSelected(QString("COR_CBCT"));
   emit Signal_MovingImageSelected(QString("COR_CBCT"));

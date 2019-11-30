@@ -104,7 +104,7 @@ Scui::Scui(QWidget *parent) // Constructor
     scThread = new ScatterCorrectingThread(this);
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
-    connect(scThread,SIGNAL(SignalPassFixedImg(QString)),this, SLOT(SLT_PassFixedImgForAnalysis(QString)));
+    connect(scThread,SIGNAL(Signal_PassFixedImg()),this, SLOT(SLT_PassFixedImgForAnalysis()));
     connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
     connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
@@ -162,31 +162,44 @@ void Scui::SLT_DecreaseSliderValue() // Is called when the - button is pushed
     ui->verticalSlider->setValue(curValue-1);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_SliderValueChanged(){ // Is called when the slider value changes
+void Scui::SLT_SliderValueChanged(){ // Is called when the slider value changes    
     if(scatterCorrectingIsDone){
-        SLT_DrawReconImageInSlices();
+        SLT_DrawReconImage();//SLT_DrawReconImageInSlices(); // Add this for future use
         SLT_DrawImageWhenSliceChange();
     }else{
         SLT_DrawReconImage();
         SLT_DrawImageWhenSliceChange();
     }
+
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &planView) // Is called when an item is chosen in the plan view
 {
     if(scatterCorrectingIsDone){
-
-    if(planView.compare("Axial") == 0){
-        View = 0;
-      }
-    else if (planView.compare("Frontal") == 0){
-        View = 1;
+        if(planView.compare("Axial") == 0){
+            View = 0;
+        }
+        else if (planView.compare("Frontal") == 0){
+            View = 1;
+        }
+        else if (planView.compare("Sagital") == 0){
+            View = 2;
+        }
+        SLT_SliderValueChanged();
     }
-    else if (planView.compare("Sagital") == 0){
-        View = 2;
-    }
-    SLT_SliderValueChanged();
-    }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void Scui::on_comboBox_region_currentIndexChanged(const QString &region)
+{
+ if(region.compare("Head-Neck")==0){
+     RegionChosen = 0;
+ }
+ else if(region.compare("Pelvis")==0){
+     RegionChosen = 1;
+ }
+ else if(region.compare("Thorax")==0){
+     RegionChosen = 2;
+ }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure) // Is called when a new structure is chosen
@@ -199,7 +212,7 @@ void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure) // Is c
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-----------------------------------------------------------------Loading methods ---------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-QString get_dcm_uid(QString &dcm_path){
+QString get_dcm_uid(QString &dcm_path){ // Small method for extracting the DICOM ID.
     using NamesGeneratorType = itk::GDCMSeriesFileNames;
     auto nameGenerator = NamesGeneratorType::New();
 
@@ -214,28 +227,29 @@ return QString(seriesItr->c_str());
 }
 
 void Scui::SLT_StartLoadingThread(){
-    //SLT_GetCBCTPath();
-    // Only used for testing
+    /*
+    SLT_GetCBCTPath();
+    SLT_GetCTPath();
+    */
+    // Only used for testing. Comment in the two upper methods
     CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
-    //SLT_GetCTPath();
-    // Only used for testing
     CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
-    auto dcm_uid_str = get_dcm_uid(CTPath);
-    ui->label_Id->setText("ID: "+dcm_uid_str);
-    std::cerr << dcm_uid_str.toStdString() << "\n";
-    //m_cbctrecon->m_strDCMUID = dcm_uid_str;
+    //
+    auto dcm_uid_str = get_dcm_uid(CTPath); // Get the unique DICOM ID from the CT images
+    ui->label_Id->setText("ID: "+dcm_uid_str); // Sets the ID based on the unique ID
+    //m_cbctrecon->m_strDCMUID = dcm_uid_str; //Maybe incomment this later
     ui->btnLoadData->setEnabled(false);
     lThread->start();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_GetCBCTPath(){
+void Scui::SLT_GetCBCTPath(){ // Opens file dialog for CBCT-projections
     CBCTPath = QFileDialog::getExistingDirectory(
         this, tr("Open Directory with CBCT"), this->m_cbctrecon->m_strPathDirDefault,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_GetCTPath(){
-    CTPath = QFileDialog::getExistingDirectory(
+    CTPath = QFileDialog::getExistingDirectory( // Opens file dialog for CT-projections
         this, tr("Open CT DICOM Directory"), this->m_cbctrecon->m_strPathDirDefault,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 }
@@ -261,8 +275,7 @@ void Scui::SLT_ReConnectSlider(int initVal){ // Connects the slider again
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg, // Updates the image on the left. by seeting the input image as the current image
-                                       QString &fileName) {
+void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg) {// Updates the image on the left. by seeting the input image as the current image
   m_cbctrecon->m_spCrntReconImg = spNewImg;
 
   const auto &p_curimg = this->m_cbctrecon->m_spCrntReconImg;
@@ -274,8 +287,6 @@ void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg, // Updates the i
   std::cout << "New spacing" << spacing_new << std::endl;
   std::cout << "New size" << size_new << std::endl;
 
-  //this->ui.lineEdit_Cur3DFileName->setText(fileName);
-
   auto size = p_curimg->GetBufferedRegion().GetSize();
 
   this->m_cbctrecon->m_dspYKReconImage->CreateImage(size[0], size[1], 0);
@@ -286,11 +297,7 @@ void Scui::UpdateReconImage(UShortImageType::Pointer &spNewImg, // Updates the i
 
   const auto initVal = qRound((size[2] - 1) / 2.0);
 
-  //SLT_InitializeGraphLim(); // What about this???
-
-
   this->ui->verticalSlider->setValue(initVal);
-  //this->ui.radioButton_graph_recon->setChecked(true);
 
   connect(this->ui->verticalSlider, SIGNAL(valueChanged(int)), this, SLOT(SLT_DrawReconImage()));
 
@@ -338,7 +345,7 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   size[2] = 0; // z size number = 0 --> should not be 1
 
   auto start = crnt_region_3d.GetIndex();
-  const auto iSliceNumber = this->ui->verticalSlider->value();//this->ui.spinBoxReconImgSliceNo->value();
+  const auto iSliceNumber = this->ui->verticalSlider->value();
   this->ui->labelSliderIdx->setText(QString("Slice: ") + QString::number(iSliceNumber));
   start[2] = iSliceNumber; // 60
 
@@ -347,8 +354,6 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   const auto posZ = originZ + iSliceNumber * spacingZ;
 
   const auto strPosZ = QString("%1").arg(posZ, 0, 'f', 2);
-  // strPosZ.sprintf("%4.2f", posZ);
-  //this->ui.lineEdit_CurrentPosZ->setText(strPosZ);
 
   // Define a region to generate
   UShortImageType::RegionType desiredRegion;
@@ -379,6 +384,7 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
                                            physTablePosY);
 
   auto p_dspykimg = m_cbctrecon->m_dspYKReconImage.get();
+
   if (false){//this->ui.checkBox_PostDispObjOn->isChecked()) {
     p_dspykimg->m_bDrawFOVCircle = true;
     p_dspykimg->m_bDrawTableLine = true;
@@ -389,22 +395,9 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
     p_dspykimg->m_bDrawTableLine = false;
   }
 
+
   p_dspykimg->FillPixMapMinMax(0,2031);//this->ui.sliderReconImgMin->value(), //Hardcoded value
                                //this->ui.sliderReconImgMax->value());
-/*
-  if(scatterCorrectingIsDone){
-      if(View ==0){
-          this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]);
-      }else if(View ==1){
-          this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[1]);
-      }
-      else{
-        return;
-      }
-  }else{
-      this->ui->labelImageRaw->SetBaseImage(p_dspykimg);
-  }
-  */
   this->ui->labelImageRaw->SetBaseImage(p_dspykimg);
   this->ui->labelImageRaw->update();
 
@@ -1116,12 +1109,11 @@ void Scui::ImageManualMoveOneShot(
 
   printf("delta(mm): %3.1f, %3.1f, %3.1f", imgOrigin[0] - imgOriginRef[0],
       imgOrigin[1] - imgOriginRef[1], imgOrigin[2] - imgOriginRef[2]);
-  //this->ui.lineEditOriginChanged->setText(strDelta);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_PassFixedImgForAnalysis(QString cur_fixed) { // Is passing the image from the right to the left.
+void Scui::SLT_PassFixedImgForAnalysis() { // Is passing the image from the right to the left.
   if (m_cbctrecon->m_spRawReconImg != nullptr) {
-    this->UpdateReconImage(m_cbctrecon->m_spRawReconImg, cur_fixed);
+    this->UpdateReconImage(m_cbctrecon->m_spRawReconImg);
   }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

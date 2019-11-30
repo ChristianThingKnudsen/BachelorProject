@@ -348,9 +348,8 @@ void LoadingThread::SLT_DoReconstruction() { // Functions responsible for the re
   std::cout << "It took " << reconTimeProbe.GetMean() << ' '
             << reconTimeProbe.GetUnit() << std::endl;
 
-  QString update_text("RAW_CBCT");
   auto size = m_parent->m_cbctrecon->m_spCrntReconImg->GetBufferedRegion().GetSize();
-  m_parent->UpdateReconImage(this->m_cbctrecon->m_spCrntReconImg, update_text); // Updates the recon image
+  m_parent->UpdateReconImage(this->m_cbctrecon->m_spCrntReconImg); // Updates the recon image
   emit Signal_DisconnectSlider(); // Signal to disconnect the slider
   const auto initVal = qRound((size[2] - 1) / 2.0); // Finding the middle of the image to use this as the slider value
   emit Signal_ReConnectSlider(initVal); // Signal to reconnect the slider
