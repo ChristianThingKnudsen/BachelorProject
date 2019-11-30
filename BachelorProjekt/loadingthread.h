@@ -26,7 +26,7 @@ public:
     std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
     void init_DlgRegistration(QString &str_dcm_uid) const;
     FilterReaderType::Pointer ReadBowtieFileWhileProbing(const QString &proj_path, std::tuple<bool, bool> &answers);
-    std::tuple<bool, bool> probeUser(const QString &guessDir);
+    std::tuple<bool, bool> probeUser(const QString);
     void SelectComboExternal(const int idx, const enREGI_IMAGES iImage);
     void UpdateListOfComboBox(const int idx) const;
     void LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt);

@@ -85,8 +85,7 @@ void LoadingThread::init_DlgRegistration(QString &str_dcm_uid) const// init dlgR
 
 }
 //Is needed for the next method SLT_LoadSelectedProjFiles()
-std::tuple<bool, bool> LoadingThread::probeUser(const QString &guessDir) {
-  // When we are testing we don't want to use file dialogs and this has therefore been commented out.
+std::tuple<bool, bool> LoadingThread::probeUser(const QString) {
   auto dirPath = m_parent->CTPath;
 
   auto dcm_success = false;
@@ -99,9 +98,7 @@ std::tuple<bool, bool> LoadingThread::probeUser(const QString &guessDir) {
       dcm_success = true;
     }
   }
-
   auto instaRecon = true;
-
   return std::make_tuple(instaRecon, dcm_success);
 }
 
@@ -122,9 +119,9 @@ LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
   switch (this->m_cbctrecon->m_projFormat) {
   case XIM_FORMAT:
     //Hardcoded value
-    bowtiePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Calibrations\\AIR-Full-Bowtie-100KV-Scattergrid-SAD-SID_0\\Current\\FilterBowtie.xim");//getBowtiePath(this, calDir);
+    bowtiePath = proj_path+QString("\\Calibrations\\AIR-Full-Bowtie-100KV-Scattergrid-SAD-SID_0\\Current\\FilterBowtie.xim"); // Hardcoded value
+    std::cout << bowtiePath.toStdString() << std::endl;
     if (bowtiePath.length() > 1) {
-
       std::cout << "loading bowtie-filter..." << std::endl;
       std::vector<std::string> filepath;
       filepath.push_back(bowtiePath.toStdString());
@@ -149,7 +146,7 @@ LoadingThread::ReadBowtieFileWhileProbing(const QString &proj_path,
   return nullptr;
 }
 
-void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuction for projection images
+void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // Main loading fuction for projection images
 {
   auto dirPath = path;
 
@@ -163,9 +160,6 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   if (this->m_cbctrecon->m_projFormat == HIS_FORMAT &&
       !this->m_cbctrecon->IsFileNameOrderCorrect(names)) {
     std::cout << "Check the file name order" << std::endl;
-
-    //QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
-    //return;
     emit SignalMessageBox(1,"warning","Error on File Name Sorting!");
   }
 
@@ -181,16 +175,16 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   std::cout << fullCnt << "  projection files were found." << std::endl;
 
   // 2) Elekta Geometry file
-  const auto geomPath = this->m_cbctrecon->m_strPathGeomXML;//this->ui.lineEdit_ElektaGeomPath->text();
+  const auto geomPath = this->m_cbctrecon->m_strPathGeomXML;// (from lineEdit_ElektaGeomPath)
   QFileInfo geomFileInfo(geomPath);
   //! QFile::exists(geomPath)
 
   if (!this->m_cbctrecon->LoadGeometry(geomFileInfo, names)) {
-    if (!this->m_cbctrecon->m_strError.isEmpty()) {
-      //QMessageBox::critical(this, "LoadXVIGeometryFile",
-                            //this->m_cbctrecon->m_strError, QMessageBox::Ok);
-    }
-  }
+      if (!this->m_cbctrecon->m_strError.isEmpty()) {
+
+      }
+   }
+
   const auto &p_geometry = this->m_cbctrecon->m_spFullGeometry;
   const auto iFullGeoDataSize = p_geometry->GetGantryAngles().size();
   if (iFullGeoDataSize < 1) {
@@ -205,17 +199,6 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
                 << std::endl;
       return;
     }
-
-    //const auto reply = QMessageBox::question(
-      //  this, "Mismatch in number of files and Geometry information!",
-        //"Mismatch in number of files and Geometry information!\nHowever, Xim "
-       // "detected, so it may be safe to continue anyway?",
-      //  QMessageBox::Yes | QMessageBox::No);
-    //if (reply == QMessageBox::Yes) {
-    //  std::cout << "continuing despite warning..." << std::endl;
-    //} else {
-    //  return;
-    //}
   }
 
   auto angle_gaps = p_geometry->GetAngularGaps(p_geometry->GetSourceAngles());
@@ -227,28 +210,10 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
 
   std::cout << "AngularGaps Sum (deg):" << sum_gap
             << ", Mean (deg): " << mean_gap << std::endl;
-  double gantryAngelIntervalValue = 30; //Hardcoded value
-  const auto gantryAngleInterval = gantryAngelIntervalValue; //this->ui.lineEdit_ManualProjAngleGap->text().toDouble();
+  double gantryAngelIntervalValue = 30; //Hardcoded value (from lineEdit_ManualProjAngleGap)
+  const auto gantryAngleInterval = gantryAngelIntervalValue;
 
-  // In Andreases code this was not checked so we outcommet this one (Radio_KeepOriginalAngles)
-  // if (this->ui.Radio_KeepOriginalAngles->isChecked())
-  /*
-  if (this->ui.Radio_ManualProjAngleGap->isChecked()) {
-    // bManualGap = true;
-    // std::cout << "Input angle gap in deg: " ;
-    // cin >> gantryAngleInterval;
-
-    if (gantryAngleInterval < mean_gap) {
-      std::cout << "Angle gap size is too small. Terminating the app"
-                << std::endl;
-      return;
-      // bManualGap = false;
-    }
-  }
-  */
-
-  const auto exclude_ids = this->m_cbctrecon->GetExcludeProjFiles(false, gantryAngleInterval);
-      //this->ui.Radio_ManualProjAngleGap->isChecked(), gantryAngleInterval);
+  const auto exclude_ids = this->m_cbctrecon->GetExcludeProjFiles(false, gantryAngleInterval);// false (see Radio_ManualProjAngleGap)
 
   this->m_cbctrecon->LoadSelectedProj(exclude_ids, names);
 
@@ -287,10 +252,10 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // main loading fuc
   }
 
   saveImageAsMHA<FloatImageType>(this->m_cbctrecon->m_spProjImg3DFloat);
-  auto res_factor = 0.5;//this->ui.lineEdit_DownResolFactor->text().toDouble(); //Hardcoded value
+  auto res_factor = 0.5;//Hardcoded value (from lineEdit_DownResolFactor)
   if (!this->m_cbctrecon->ResampleProjections(res_factor)) { // 0.5
     // reset factor if image was not resampled
-    auto res_factor =1.0;//this->ui.lineEdit_DownResolFactor->setText("1.0");
+    res_factor =1.0;// (from lineEdit_DownResolFactor)
   }
 
   this->m_cbctrecon->m_spProjImgRaw3D =
@@ -321,11 +286,10 @@ void LoadingThread::SLT_DoBowtieCorrection() { // Function for applying the bowt
         << std::endl;
     return;
   }
-  // In Andreases UI he uses this string. Hope this works
-  QString comboBox_fBTcor_String = "1.4571;2.4506;2.6325;0.0095;4.1181"; //Hardcoded value
-  const auto strList = comboBox_fBTcor_String.split(';'); //this->ui.comboBox_fBTcor->currentText().split(';');
+  QString comboBox_fBTcor_String = "1.4571;2.4506;2.6325;0.0095;4.1181"; //Hardcoded value (from comboBox_fBTcor)
+  const auto strList = comboBox_fBTcor_String.split(';');
 
-  this->m_cbctrecon->BowtieByFit(false,strList);//this->ui.checkBox_Fullfan->isChecked(),strList);
+  this->m_cbctrecon->BowtieByFit(false,strList);// False (see checkBox_Fullfan)
 
   this->m_cbctrecon->SetMaxAndMinValueOfProjectionImage();
   std::cout << "Bow-tie correction done." << std::endl;

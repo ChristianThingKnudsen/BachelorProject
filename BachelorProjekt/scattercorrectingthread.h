@@ -24,12 +24,10 @@ public:
 private slots:
     void SLT_DoRegistrationRigid();
     void SLT_DoRegistrationDeform();
-    void SLT_KeyMoving(const bool bChecked);
     ctType get_ctType(const QString &selText);
     void SLT_IntensityNormCBCT();
     void SLT_DoScatterCorrection_APRIORI();
     void SLT_IntensityNormCBCT_COR_CBCT();
-    void SLT_InitializeGraphLim() const;
     FDK_options getFDKoptions() const; // This is not implemented...
     void SLT_ManualMoveByDCMPlanOpen();
     void SLT_ConfirmManualRegistration();

@@ -130,7 +130,6 @@ Scui::~Scui() // Destructor
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------UI methods ----------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
 void Scui::SLT_OpenInfo() // Is called when the info button is pushed
 {
     InformationWindow infoWindow;
@@ -170,7 +169,6 @@ void Scui::SLT_SliderValueChanged(){ // Is called when the slider value changes
         SLT_DrawReconImage();
         SLT_DrawImageWhenSliceChange();
     }
-
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &planView) // Is called when an item is chosen in the plan view
@@ -225,8 +223,8 @@ QString get_dcm_uid(QString &dcm_path){ // Small method for extracting the DICOM
     auto seriesItr = seriesUID.begin();
 return QString(seriesItr->c_str());
 }
-
-QString getStructureFile(QString path){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+QString getStructureFile(QString path){ // Small method for finding the structurefile automatic
     QDir directory(path);
     QStringList images = directory.entryList(QStringList() << "*.dcm" << "*.DCM",QDir::Files);
     foreach(QString filename, images) {
@@ -240,7 +238,7 @@ QString getStructureFile(QString path){
     std::cout << "No structure file found" << std::endl;
     return QString("");
 }
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_StartLoadingThread(){
     /*
     SLT_GetCBCTPath();
@@ -394,31 +392,21 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   UShortImage2DType::Pointer pCrnt2D = extractFilter->GetOutput();
   m_cbctrecon->m_dspYKReconImage = YK16GrayImage::CopyItkImage2YKImage(
       pCrnt2D,
-      std::move(m_cbctrecon->m_dspYKReconImage)); // dimension should be
-                                                        // same automatically.
+      std::move(m_cbctrecon->m_dspYKReconImage)); // dimension should be same automatically.
 
-  const auto physPosX = 0;//this->ui.lineEdit_PostFOV_X->text().toFloat(); //Hardcoded value
-  const auto physPosY = 0;//this->ui.lineEdit_PostFOV_Y->text().toFloat(); //Hardcoded value
-  const auto physRadius = 190;//this->ui.lineEdit_PostFOV_R->text().toFloat(); //Hardcoded value
-  const auto physTablePosY = 120;//this->ui.lineEdit_PostTablePosY->text().toFloat(); //Hardcoded value
+  const auto physPosX = 0; //Hardcoded value (from lineEdit_PostFOV_X)
+  const auto physPosY = 0;//Hardcoded value (from lineEdit_PostFOV_Y)
+  const auto physRadius = 190;//Hardcoded value (from lineEdit_PostFOV_R)
+  const auto physTablePosY = 120;//Hardcoded value (from lineEdit_PostTablePosY)
   m_cbctrecon->PostApplyFOVDispParam(physPosX, physPosY, physRadius,
                                            physTablePosY);
 
   auto p_dspykimg = m_cbctrecon->m_dspYKReconImage.get();
 
-  if (false){//this->ui.checkBox_PostDispObjOn->isChecked()) {
-    p_dspykimg->m_bDrawFOVCircle = true;
-    p_dspykimg->m_bDrawTableLine = true;
-  }
+  p_dspykimg->m_bDrawFOVCircle = false;
+  p_dspykimg->m_bDrawTableLine = false;
 
-  else {
-    p_dspykimg->m_bDrawFOVCircle = false;
-    p_dspykimg->m_bDrawTableLine = false;
-  }
-
-
-  p_dspykimg->FillPixMapMinMax(0,2031);//this->ui.sliderReconImgMin->value(), //Hardcoded value
-                               //this->ui.sliderReconImgMax->value());
+  p_dspykimg->FillPixMapMinMax(0,2031);//Hardcoded value (from sliderReconImgMin and sliderReconImgMax)
   this->ui->labelImageRaw->SetBaseImage(p_dspykimg);
   this->ui->labelImageRaw->update();
 
@@ -458,10 +446,10 @@ void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
   //Get VIO
   const auto voi_name = structure.toStdString();
 
-  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value(); //Hardcoded value
-  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value(); //Hardcoded value
+  const auto gantry_angle = 0;//Hardcoded value (from spinBox_GantryAngle)
+  const auto couch_angle = 0;//Hardcoded value (from spinBox_CouchAngle)
 
-  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
+  const auto ct_type = get_ctType("COR_CBCT");
   const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
   m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
 
@@ -484,12 +472,9 @@ void Scui::UpdateVOICombobox(const ctType ct_type) const {
     std::cerr << "Structures not initialized yet" << std::endl;
     return;
   }
-  // In Andreases code he uses checkboxes therefore this is outcommented (comboBox_VOI)
-  ui->comboBoxWEPL->clear();//this->ui.comboBox_VOI->clear();
+  ui->comboBoxWEPL->clear();
   for (const auto &voi : struct_set->slist) {
     this->ui->comboBoxWEPL->addItem(QString(voi.name.c_str()));
-    //this->ui.comboBox_VOItoCropBy->addItem(QString(voi.name.c_str()));
-    //this->ui.comboBox_VOItoCropBy_copy->addItem(QString(voi.name.c_str()));
   }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -503,6 +488,7 @@ template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
     return &window->m_vPt_green;
   }
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DrawImageWhenSliceChange()
 template <typename ImageBase, enPLANE plane, enCOLOR color> // Is also used to visualize WEPL
 auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
@@ -605,16 +591,11 @@ ctType Scui::get_ctType(const QString &selText) {
   return PLAN_CT;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by SelectComboExternal
 void Scui::SLT_FixedImageSelected(QString selText) {
-  // QString strCrntText = this->ui.comboBoxImgFixed->currentText();
   LoadImgFromComboBox(0, selText); // here, m_spMovingImg and Fixed images are determined
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by SelectComboExternal
 void Scui::SLT_MovingImageSelected(QString selText) {
-  // QString strCrntText = this->ui.comboBoxImgMoving->currentText();
-  // std::cout << "SLT_MovingImageSelected" << std::endl;
   LoadImgFromComboBox(1, selText);
   const auto cur_ct = get_ctType(selText);
   UpdateVOICombobox(cur_ct);
@@ -661,26 +642,20 @@ void Scui::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt) // -
   if (idx == 0) {
     m_spFixedImg = spTmpImg.GetPointer();
 
-    whenFixedImgLoaded(); //commented out
+    whenFixedImgLoaded();
   } else if (idx == 1) {
     m_spMovingImg = spTmpImg.GetPointer();
-    // In Andreases code this does nothing so far and is therefore  outcommented (whenMovingImgLoaded())
-    //whenMovingImgLoaded();
   }
   SLT_DrawImageWhenSliceChange();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
 void Scui::SLT_DrawImageWhenSliceChange() {
-  if (m_spFixedImg == nullptr) {
+  if (m_spFixedImg == nullptr || m_cbctrecon->m_spRawReconImg == nullptr) {
     return;
   }
-  // Added by us:
-  if(m_cbctrecon->m_spRawReconImg == nullptr){
-      return;
-  }
 
-  if(scatterCorrectingIsDone){
+  if(scatterCorrectingIsDone){ // Sets the fixed and scatter corrected image to fixed and moving after scatter correction is done
       m_spFixedImg = m_cbctregistration->m_pParent->m_spScatCorrReconImg.GetPointer();
       m_spMovingImg = m_cbctregistration->m_pParent->m_spScatCorrReconImg.GetPointer();
   }
@@ -696,66 +671,64 @@ void Scui::SLT_DrawImageWhenSliceChange() {
   case AXIAL_FRONTAL_SAGITTAL:
     if(View ==0){
         sliderPosIdxZ = ui->verticalSlider->value();
-        sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        sliderPosIdxY = curPosY;
+        sliderPosIdxX = curPosX;
     }else if (View ==1){
         sliderPosIdxZ = curPosZ;
-        sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-        sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+        sliderPosIdxY = ui->verticalSlider->value();
+        sliderPosIdxX = curPosX;
     }else if(View ==2){
         sliderPosIdxZ = curPosZ;
-        sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-        sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+        sliderPosIdxY = curPosY;
+        sliderPosIdxX = ui->verticalSlider->value();
     }
     break;
   case FRONTAL_SAGITTAL_AXIAL:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = curPosX;
       }else if (View ==1){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = ui->verticalSlider->value();
+          sliderPosIdxX = curPosX;
       }else if(View ==2){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = ui->verticalSlider->value();
       }
     break;
   case SAGITTAL_AXIAL_FRONTAL:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = curPosX;
       }else if (View ==1){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = ui->verticalSlider->value();
+          sliderPosIdxX = curPosX;
       }else if(View ==2){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = ui->verticalSlider->value();
       }
     break;
   default:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = curPosX;
       }else if (View ==1){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = ui->verticalSlider->value();
+          sliderPosIdxX = curPosX;
       }else if(View ==2){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = ui->verticalSlider->value();
       }
     break;
   }
-
-  //auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
   auto imgOrigin = m_spFixedImg->GetOrigin();
   auto imgSpacing = m_spFixedImg->GetSpacing();
 
@@ -766,8 +739,7 @@ void Scui::SLT_DrawImageWhenSliceChange() {
   }};
 
   const auto refIdx = 3 - m_enViewArrange;
-  // In Andreases code this checkbox was checked (checkBoxDrawCrosshair)
-  if (false){//this->ui.checkBoxDrawCrosshair->isChecked()) {
+  if (false){//false because we don't want yellow lines on the images (from checkBoxDrawCrosshair)
     m_YKDisp[refIdx % 3].m_bDrawCrosshair = true;
     m_YKDisp[(refIdx + 1) % 3].m_bDrawCrosshair = true;
     m_YKDisp[(refIdx + 2) % 3].m_bDrawCrosshair = true;
@@ -860,35 +832,19 @@ void Scui::SLT_DrawImageWhenSliceChange() {
   strPos1.sprintf("%3.1f", curPhysPos[0]);
   strPos2.sprintf("%3.1f", curPhysPos[1]);
   strPos3.sprintf("%3.1f", curPhysPos[2]);
-  // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
-  /*
-  this->ui.lineEditCurPosX->setText(strPos3);
-  this->ui.lineEditCurPosY->setText(strPos2);
-  this->ui.lineEditCurPosZ->setText(strPos1);
-  */
+
   ////Update Origin text box
   auto imgOriginFixed = m_spFixedImg->GetOrigin();
   QString strOriFixed;
   strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0], imgOriginFixed[1], imgOriginFixed[2]);
-  // In Andreases code he set the text on the ui. Therefore we outcomment this (lineEditOriginFixed)
-  //this->ui.lineEditOriginFixed->setText(strOriFixed);
 
   if (m_spMovingImg != nullptr) {
     const auto imgOriginMoving = m_spMovingImg->GetOrigin();
     QString strOriMoving;
     strOriMoving.sprintf("%3.4f, %3.4f, %3.4f", imgOriginMoving[0],
                          imgOriginMoving[1], imgOriginMoving[2]);
-    // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
-    //this->ui.lineEditOriginMoving->setText(strOriMoving);
   }
-  // In Andreases code he have 3 labels on the registration ui, but we only have one. Therefor the below has been changed.
-  /*
-  auto arr_wnd = std::array<qyklabel *, 3>{{this->ui.labelOverlapWnd1,
-                                            this->ui.labelOverlapWnd2,
-                                            this->ui.labelOverlapWnd3}};
-                                           */
   auto wnd = this->ui->labelImageCor;
-
 
   if (m_cbctregistration->cur_voi != nullptr) {
     const auto p_cur_voi = m_cbctregistration->cur_voi.get();
@@ -935,8 +891,7 @@ void Scui::SLT_DrawImageInFixedSlice() const
 // Display Swap here!
 {
   // Constitute m_YKDisp from Fixed and Moving
-  // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-  if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+  if (true){// true because we want to split (from checkBoxDrawSplit)
     for (auto i = 0; i < 3; i++) {
       auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
       if (idxAdd + i >= 3) {
@@ -965,8 +920,7 @@ void Scui::SLT_DrawImageInFixedSlice() const
 
   // For dose overlay
   if (m_cbctregistration->dose_loaded) {
-      // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-    if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
+    if (false){// false because we don't want to split (from checkBoxDrawSplit)
       for (auto i = 0; i < 3; i++) {
         auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
         if (idxAdd + i >= 3) {
@@ -993,61 +947,38 @@ void Scui::SLT_DrawImageInFixedSlice() const
       }
     }
   }
-  // In Andreases code this is set to 2000 (sliderFixedW)
-  const auto sliderW1 = 2000;//this->ui.sliderFixedW->value(); //Hardcoded value
-  // In Andreases code this is set to 2000 (sliderMovingW)
-  const auto sliderW2 = 2000;//this->ui.sliderMovingW->value(); //Hardcoded value
-  // In Andreases code this is set to 1024 (sliderFixedL)
-  const auto sliderL1 = 1024;//this->ui.sliderFixedL->value(); //Hardcoded value
-  // In Andreases code this is set to 1024 (sliderMovingL)
-  const auto sliderL2 = 1024;//this->ui.sliderMovingL->value(); //Hardcoded value
+  const auto sliderW1 = 2000;//Hardcoded value (from sliderFixedW)
+  const auto sliderW2 = 2000;//Hardcoded value (from sliderMovingW)
+  const auto sliderL1 = 1024;//Hardcoded value (from sliderFixedL)
+  const auto sliderL2 = 1024;//Hardcoded value (from sliderMovingL)
 
   m_YKDisp[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
   m_YKDisp[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
   m_YKDisp[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
 
-  // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-
-  if(View ==0){
+  if(View ==0){ // Based on chosen view, diffrent image is shown
       this->ui->labelImageCor->SetBaseImage(&m_YKDisp[0]);
   }else if(View==1){
       this->ui->labelImageCor->SetBaseImage(&m_YKDisp[1]);
   }else if(View==2){
       this->ui->labelImageCor->SetBaseImage(&m_YKDisp[2]);
   }
-
-  /*
-  this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
-  this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
-  */
-
   // here gPMC results could be checked for and displayed, possibly with
   // modification to the qyklabel class /AGA 02/08/2017
   if (m_cbctregistration->dose_loaded) {
     m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
 
-    if(View==0){
+    if(View==0){// Based on chosen view, diffrent overlay is shown
         this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[0]);
     }else if(View==1){
         this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[1]);
     }else if(View==2){
         this->ui->labelImageCor->SetOverlayImage(&m_AGDisp_Overlay[2]);
     }
-
-    /*
-    this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
-    this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
-    */
   }
-  // In Andreases code he plots this on the registration ui, but we only have one window
   this->ui->labelImageCor->update();
-  /*
-  this->ui.labelOverlapWnd2->update();
-  this->ui.labelOverlapWnd3->update();
-  */
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
@@ -1059,41 +990,17 @@ void Scui::whenFixedImgLoaded() const {
   }
 
   auto imgSize = m_cbctrecon->m_spRawReconImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
-
-  // In Andreases code this does nothing so far and is therefore  outcommented (initOverlapWndSize())
-  //initOverlapWndSize();
-
-  // In Andreases code he uses slider but we don't. Therefore this is outcommented
-  /*
-  this->ui.sliderPosDisp1->setMinimum(0);
-  this->ui.sliderPosDisp1->setMaximum(static_cast<int>(imgSize[2] - 1));
-  */
   const auto curPosZ = static_cast<int>(imgSize[2] / 2);
-  /*
-  this->ui.sliderPosDisp1->setValue(curPosZ);
-
-
-  this->ui.sliderPosDisp2->setMinimum(0);
-  this->ui.sliderPosDisp2->setMaximum(static_cast<int>(imgSize[1] - 1));
-  */
   const auto curPosY = static_cast<int>(imgSize[1] / 2);
-  /*
-  this->ui.sliderPosDisp2->setValue(curPosY);
-
-  this->ui.sliderPosDisp3->setMinimum(0);
-  this->ui.sliderPosDisp3->setMaximum(static_cast<int>(imgSize[0] - 1));
-  */
   const auto curPosX = static_cast<int>(imgSize[0] / 2);
-  /*
-  this->ui.sliderPosDisp3->setValue(curPosX);
-  */
+
   std::cout << "sliderPosDisp1:" << curPosX << " th view" << std::endl;
   std::cout << "sliderPosDisp2:" << curPosY << " th view" << std::endl;
   std::cout << "sliderPosDisp2:" << curPosZ << " th view" << std::endl;
 
-  auto x_split = QPoint(static_cast<int>(0), static_cast<int>(0));//QPoint(static_cast<int>(imgSize[0] / 2), static_cast<int>(imgSize[1] / 2));
-  auto y_split = QPoint(static_cast<int>(0), static_cast<int>(0));//QPoint(static_cast<int>(imgSize[0] / 2), static_cast<int>(imgSize[2] / 2));
-  auto z_split = QPoint(static_cast<int>(0), static_cast<int>(0));//QPoint(static_cast<int>(imgSize[1] / 2),static_cast<int>(imgSize[2] / 2));
+  auto x_split = QPoint(static_cast<int>(0), static_cast<int>(0));
+  auto y_split = QPoint(static_cast<int>(0), static_cast<int>(0));
+  auto z_split = QPoint(static_cast<int>(0), static_cast<int>(0));
 
   m_YKDisp[0].SetSplitCenter(x_split);
   m_YKDisp[1].SetSplitCenter(y_split);
@@ -1110,8 +1017,6 @@ void Scui::ImageManualMoveOneShot(
     return;
   }
 
-  // USHORT_ImageType::SizeType imgSize =
-  // m_spMovingImg->GetRequestedRegion().GetSize(); //1016x1016 x z
   using USPointType = UShortImageType::PointType;
   auto imgOrigin = m_spMovingImg->GetOrigin();
   // USHORT_ImageType::SpacingType imgSpacing = m_spFixedImg->GetSpacing();
@@ -1126,13 +1031,13 @@ void Scui::ImageManualMoveOneShot(
   // Display relative movement
   // Starting point? RefCT image
   // Only Valid when Moving image is the ManualMove
-  auto imgOriginRef = this->m_cbctrecon->m_spRefCTImg->GetOrigin(); //m_pParent replaced with this
+  auto imgOriginRef = this->m_cbctrecon->m_spRefCTImg->GetOrigin();
 
   printf("delta(mm): %3.1f, %3.1f, %3.1f", imgOrigin[0] - imgOriginRef[0],
       imgOrigin[1] - imgOriginRef[1], imgOrigin[2] - imgOriginRef[2]);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_PassFixedImgForAnalysis() { // Is passing the image from the right to the left.
+void Scui::SLT_PassFixedImgForAnalysis() { // Is passing the image from the right to the left on the ui.
   if (m_cbctrecon->m_spRawReconImg != nullptr) {
     this->UpdateReconImage(m_cbctrecon->m_spRawReconImg);
   }
@@ -1152,55 +1057,32 @@ void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread
     ui->comboBoxPlanView->setEnabled(true);
     ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url(/Users/ct-10/Desktop/down.png);width: 14px;height: 14px;}");
 }
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------N/A methods------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 FDK_options Scui::getFDKoptions() const {
   FDK_options fdk_options;
-  // In Andreases code this was initialized as 1.0
-  fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble(); //Hardcoded value
-  // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutX = 5.0;//this->ui.lineEdit_Ramp_HannCut->text().toDouble(); //Hardcoded value
-  // In Andreases code this was initialized as 0.5
-  fdk_options.HannCutY = 5.0;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble(); //Hardcoded value
-  // In Andreases code this was initialized as 0.0
-  fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble(); //Hardcoded value
-  // In Andreases code this was initialized as 0.0
-  fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble(); //Hardcoded value
-  // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
-  fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked(); //Hardcoded value
-  // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
-  fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked(); //Hardcoded value
-  // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
-  fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked(); //Hardcoded value
-
-  // In Andreases code thesse three was initialized as 1
-  fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble(); //Hardcoded value
-  fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble(); //Hardcoded value
-  fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble(); //Hardcoded value
-
-  // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt(); //Hardcoded value
-  // In Andreases code thesse three was initialized as 200
-  fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt(); //Hardcoded value
-  // In Andreases code thesse three was initialized as 400
-  fdk_options.ct_size[2] = 400;//this->ui.lineEdit_outImgDim_LR->text().toInt(); //Hardcoded value
-
-  // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
-  fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x //Hardcoded value
-  fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y //Hardcoded value
-  fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z //Hardcoded value
-
-  // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
-  fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();//Hardcoded value
-
-  fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); //Hardcoded value // In Andreases UI it says that this is optional
-
+  fdk_options.TruncCorFactor = 1.0;//Hardcoded value(from trail and error, see lineEdit_Ramp_TruncationCorrection)
+  fdk_options.HannCutX = 5.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_HannCut)
+  fdk_options.HannCutY = 5.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_HannCutY)
+  fdk_options.CosCut = 0.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_CosineCut)
+  fdk_options.HammCut = 0.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_Hamming)
+  fdk_options.displacedDetectorFilter = true;//Hardcoded value (from trail and error, see checkBox_UseDDF)
+  fdk_options.updateAfterDDF = false;//Hardcoded value (from trail and error, see checkBox_UpdateAfterFiltering)
+  fdk_options.ParkerShortScan = true;//Hardcoded value (from trail and error, see checkBox_UsePSSF)
+  fdk_options.ct_spacing[0] = 1;//Hardcoded value (from trail and error, see lineEdit_outImgSp_AP)
+  fdk_options.ct_spacing[1] = 1;//Hardcoded value (from trail and error, see lineEdit_outImgSp_SI)
+  fdk_options.ct_spacing[2] = 1;//Hardcoded value (from trail and error, see lineEdit_outImgSp_LR)
+  fdk_options.ct_size[0] = 400;//Hardcoded value (from trail and error, see lineEdit_outImgDim_AP)
+  fdk_options.ct_size[1] = 200;//Hardcoded value (from trail and error, see lineEdit_outImgDim_SI)
+  fdk_options.ct_size[2] = 400;//Hardcoded value (from trail and error, see lineEdit_outImgDim_LR)
+  fdk_options.medianRadius[0] = 0;//Hardcoded value, radius along x (from trail and error, see lineEdit_PostMedSizeX)
+  fdk_options.medianRadius[1] = 0;//Hardcoded value, radius along y (from trail and error, see lineEdit_PostMedSizeY)
+  fdk_options.medianRadius[2] = 1;//Hardcoded value, radius along z (from trail and error, see lineEdit_PostMedSizeZ)
+  fdk_options.medianFilter = true;//Hardcoded value (from trail and error, see checkBox_PostMedianOn)
+  fdk_options.outputFilePath = QString("");//Hardcoded value (from trail and error, see lineEdit_OutputFilePath)
   return fdk_options;
 }
-//....
-
 
 
 void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){ // Not used at the moment..
@@ -1212,118 +1094,6 @@ void Scui::SLT_ShowMessageBox(int idx, QString header,QString message){ // Not u
     QMessageBox::warning(this, "warning", "Error on File Name Sorting!");
     return;
 }
-
-/*
-void Scui::SLT_DrawReconInFixedSlice(){
-    // Constitute m_YKDisp from Fixed and Moving
-    // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
-      for (auto i = 0; i < 3; i++) {
-        auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
-        if (idxAdd + i >= 3) {
-          idxAdd = idxAdd - 3;
-        }
-
-        m_YKDisp[i].SetSpacing(m_YKImgFixed[i + idxAdd].m_fSpacingX,
-                               m_YKImgFixed[i + idxAdd].m_fSpacingY);
-
-        m_YKDisp[i].SetSplitOption(PRI_LEFT_TOP);
-        if (!m_YKDisp[i].ConstituteFromTwo(m_YKImgFixed[i + idxAdd],
-                                           m_YKImgMoving[i + idxAdd])) {
-            std::cout << "Image error " << i + 1 << " th view" << std::endl;
-        }
-      }
-    } else {
-      for (auto i = 0; i < 3; i++) {
-        auto addedViewIdx = m_enViewArrange;
-        if (i + addedViewIdx >= 3) {
-          addedViewIdx = addedViewIdx - 3;
-        }
-
-        m_YKDisp[i].CloneImage(m_YKImgFixed[i + addedViewIdx]);
-      }
-    }
-
-    // For dose overlay
-    if (m_cbctregistration->dose_loaded) {
-        // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-      if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
-        for (auto i = 0; i < 3; i++) {
-          auto idxAdd = m_enViewArrange; // m_iViewArrange = 0,1,2
-          if (idxAdd + i >= 3) {
-            idxAdd = idxAdd - 3;
-          }
-
-          m_AGDisp_Overlay[i].SetSpacing(m_DoseImgFixed[i + idxAdd].m_fSpacingX,
-                                         m_DoseImgFixed[i + idxAdd].m_fSpacingY);
-
-          m_AGDisp_Overlay[i].SetSplitOption(PRI_LEFT_TOP);
-          if (!m_AGDisp_Overlay[i].ConstituteFromTwo(
-                  m_DoseImgFixed[i + idxAdd], m_DoseImgMoving[i + idxAdd])) {
-            std::cout << "Dose Image error " << i + 1 << " th view" << std::endl;
-          }
-        }
-      } else {
-        for (auto i = 0; i < 3; i++) {
-          auto addedViewIdx = m_enViewArrange;
-          if (i + addedViewIdx >= 3) {
-            addedViewIdx = addedViewIdx - 3;
-          }
-
-          m_AGDisp_Overlay[i].CloneImage(m_DoseImgFixed[i + addedViewIdx]);
-        }
-      }
-    }
-    // In Andreases code this is set to 2000 (sliderFixedW)
-    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value();
-    // In Andreases code this is set to 2000 (sliderMovingW)
-    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value();
-    // In Andreases code this is set to 1024 (sliderFixedL)
-    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value();
-    // In Andreases code this is set to 1024 (sliderMovingL)
-    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value();
-
-    m_YKDisp[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-    m_YKDisp[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-    m_YKDisp[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-
-    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-    if(View ==0){
-        this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[0]); //this->ui.labelOverlapWnd1->SetBaseImage(&m_YKDisp[0]);
-    }else{
-        this->ui->labelImageRaw->SetBaseImage(&m_YKDisp[1]); //this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
-    }
-
-
-    this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
-    this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
-
-
-    // here gPMC results could be checked for and displayed, possibly with
-    // modification to the qyklabel class /AGA 02/08/2017
-    if (m_cbctregistration->dose_loaded) {
-      m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
-      if(View ==0){
-          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[0]); //this->ui.labelOverlapWnd1->SetOverlayImage(&m_AGDisp_Overlay[0]);
-      }else{
-          this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[1]); //this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
-      }
-
-      this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
-      this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
-
-    }
-    // In Andreases code he plots this on the registration ui, but we only have one window
-    this->ui->labelImageRaw->update();//this->ui.labelOverlapWnd1->update();
-
-    this->ui.labelOverlapWnd2->update();
-    this->ui.labelOverlapWnd3->update();
-
-}
-*/
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //Is called by SLT_LoadSelectedProjFiles
@@ -1331,111 +1101,13 @@ void Scui::SLT_OpenElektaGeomFile() { // I don't think this is used at the momen
   auto strPath = QFileDialog::getOpenFileName(
       this, "Select a single file to open",
       this->m_cbctrecon->m_strPathDirDefault, "Geometry file (*.xml)");
-
   if (strPath.length() <= 1) {
     return;
   }
-  //this->ui.lineEdit_ElektaGeomPath->setText(strPath);
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_PreProcessCT() { // I don't think this is used at the moment
-    /*
-  if (!true){//this->ui.checkBoxCropBkgroundCT->isChecked()) {
-    std::cout << "Preprocessing is not selected." << std::endl;
-    return;
-  }
-
-  const auto iAirThresholdShort = 500;//this->ui.spinBoxBkDetectCT->value();
-
-  if (false){//this->ui.comboBox_VOItoCropBy->count() < 1) {
-    std::cout
-        << "Reference CT DIR should be specified for structure based cropping"
-        << std::endl;
-    if (m_spMovingImg == nullptr || m_spFixedImg == nullptr) {
-      return;
-    }
-    const auto fixed_size = m_spFixedImg->GetLargestPossibleRegion().GetSize();
-    const auto moving_size = m_spMovingImg->GetLargestPossibleRegion().GetSize();
-    if (fixed_size[0] != moving_size[0] || fixed_size[1] != moving_size[1] ||
-        fixed_size[2] != moving_size[2]) {
-      std::cout
-          << "Fixed and moving image is not the same size, consider using "
-             "a platimatch registration to solve this."
-          << std::endl;
-      return;
-    }
-
-    const auto reply =
-        QMessageBox::question(this, "No reference structures found!",
-                              "Do you wan't to attempt an auto correction "
-                              "of air and excessive circumference?",
-                              QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-      std::cout << "Attempting automatic air filling and skin cropping..."
-                << std::endl;
-      m_cbctregistration->autoPreprocessCT(iAirThresholdShort, m_spFixedImg,
-                                           m_spMovingImg);
-    }
-    return;
-  }
-
-  const auto strRSName = this->ui.comboBox_VOItoCropBy->currentText();
-  const auto fill_bubble = this->ui.checkBoxFillBubbleCT->isChecked();
-  const auto iBubbleFillingVal =
-      this->ui.spinBoxBubFillCT->value(); // 1000 = soft tissue
-  const auto iAirFillValShort = this->ui.spinBoxBkFillCT->value(); // 0 = air
-
-  const auto cur_ct_text = ui.comboBoxImgMoving->currentText();
-  const auto cur_ct = get_ctType(cur_ct_text);
-  const auto &rt_structs =
-      m_cbctregistration->m_pParent->m_structures->get_ss(cur_ct);
-
-  QString image_str;
-  if (ui.comboBoxImToCropFill->currentText().compare("Moving") == 0) {
-    image_str = ui.comboBoxImgMoving->currentText();
-  } else {
-    image_str = ui.comboBoxImgFixed->currentText();
-  }
-
-  auto &image = m_cbctregistration->get_image_from_combotext(image_str);
-
-  if (!m_cbctregistration->PreprocessCT(image, iAirThresholdShort, rt_structs,
-                                        strRSName, fill_bubble,
-                                        iBubbleFillingVal, iAirFillValShort)) {
-    std::cout
-        << "Error in PreprocessCT!!!scatter correction would not work out."
-        << std::endl;
-    m_cbctregistration->m_pParent->m_bMacroContinue = false;
-  }
-
-  show();
-
-  UpdateListOfComboBox(0); // combo selection signalis called
-  UpdateListOfComboBox(1);
-  // if not found, just skip
-  SelectComboExternal(0, REGISTER_RAW_CBCT); // will call fixedImageSelected
-  SelectComboExternal(1, REGISTER_MANUAL_RIGID);
-  SLT_DrawImageWhenSliceChange();
-
-  std::cout << "FINISHED!: Pre-processing of CT image" << std::endl;
-
-  ////Load DICOM plan
-  if (m_cbctregistration->m_pParent->m_strPathPlan.isEmpty()) {
-    std::cout << "No DCM plan file was found. Skipping dcm plan." << std::endl;
-    return;
-  }
-  // QString dcmplanPath = m_pParent->m_strPathPlan;
-  m_cbctregistration->LoadRTPlan(
-      m_cbctregistration->m_pParent->m_strPathPlan); // fill RT_studyplan
-      */
-}
-
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_DrawReconImageInSlices(){
     // init fixed and moving images
-    //m_spFixedImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
-    //m_spMovingImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer() ;
     m_spRawFixedImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
     m_spRawMovingImg = m_cbctregistration->m_pParent->m_spRawReconImg.GetPointer();
 
@@ -1453,66 +1125,64 @@ void Scui::SLT_DrawReconImageInSlices(){
     case AXIAL_FRONTAL_SAGITTAL:
       if(View ==0){
           sliderPosIdxZ = ui->verticalSlider->value();
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = curPosX;
       }else if(View ==1){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = ui->verticalSlider->value();
+          sliderPosIdxX = curPosX;
       } else if(View==2){
           sliderPosIdxZ = curPosZ;
-          sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-          sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+          sliderPosIdxY = curPosY;
+          sliderPosIdxX = ui->verticalSlider->value();
       }
       break;
     case FRONTAL_SAGITTAL_AXIAL:
         if(View ==0){
             sliderPosIdxZ = ui->verticalSlider->value();
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = curPosY;
+            sliderPosIdxX = curPosX;
         }else if(View ==1){
             sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = ui->verticalSlider->value();
+            sliderPosIdxX = curPosX;
         } else if(View==2){
             sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = curPosY;
+            sliderPosIdxX = ui->verticalSlider->value();
         }
       break;
     case SAGITTAL_AXIAL_FRONTAL:
         if(View ==0){
             sliderPosIdxZ = ui->verticalSlider->value();
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = curPosY;
+            sliderPosIdxX = curPosX;
         }else if(View ==1){
             sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = ui->verticalSlider->value();
+            sliderPosIdxX = curPosX;
         } else if(View==2){
             sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = curPosY;
+            sliderPosIdxX = ui->verticalSlider->value();
         }
       break;
     default:
         if(View ==0){
             sliderPosIdxZ = ui->verticalSlider->value();
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = curPosY;
+            sliderPosIdxX = curPosX;
         }else if(View ==1){
             sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = ui->verticalSlider->value();//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = curPosX;//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = ui->verticalSlider->value();
+            sliderPosIdxX = curPosX;
         } else if(View==2){
             sliderPosIdxZ = curPosZ;
-            sliderPosIdxY = curPosY;//this->ui.sliderPosDisp2->value();
-            sliderPosIdxX = ui->verticalSlider->value();//this->ui.sliderPosDisp3->value();
+            sliderPosIdxY = curPosY;
+            sliderPosIdxX = ui->verticalSlider->value();
         }
       break;
     }
-
-    //auto imgSize = m_spFixedImg->GetBufferedRegion().GetSize(); // 1016x1016 x z
     auto imgOrigin = m_spRawFixedImg->GetOrigin();
     auto imgSpacing = m_spRawFixedImg->GetSpacing();
 
@@ -1523,8 +1193,7 @@ void Scui::SLT_DrawReconImageInSlices(){
     }};
 
     const auto refIdx = 3 - m_enViewArrangeRaw;
-    // In Andreases code this checkbox was checked (checkBoxDrawCrosshair)
-    if (false){//this->ui.checkBoxDrawCrosshair->isChecked()) {
+    if (false){// False, because we don't want yellow lines on the images (from checkBoxDrawCrosshair)
       m_YKDispRaw[refIdx % 3].m_bDrawCrosshair = true;
       m_YKDispRaw[(refIdx + 1) % 3].m_bDrawCrosshair = true;
       m_YKDispRaw[(refIdx + 2) % 3].m_bDrawCrosshair = true;
@@ -1578,7 +1247,7 @@ void Scui::SLT_DrawReconImageInSlices(){
       this->m_cbctrecon->Draw2DFrom3DDouble(
           m_spRawFixedImg, m_spRawMovingImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgRawFixed[2],
           m_YKImgRawMoving[2]);
-      if (false){//m_cbctregistration->dose_loaded) {
+      if (false){ //False, because we don't want to display dose on the left image
         this->m_cbctrecon->Draw2DFrom3DDouble(
             m_spFixedDose, m_spMovingDose, PLANE_AXIAL, curPhysPos[0],
             m_DoseImgFixed[0], m_DoseImgMoving[0]);
@@ -1599,7 +1268,7 @@ void Scui::SLT_DrawReconImageInSlices(){
       this->m_cbctrecon->Draw2DFrom3DDouble(
           m_spRawFixedImg, m_spRawFixedImg, PLANE_SAGITTAL, curPhysPos[2], m_YKImgRawFixed[2],
           m_YKImgRawMoving[2]);
-      if (false){//m_cbctregistration->dose_loaded) {
+      if (false){//False, because we don't want to display dose on the left image
         this->m_cbctrecon->Draw2DFrom3DDouble(
             m_spFixedDose, m_spFixedDose, PLANE_AXIAL, curPhysPos[0],
             m_DoseImgFixed[0], m_DoseImgMoving[0]);
@@ -1617,35 +1286,19 @@ void Scui::SLT_DrawReconImageInSlices(){
     strPos1.sprintf("%3.1f", curPhysPos[0]);
     strPos2.sprintf("%3.1f", curPhysPos[1]);
     strPos3.sprintf("%3.1f", curPhysPos[2]);
-    // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
-    /*
-    this->ui.lineEditCurPosX->setText(strPos3);
-    this->ui.lineEditCurPosY->setText(strPos2);
-    this->ui.lineEditCurPosZ->setText(strPos1);
-    */
+
     ////Update Origin text box
     auto imgOriginFixed = m_spRawFixedImg->GetOrigin();
     QString strOriFixed;
     strOriFixed.sprintf("%3.4f, %3.4f, %3.4f", imgOriginFixed[0], imgOriginFixed[1], imgOriginFixed[2]);
-    // In Andreases code he set the text on the ui. Therefore we outcomment this (lineEditOriginFixed)
-    //this->ui.lineEditOriginFixed->setText(strOriFixed);
 
     if (m_spRawMovingImg != nullptr) {
       const auto imgOriginMoving = m_spRawMovingImg->GetOrigin();
       QString strOriMoving;
       strOriMoving.sprintf("%3.4f, %3.4f, %3.4f", imgOriginMoving[0],
                            imgOriginMoving[1], imgOriginMoving[2]);
-      // In Andreases code he sets these strings, but we don't. Therefore we outcomment them.
-      //this->ui.lineEditOriginMoving->setText(strOriMoving);
     }
-    // In Andreases code he have 3 labels on the registration ui, but we only have one. Therefor the below has been changed.
-    /*
-    auto arr_wnd = std::array<qyklabel *, 3>{{this->ui.labelOverlapWnd1,
-                                              this->ui.labelOverlapWnd2,
-                                              this->ui.labelOverlapWnd3}};
-                                             */
     auto wnd = this->ui->labelImageRaw;
-
 
     if (m_cbctregistration->cur_voi != nullptr) {
       const auto p_cur_voi = m_cbctregistration->cur_voi.get();
@@ -1685,17 +1338,14 @@ void Scui::SLT_DrawReconImageInSlices(){
     }
 
     // Constitute m_YKDisp from Fixed and Moving
-    // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-    if (true){//this->ui.checkBoxDrawSplit->isChecked()) {
+    if (true){// True, because we want to split (from checkBoxDrawSplit)
       for (auto i = 0; i < 3; i++) {
         auto idxAdd = m_enViewArrangeRaw; // m_iViewArrange = 0,1,2
         if (idxAdd + i >= 3) {
           idxAdd = idxAdd - 3;
         }
-
         m_YKDispRaw[i].SetSpacing(m_YKImgRawFixed[i + idxAdd].m_fSpacingX,
                                m_YKImgRawFixed[i + idxAdd].m_fSpacingY);
-
         m_YKDispRaw[i].SetSplitOption(PRI_LEFT_TOP);
         if (!m_YKDispRaw[i].ConstituteFromTwo(m_YKImgRawFixed[i + idxAdd],
                                            m_YKImgRawMoving[i + idxAdd])) {
@@ -1714,18 +1364,15 @@ void Scui::SLT_DrawReconImageInSlices(){
     }
 
     // For dose overlay
-    if (false){//m_cbctregistration->dose_loaded) {
-        // In Andreases code this checkbox was checked, so we replace this with true (checkBoxDrawSplit)
-      if (false){//this->ui.checkBoxDrawSplit->isChecked()) {
+    if (false){//False, because we doesnøt want to display dose on the left image
+      if (false){//False (from checkBoxDrawSplit)
         for (auto i = 0; i < 3; i++) {
           auto idxAdd = m_enViewArrangeRaw; // m_iViewArrange = 0,1,2
           if (idxAdd + i >= 3) {
             idxAdd = idxAdd - 3;
           }
-
           m_AGDisp_Overlay[i].SetSpacing(m_DoseImgFixed[i + idxAdd].m_fSpacingX,
                                          m_DoseImgFixed[i + idxAdd].m_fSpacingY);
-
           m_AGDisp_Overlay[i].SetSplitOption(PRI_LEFT_TOP);
           if (!m_AGDisp_Overlay[i].ConstituteFromTwo(
                   m_DoseImgFixed[i + idxAdd], m_DoseImgMoving[i + idxAdd])) {
@@ -1743,20 +1390,14 @@ void Scui::SLT_DrawReconImageInSlices(){
         }
       }
     }
-    // In Andreases code this is set to 2000 (sliderFixedW)
-    const auto sliderW1 = 2000;//this->ui.sliderFixedW->value(); //Hardcoded value
-    // In Andreases code this is set to 2000 (sliderMovingW)
-    const auto sliderW2 = 2000;//this->ui.sliderMovingW->value(); //Hardcoded value
-    // In Andreases code this is set to 1024 (sliderFixedL)
-    const auto sliderL1 = 1024;//this->ui.sliderFixedL->value(); //Hardcoded value
-    // In Andreases code this is set to 1024 (sliderMovingL)
-    const auto sliderL2 = 1024;//this->ui.sliderMovingL->value(); //Hardcoded value
+    const auto sliderW1 = 2000;//Hardcoded value (from sliderFixedW)
+    const auto sliderW2 = 2000;//Hardcoded value (from sliderMovingW)
+    const auto sliderL1 = 1024;//Hardcoded value (from sliderFixedL)
+    const auto sliderL2 = 1024;//Hardcoded value (from sliderMovingL)
 
     m_YKDispRaw[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     m_YKDispRaw[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
     m_YKDispRaw[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-
-    // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
 
     if(View ==0){
         this->ui->labelImageRaw->SetBaseImage(&m_YKDispRaw[0]);
@@ -1766,18 +1407,12 @@ void Scui::SLT_DrawReconImageInSlices(){
         this->ui->labelImageRaw->SetBaseImage(&m_YKDispRaw[2]);
     }
 
-    /*
-    this->ui.labelOverlapWnd2->SetBaseImage(&m_YKDisp[1]);
-    this->ui.labelOverlapWnd3->SetBaseImage(&m_YKDisp[2]);
-    */
-
     // here gPMC results could be checked for and displayed, possibly with
     // modification to the qyklabel class /AGA 02/08/2017
-    if (false){//m_cbctregistration->dose_loaded) {
+    if (false){ //False, because we don't want to display dose on the left image
       m_AGDisp_Overlay[0].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
       m_AGDisp_Overlay[1].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
       m_AGDisp_Overlay[2].FillPixMapDual(sliderL1, sliderL2, sliderW1, sliderW2);
-      // In Andreases code he plots this on the registration ui, but we want to plot this on our ui
 
       if(View==0){
           this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[0]);
@@ -1786,18 +1421,8 @@ void Scui::SLT_DrawReconImageInSlices(){
       }else if(View ==2){
           this->ui->labelImageRaw->SetOverlayImage(&m_AGDisp_Overlay[2]);
       }
-
-      /*
-      this->ui.labelOverlapWnd2->SetOverlayImage(&m_AGDisp_Overlay[1]);
-      this->ui.labelOverlapWnd3->SetOverlayImage(&m_AGDisp_Overlay[2]);
-      */
     }
-    // In Andreases code he plots this on the registration ui, but we only have one window
     this->ui->labelImageRaw->update();
-    /*
-    this->ui.labelOverlapWnd2->update();
-    this->ui.labelOverlapWnd3->update();
-    */
 }
 
 

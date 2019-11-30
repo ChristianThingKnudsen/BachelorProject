@@ -64,7 +64,7 @@ public slots:
     void SLT_OpenInfo();
     void SLT_OpenAdvancedMode();
     void SLT_Exit();
-    void SLT_PreProcessCT();
+    //void SLT_PreProcessCT();
     void SLT_IncreaseSliderValue();
     void SLT_DecreaseSliderValue();
     void SLT_StartLoadingThread();

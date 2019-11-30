@@ -33,8 +33,7 @@ void ScatterCorrectingThread::run(){
 }
 
 void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() { // Method is only needed in this class for testing reasons
-  //Hardcoded value
-  auto filePath = m_parent->StructurePath;//QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan\\RN.1.2.246.352.71.5.361940808526.11351.20190611075823.dcm");
+  auto filePath = m_parent->StructurePath;
 
   if (filePath.length() < 1) {
     return;
@@ -57,8 +56,6 @@ void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() { // Method is only 
       std::cerr << "No moving image available for isocenter move\n";
     return;
   }
-
-  //emit Signal_ImageManualMoveOneShot(static_cast<float>(planIso.x),static_cast<float>(planIso.y),static_cast<float>(planIso.z));
   m_parent->ImageManualMoveOneShot(static_cast<float>(planIso.x),static_cast<float>(planIso.y),static_cast<float>(planIso.z));
 }
 
@@ -71,10 +68,6 @@ void ScatterCorrectingThread::SLT_ConfirmManualRegistration() {
   if (p_parent->m_spRefCTImg == nullptr ||
       p_parent->m_spManualRigidCT == nullptr) {
     return;
-  }
-
-  if (false){//this->ui.checkBoxKeyMoving->isChecked()) {
-    SLT_KeyMoving(false); // uncheck macro
   }
 
   // Apply post processing for raw CBCT image and generate
@@ -95,17 +88,16 @@ void ScatterCorrectingThread::SLT_ConfirmManualRegistration() {
   m_cbctregistration->m_pParent->m_structures
       ->ApplyVectorTransform_InPlace<PLAN_CT>(trn_vec);
 
-  if (true){//this->ui.checkBoxCropBkgroundCT->isChecked()) {
+  if (true){// True because we want to crop (from checkBoxCropBkgroundCT)
     auto structures =
         m_cbctregistration->m_pParent->m_structures->get_ss(RIGID_CT);
 
     // RIGID_CT structs should be created above
-    const auto voi_name = QString("BODY");//this->ui.comboBox_VOItoCropBy->currentText();
+    const auto voi_name = QString("BODY");// Crop by using the body structure (from comboBox_VOItoCropBy)
     if (structures != nullptr) {
       const auto voi = structures->get_roi_ref_by_name(voi_name.toStdString());
       OpenCL_crop_by_struct_InPlace(p_parent->m_spRawReconImg, voi);
     }
-
     auto update_message = QString("CBCT cropped outside of ") + voi_name;
   }
 
@@ -123,11 +115,8 @@ void ScatterCorrectingThread::SLT_ConfirmManualRegistration() {
   fout.close();
   std::cout << "Writing manual registration transform info is done."
             << std::endl;
-  //this->ui.pushButtonConfirmManualRegi->setDisabled(true);
 }
 
-
-// External method implemented from DlgRegistration
 void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto registration
 {
   // 1) Save current image files
@@ -144,10 +133,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
       this->m_cbctrecon->m_spManualRigidCT == nullptr) {
     return;
   }
- // In Andreases code this was not checked so we make it false (checkBoxKeyMoving) This is moving the pictures with the keyboard
-  if (false){// this->ui.checkBoxKeyMoving->isChecked()) {
-    SLT_KeyMoving(false);
-  }
+
   /*- Make a synthetic std::vector field according to the translation
         plastimatch synth-vf --fixed [msk_skin.mha] --output
   [xf_manual_trans.mha] --xf-trans "[origin diff (raw - regi)]" plastimatch
@@ -190,10 +176,9 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
   writer1->Update();
   writer2->Update();
   // In Andreases code this was checked so we make it true (checkBoxUseROIForRigid)
-  if (true){//this->ui.checkBoxUseROIForRigid->isChecked()) {
+  if (true){// True (see checkBoxUseROIForRigid)
     std::cout << "Creating a ROI mask for Rigid registration " << std::endl;
-    // In Andreases code the value was set (lineEditFOVPos)
-    auto strFOVGeom = QString("0.0,0.0,190.0"); //this->ui.lineEditFOVPos->text(); //Hardcoded value
+    auto strFOVGeom = QString("0.0,0.0,190.0");//Hardcoded value (from lineEditFOVPos)
 
     auto strListFOV = strFOVGeom.split(",");
     if (strListFOV.count() == 3) {
@@ -205,7 +190,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
 
       // Image Pointer here
       UShortImageType::Pointer spRoiMask;
-      AllocateByRef<UShortImageType, UShortImageType>(m_parent->m_spFixedImg, spRoiMask); //m_cbctrecon->m_spRawReconImg
+      AllocateByRef<UShortImageType, UShortImageType>(m_parent->m_spFixedImg, spRoiMask);
       this->m_cbctrecon->GenerateCylinderMask(spRoiMask, FOV_DcmPosX,
                                                    FOV_DcmPosY, FOV_Radius);
 
@@ -235,24 +220,21 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
 
   const auto strDummy = QString("");
 
-  // In Andreases code this was not checked so we make it false (radioButton_mse)
   auto mse = true;
   if(m_parent->RegionChosen==0){
       mse = true;
   }else{
       mse = false;
   }
-  //this->ui.radioButton_mse->isChecked(); //Hardcoded value
-  // In Andreases code this was checked but we do not use cuda, so we make it false (radioButton_UseCUDA)
+
   auto cuda = false;
   if(this->m_parent->m_UseCUDA){
-      cuda = true;//m_pParent->ui.radioButton_UseCUDA->isChecked(); //Hardcoded value
+      cuda = true;
   }
   if(this->m_parent->m_UseOpenCL){
-      cuda = false;//m_pParent->ui.radioButton_UseCUDA->isChecked(); //Hardcoded value
+      cuda = false;
   }
-  // In Andreases code this was initialized (lineEditGradOption)
-  auto GradOptionStr = QString("0.7,0.7,0.7");//this->ui.lineEditGradOption->text(); //Hardcoded value
+  auto GradOptionStr = QString("0.7,0.7,0.7");//Hardcoded value (from lineEditGradOption)
   // For Cropped patients, FOV mask is applied.
 
   m_cbctregistration->GenPlastiRegisterCommandFile(
@@ -293,17 +275,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
 
   m_cbctregistration->m_strPathXFAutoRigid = filePathXform; // for further use
   emit Signal_UpdateProgressBarSC(30);
-  SLT_DoRegistrationDeform(); // Is added by us. Defrom registration
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//Is called by SLT_DoRegistrationRegid
-void ScatterCorrectingThread::SLT_KeyMoving(const bool bChecked) // Key Moving check box
-{
-  // In Andreases code he uses checkboxes therefore this is outcommented (radioButton_mse)
-  //this->ui.lineEditMovingResol->setDisabled(bChecked);
-  if (bChecked) {
-    //SelectComboExternal(1,REGISTER_MANUAL_RIGID); // should be
-  }
+  SLT_DoRegistrationDeform();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_MovingImageSelected
@@ -398,18 +370,13 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
   window->m_bDrawPoints = true;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// In Andreases code this method is called when deform registraion button is pushed. Find out where to implement this!
-
 void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   if (m_cbctrecon->m_spRawReconImg == nullptr || m_cbctrecon->m_spRefCTImg == nullptr) {
     return;
   }
-  //This code is added by us and is found from the callback from the comboboxes.
   emit Signal_FixedImageSelected(QString("RAW_CBCT"));
   emit Signal_MovingImageSelected(QString("AUTO_RIGID_CT"));
-
-  // In Andreases code this was checked, so we replace this with true (checkBoxCropBkgroundCT)
-  const auto bPrepareMaskOnly = !true;//this->ui.checkBoxCropBkgroundCT->isChecked();
+  const auto bPrepareMaskOnly = !true;// True because we want to crop (from checkBoxCropBkgroundCT)
 
   std::cout << "0: DoRegistrationDeform: writing temporary files" << std::endl;
 
@@ -448,11 +415,10 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   writer2->Update();
   emit Signal_UpdateProgressBarSC(40);
   // Create a mask image based on the fixed sp image
-  // In Andreases code this was checked, so we replace this with true (checkBoxUseROIForDIR)
-  if (true){//this->ui.checkBoxUseROIForDIR->isChecked()) {
+  if (true){//True (see checkBoxUseROIForDIR)
     std::cout << "Creating a ROI mask for DIR.. " << std::endl;
 
-    auto strFOVGeom = QString("0.0,0.0,190.0"); //this->ui.lineEditFOVPos->text(); //Hardcoded value
+    auto strFOVGeom = QString("0.0,0.0,190.0");//Hardcoded value (from lineEditFOVPos)
 
     auto strListFOV = strFOVGeom.split(",");
     if (strListFOV.count() == 3) {
@@ -464,7 +430,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
 
       // Image Pointer here
       UShortImageType::Pointer spRoiMask;
-      AllocateByRef<UShortImageType, UShortImageType>(m_parent->m_spFixedImg, spRoiMask); //m_cbctrecon->m_spRawReconImg
+      AllocateByRef<UShortImageType, UShortImageType>(m_parent->m_spFixedImg, spRoiMask);
       m_cbctregistration->m_pParent->GenerateCylinderMask(
           spRoiMask, FOV_DcmPosX, FOV_DcmPosY, FOV_Radius);
 
@@ -481,7 +447,6 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   std::cout << "1: DoRegistrationDeform: CBCT pre-processing before deformable "
                "registration"
             << std::endl;
-  // std::cout << "Air region and bubble will be removed" << std::endl;
 
   QFileInfo info1(m_cbctregistration->m_strPathCTSkin_autoRegi);
   QFileInfo info2(m_cbctregistration->m_strPathXFAutoRigid);
@@ -494,12 +459,11 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
     filePathFixed_proc = m_cbctregistration->m_strPathPlastimatch + "/" +
                          "fixed_deform_proc.mha";
     // skin removal and bubble filling : output file = filePathFixed_proc
-    // In Andreases code this was not checked, so we replace this with false (checkBoxFillBubbleCT)
-    const auto bBubbleRemoval = false;//this->ui.checkBoxFillBubbleCT->isChecked();
-    const auto skinExp = 8.0;//this->ui.lineEditCBCTSkinCropBfDIR->text().toDouble(); //Hardcoded value
+    const auto bBubbleRemoval = false;//False (see checkBoxFillBubbleCT)
+    const auto skinExp = 8.0;//Hardcoded value (from lineEditCBCTSkinCropBfDIR)
 
-    const auto iBubThresholdUshort = 500;//this->ui.spinBoxBkDetectCT->value(); // 500 //Hardcoded value
-    const auto iBubFillUshort = 1000;//this->ui.spinBoxBubFillCT->value(); // 1000 //Hardcoded value
+    const auto iBubThresholdUshort = 500;//Hardcoded value (from spinBoxBkDetectCT)
+    const auto iBubFillUshort = 1000;//Hardcoded value (from spinBoxBubFillCT)
 
     m_cbctregistration->ProcessCBCT_beforeDeformRegi(
         filePathFixed, m_cbctregistration->m_strPathCTSkin_autoRegi,
@@ -516,19 +480,18 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
             << std::endl;
   emit Signal_UpdateProgressBarSC(50);
   const auto fnCmdRegisterRigid = QString("cmd_register_deform.txt");
-  // QString fnCmdRegisterDeform = "cmd_register_deform.txt";
   auto pathCmdRegister =
       m_cbctregistration->m_strPathPlastimatch + "/" + fnCmdRegisterRigid;
 
-  auto strDeformableStage1 = QString("2,2,1,30,0.00001,0.005,20");//this->ui.lineEditArgument1->text(); // original param: 7, add output path //Hardcoded value
-  auto strDeformableStage2 = QString("");//this->ui.lineEditArgument2->text();
-  auto strDeformableStage3 = QString("");//this->ui.lineEditArgument3->text();
+  auto strDeformableStage1 = QString("2,2,1,30,0.00001,0.005,20");//Hardcoded value (from lineEditArgument1), original param: 7, add output path
+  auto strDeformableStage2 = QString("");//See lineEditArgument2
+  auto strDeformableStage3 = QString("");//See lineEditArgument3
 
   strDeformableStage1.append(", ").append(filePathOutputStage1);
   strDeformableStage2.append(", ").append(filePathOutputStage2);
   strDeformableStage3.append(", ").append(filePathOutputStage3);
 
-  auto mse = true;//this->ui.radioButton_mse->isChecked();//Hardcoded value
+  auto mse = true;
   if(m_parent->RegionChosen == 0){
       mse = true;
   }else{
@@ -536,14 +499,14 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   }
   auto cuda = false;
   if(this->m_parent->m_UseCUDA){
-       cuda = true;//m_pParent->ui.radioButton_UseCUDA->isChecked(); //Hardcoded value
+       cuda = true;
   }
   if(this->m_parent->m_UseOpenCL){
-       cuda = false;//m_pParent->ui.radioButton_UseCUDA->isChecked(); //Hardcoded value
+       cuda = false;
   }
-  auto GradOptionStr = QString("0.7,0.7,0.7");//this->ui.lineEditGradOption->text(); //Hardcoded value
+  auto GradOptionStr = QString("0.7,0.7,0.7");//Hardcoded value (from lineEditGradOption)
   // For Cropped patients, FOV mask is applied.
-  if (true){//this->ui.checkBoxUseROIForDIR->isChecked()) {
+  if (true){//See checkBoxUseROIForDIR
     m_cbctregistration->GenPlastiRegisterCommandFile(
         pathCmdRegister, filePathFixed_proc, filePathMoving, filePathOutput,
         filePathXform, PLAST_BSPLINE, strDeformableStage1, strDeformableStage2,
@@ -605,7 +568,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
 
   QFileInfo tmpBubFileInfo(m_cbctregistration->m_strPathMskCBCTBubble);
 
-  if (false && tmpBubFileInfo.exists()) {// this->ui.checkBoxFillBubbleCT->isChecked() && tmpBubFileInfo.exists()) {
+  if (false && tmpBubFileInfo.exists()) {//False (see checkBoxFillBubbleCT)
     std::cout << "6B: final puncturing according to the CBCT bubble"
               << std::endl;
 
@@ -617,7 +580,6 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
     auto mask_fn = m_cbctregistration->m_strPathMskCBCTBubble;
     auto output_fn = strPathDeformCTFinal;
 
-    // int iBubblePunctureVal = this->ui.lineEditBkFillCT->text().toInt(); //0 =
     // soft tissue
     const auto iBubblePunctureVal = 0; // 0 = air. deformed CT is now already a USHORT image
     const auto mask_value = iBubblePunctureVal;
@@ -653,13 +615,11 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   SLT_IntensityNormCBCT();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// In Andreases code this method is called when norm CBCT button is pushed. Find out where to implement this!
 void ScatterCorrectingThread::SLT_IntensityNormCBCT() {
-  //This code is added by us and is found from the callback from the comboboxes.
   emit Signal_FixedImageSelected(QString("RAW_CBCT"));
   emit Signal_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
   emit Signal_UpdateProgressBarSC(60);
-  const auto fROI_Radius = 30;//this->ui.lineEditNormRoiRadius->text().toFloat(); //Hardcoded value
+  const auto fROI_Radius = 30;//Hardcoded value (from lineEditNormRoiRadius)
 
   std::cout << "Intensity is being analyzed...Please wait." << std::endl;
 
@@ -691,10 +651,9 @@ void ScatterCorrectingThread::SLT_IntensityNormCBCT() {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() {
-  //This code is adde by us and is found from the callback from the comboboxes.
   emit Signal_FixedImageSelected(QString("COR_CBCT"));
   emit Signal_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
-  const auto fROI_Radius = 30;//this->ui.lineEditNormRoiRadius->text().toFloat(); //Hardcoded value
+  const auto fROI_Radius = 30;//Hardcoded value (from lineEditNormRoiRadius)
   std::cout << "Intensity is being analyzed...Please wait." << std::endl;
 
   float intensitySDFix = 0.0;
@@ -736,60 +695,49 @@ void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() {
 void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
   emit Signal_UpdateProgressBarSC(70);
   if ((this->m_cbctrecon->m_spRefCTImg == nullptr &&
-       m_parent->m_spMovingImg == nullptr) ||//m_dlgRegistration->m_spMovingImg == nullptr) ||
-      m_cbctrecon->m_spRawReconImg ==nullptr){//m_dlgRegistration->m_spFixedImg == nullptr) {
+       m_parent->m_spMovingImg == nullptr) ||
+      m_cbctrecon->m_spRawReconImg ==nullptr){
     std::cerr
         << "Error!: No ref or no fixed image for forward projection is found."
         << "\n";
     return;
   }
 
-  const auto bExportProj_Fwd = false;// this->ui.checkBox_ExportFwd->isChecked();
-  const auto bExportProj_Scat = false;//this->ui.checkBox_ExportScat->isChecked();
-  const auto bExportProj_Cor = false;//this->ui.checkBox_ExportCor->isChecked();
+  const auto bExportProj_Fwd = false;//False (see checkBox_ExportFwd)
+  const auto bExportProj_Scat = false;//False (see checkBox_ExportScat)
+  const auto bExportProj_Cor = false;//False (see checkBox_ExportCor)
 
-  // ForwardProjection(m_spRefCTImg, m_spCustomGeometry, m_spProjImgCT3D,
-  // false); //final moving image
-  /*
-  if (bExportProj_Fwd) {
-    this->m_cbctrecon->m_strPathPatientDir = QFileDialog::getExistingDirectory(
-        this, tr("Open Directory"), ".",
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-  }
-    */
-  // Overwrite the raw projections by re-projecting them from the potentially
-  // modified CBCT
   std::cerr << "Custom Geometry: \n";
   m_cbctrecon->m_spCustomGeometry->Print(std::cerr);
   auto spProjImg3DFloat = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-              m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
+              m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
               bExportProj_Fwd, false);
   if(this->m_parent->m_UseCUDA){
       spProjImg3DFloat =
           this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-              m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
-              bExportProj_Fwd, true);//this->ui.radioButton_UseCUDA->isChecked());
+              m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
+              bExportProj_Fwd, true);
   }
   if(this->m_parent->m_UseOpenCL){
       spProjImg3DFloat =
           this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-              m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry, //m_dlgRegistration->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
-              bExportProj_Fwd, false);//this->ui.radioButton_UseCUDA->isChecked());
+              m_parent->m_spFixedImg, this->m_cbctrecon->m_spCustomGeometry,
+              bExportProj_Fwd, false);
   }
   emit Signal_UpdateProgressBarSC(80);
   FloatImageType::Pointer p_projimg;
-  if (m_parent->m_spMovingImg != nullptr){//m_dlgRegistration->m_spMovingImg != nullptr) {
+  if (m_parent->m_spMovingImg != nullptr){
       if(this->m_parent->m_UseCUDA){
           p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-              m_parent->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,//m_dlgRegistration->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
+              m_parent->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
               bExportProj_Fwd,
-              true);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
+              true);
       }
       if(this->m_parent->m_UseOpenCL){
           p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
-              m_parent->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,//m_dlgRegistration->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
+              m_parent->m_spMovingImg, this->m_cbctrecon->m_spCustomGeometry,
               bExportProj_Fwd,
-              false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
+              false);
       }
 
   } else if (this->m_cbctrecon->m_spRefCTImg != nullptr) {
@@ -800,13 +748,13 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
         p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
             this->m_cbctrecon->m_spRefCTImg, this->m_cbctrecon->m_spCustomGeometry,
             bExportProj_Fwd,
-            true);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
+            true); // final moving image
     }
     if(this->m_parent->m_UseOpenCL){
         p_projimg = this->m_cbctrecon->ForwardProjection_master<UShortImageType>(
             this->m_cbctrecon->m_spRefCTImg, this->m_cbctrecon->m_spCustomGeometry,
             bExportProj_Fwd,
-            false);//this->ui.radioButton_UseCUDA->isChecked()); // final moving image
+            false); // final moving image
     }
   }
 
@@ -821,15 +769,14 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
             << p_projimg->GetSpacing()[1] << ", " << p_projimg->GetSpacing()[2]
             << std::endl;
 
-  // double scaResam = this->ui.lineEdit_scaResam->text().toDouble();
-  const auto scaMedian = 12.0;//this->ui.lineEdit_scaMedian->text().toDouble(); //Hardcoded value
-  const auto scaGaussian = 0.05;//this->ui.lineEdit_scaGaussian->text().toDouble();//Hardcoded value
+  const auto scaMedian = 12.0;//Hardcoded value (from lineEdit_scaMedian)
+  const auto scaGaussian = 0.05;//Hardcoded value (from lineEdit_scaGaussian)
   std::cout << "Generating scatter map is ongoing..." << std::endl;
 
   this->m_cbctrecon->GenScatterMap_PriorCT(
       spProjImg3DFloat, p_projimg, this->m_cbctrecon->m_spProjImgScat3D,
       scaMedian, scaGaussian,
-      bExportProj_Scat); // void GenScatterMap2D_PriorCT()
+      bExportProj_Scat);
 
   std::cout << "To account for the mAs values, the intensity scale factor of "
             << GetRawIntensityScaleFactor(this->m_cbctrecon->m_strRef_mAs,
@@ -837,17 +784,12 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
             << "was multiplied during scatter correction to avoid negative "
                "scatter"
             << std::endl;
-  // In Andreases code he sets text on the ui but we don't. Therefoe this is outcommented
-  /*
-  this->ui.lineEdit_CurmAs->setText(this->m_cbctrecon->m_strCur_mAs);
-  this->ui.lineEdit_RefmAs->setText(this->m_cbctrecon->m_strRef_mAs);
-  */
 
   p_projimg->Initialize(); // memory saving
 
   std::cout << "Scatter correction is in progress..." << std::endl;
 
-  const auto postScatMedianSize = 3;//this->ui.lineEdit_scaPostMedian->text().toInt(); //Hardcoded value
+  const auto postScatMedianSize = 3;//Hardcoded value (from lineEdit_scaPostMedian)
 
   this->m_cbctrecon->ScatterCorr_PrioriCT(spProjImg3DFloat,
                                           this->m_cbctrecon->m_spProjImgScat3D,
@@ -858,20 +800,7 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
   emit Signal_UpdateProgressBarSC(90);
   std::cout << "AfterCorrectionMacro is ongoing..." << std::endl;
 
-  // In Andreases code he sets elements on his ui. therefore this is outcommented:
-  // Update UI
-  /*
-  this->ui.pushButton_DoRecon->setEnabled(true);
-  this->ui.spinBoxImgIdx->setMinimum(0);
-  */
-  const auto iSizeZ = this->m_cbctrecon->m_spProjImg3DFloat->GetBufferedRegion().GetSize()[2];
-  /*
-  this->ui.spinBoxImgIdx->setMaximum(iSizeZ - 1);
-  this->ui.spinBoxImgIdx->setValue(0);
-  */
   this->m_cbctrecon->SetMaxAndMinValueOfProjectionImage(); // update min max projection image
-  SLT_InitializeGraphLim();
-  //SLT_DrawProjImages(); // Update Table is called
 
   auto fdk_options = getFDKoptions();
   if(this->m_parent->m_UseCUDA){
@@ -880,12 +809,6 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
   if(this->m_parent->m_UseOpenCL){
       this->m_cbctrecon->AfterScatCorrectionMacro(false,true,false,fdk_options);
   }
-
-              /*
-this->ui.radioButton_UseCUDA->isChecked(),
-      this->ui.radioButton_UseOpenCL->isChecked(),
-      this->ui.checkBox_ExportVolDICOM->isChecked(), fdk_options);
-  */
 
   // Skin removal (using CT contour w/ big margin)
   std::cout
@@ -904,16 +827,9 @@ this->ui.radioButton_UseCUDA->isChecked(),
   // m_pDlgRegistration->ThermoMaskRemovingCBCT(m_spRawReconImg,
   // m_spScatCorrReconImg, threshold_HU);
 
-  //m_dlgRegistration->UpdateListOfComboBox(0); // combo selection signalis
-                                              // called
-  //m_dlgRegistration->UpdateListOfComboBox(1);
-
   emit Signal_UpdateLabelCor(QString("Cor CBCT"));
   emit Signal_FixedImageSelected("RAW_CBCT");
   emit Signal_MovingImageSelected("COR_CBCT");
-  // m_dlgRegistration->SLT_DoLowerMaskIntensity(); // it will check the checkbutton.
-
-  //SLT_DrawProjImages(); out commented by us
 
   std::cout << "Updating ReconImage..";
   auto updated_text = QString("Scatter corrected CBCT");
@@ -924,119 +840,27 @@ this->ui.radioButton_UseCUDA->isChecked(),
   SLT_IntensityNormCBCT_COR_CBCT();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// In Andreases code he goes back to the registration UI. selects COR_CBCT and DEFORMED and then he clicks pass.
-// Automatise that
-
-// Is implemented in SLT_LoadSelectedProjFiles()
-void ScatterCorrectingThread::SLT_InitializeGraphLim() const {
-  // In Andreases code this was checked so we keep this one (radioButton_graph_proj)
-  // Set Max Min at graph
-  if (true){//this->ui.radioButton_graph_proj->isChecked()) {
-    if (this->m_cbctrecon->m_iImgCnt > 0) // if indep raw his images are loaded
-    {
-      const auto horLen = this->m_cbctrecon->m_dspYKImgProj->m_iWidth;
-      // int verLen = m_dspYKImgProj->m_iHeight;
-
-      // set edit maxium min
-      const auto strXMin = QString("%1").arg(horLen);
-      //this->ui.lineEditXMin->setText("0");
-      //this->ui.lineEditXMax->setText(strXMin);
-
-      const auto strYMin =
-          QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMin, 0, 'f', 1);
-      const auto strYMax =
-          QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMax, 0, 'f', 1);
-
-      //this->ui.lineEditYMin->setText(strYMin);
-      //this->ui.lineEditYMax->setText(strYMax);
-    }
-
-    if (this->m_cbctrecon->m_spProjImg3DFloat == nullptr) {
-      return;
-    }
-
-    const auto horLen =
-        this->m_cbctrecon->m_spProjImg3DFloat->GetBufferedRegion().GetSize()[0];
-    // int verLen = m_spProjImg3DFloat->GetBufferedRegion().GetSize()[1];
-
-    // set edit maxium min
-    const auto strXMin = QString("%1").arg(horLen);
-    //this->ui.lineEditXMin->setText("0");
-    //this->ui.lineEditXMax->setText(strXMin);
-
-    const auto strYMin =
-        QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMin, 0, 'f', 1);
-    const auto strYMax =
-        QString("%1").arg(this->m_cbctrecon->m_fProjImgValueMax, 0, 'f', 1);
-
-    //this->ui.lineEditYMin->setText(strYMin);
-    //this->ui.lineEditYMax->setText(strYMax);
-
-    // In Andreases code this was not checked so we outcommet this one (radioButton_graph_recon)
-  } /*else if (this->ui.radioButton_graph_recon->isChecked()) {
-    if (this->m_cbctrecon->m_spCrntReconImg == nullptr) {
-      return;
-    }
-
-    const auto horLen =
-        this->m_cbctrecon->m_spCrntReconImg->GetBufferedRegion().GetSize()[0];
-    // int verLen = m_spCrntReconImg->GetBufferedRegion().GetSize()[1];
-
-    // set edit maxium min
-
-    const auto strXMax = QString("%1").arg(horLen);
-    this->ui.lineEditXMin->setText("0");
-    this->ui.lineEditXMax->setText(strXMax);
-
-    const auto strYMin = QString("%1").arg(0.0, 0, 'f', 1);
-    const auto strYMax = QString("%1").arg(2000.0, 0, 'f', 1);
-
-    this->ui.lineEditYMin->setText(strYMin);
-    this->ui.lineEditYMax->setText(strYMax);
-  }
-  */
-}
 FDK_options ScatterCorrectingThread::getFDKoptions() const {
     FDK_options fdk_options;
-    // In Andreases code this was initialized as 1.0
-    fdk_options.TruncCorFactor = 1.0;//this->ui.lineEdit_Ramp_TruncationCorrection->text().toDouble(); //Hardcoded value
-    // In Andreases code this was initialized as 0.5
-    fdk_options.HannCutX = 5.0;//this->ui.lineEdit_Ramp_HannCut->text().toDouble(); //Hardcoded value
-    // In Andreases code this was initialized as 0.5
-    fdk_options.HannCutY = 5.0;//this->ui.lineEdit_Ramp_HannCutY->text().toDouble(); //Hardcoded value
-    // In Andreases code this was initialized as 0.0
-    fdk_options.CosCut = 0.0;//this->ui.lineEdit_Ramp_CosineCut->text().toDouble(); //Hardcoded value
-    // In Andreases code this was initialized as 0.0
-    fdk_options.HammCut = 0.0;//this->ui.lineEdit_Ramp_Hamming->text().toDouble(); //Hardcoded value
-    // In Andreases code this was aldready checked so we replace with true (checkBox_UseDDF)
-    fdk_options.displacedDetectorFilter = true;//this->ui.checkBox_UseDDF->isChecked(); //Hardcoded value
-    // In Andreases code this was not checked so we replace with false (checkBox_UpdateAfterFiltering)
-    fdk_options.updateAfterDDF = false;//this->ui.checkBox_UpdateAfterFiltering->isChecked(); //Hardcoded value
-    // In Andreases code this was aldready checked so we replace with true (checkBox_UsePSSF)
-    fdk_options.ParkerShortScan = true;//this->ui.checkBox_UsePSSF->isChecked(); //Hardcoded value
-
-    // In Andreases code thesse three was initialized as 1
-    fdk_options.ct_spacing[0] = 1;//this->ui.lineEdit_outImgSp_AP->text().toDouble(); //Hardcoded value
-    fdk_options.ct_spacing[1] = 1;//this->ui.lineEdit_outImgSp_SI->text().toDouble(); //Hardcoded value
-    fdk_options.ct_spacing[2] = 1;//this->ui.lineEdit_outImgSp_LR->text().toDouble(); //Hardcoded value
-
-    // In Andreases code thesse three was initialized as 400
-    fdk_options.ct_size[0] = 400;//this->ui.lineEdit_outImgDim_AP->text().toInt(); //Hardcoded value
-    // In Andreases code thesse three was initialized as 200
-    fdk_options.ct_size[1] = 200;//this->ui.lineEdit_outImgDim_SI->text().toInt(); //Hardcoded value
-    // In Andreases code thesse three was initialized as 400
-    fdk_options.ct_size[2] = 400;//this->ui.lineEdit_outImgDim_LR->text().toInt(); //Hardcoded value
-
-    // In Andreases these three is set earlier in the code but the UI standard is implemented. Hope this works
-    fdk_options.medianRadius[0] = 0;//this->ui.lineEdit_PostMedSizeX->text().toInt(); // radius along x //Hardcoded value
-    fdk_options.medianRadius[1] = 0;//this->ui.lineEdit_PostMedSizeY->text().toInt(); // radius along y //Hardcoded value
-    fdk_options.medianRadius[2] = 1;//this->ui.lineEdit_PostMedSizeZ->text().toInt(); // radius along z //Hardcoded value
-
-    // In Andreases code this was aldready checked so we replace with true (checkBox_PostMedianOn)
-    fdk_options.medianFilter = true;//this->ui.checkBox_PostMedianOn->isChecked();//Hardcoded value
-
-    fdk_options.outputFilePath = QString("");// this->ui.lineEdit_OutputFilePath->text(); //Hardcoded value // In Andreases UI it says that this is optional
-
+    fdk_options.TruncCorFactor = 1.0;//Hardcoded value(from trail and error, see lineEdit_Ramp_TruncationCorrection)
+    fdk_options.HannCutX = 5.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_HannCut)
+    fdk_options.HannCutY = 5.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_HannCutY)
+    fdk_options.CosCut = 0.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_CosineCut)
+    fdk_options.HammCut = 0.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_Hamming)
+    fdk_options.displacedDetectorFilter = true;//Hardcoded value (from trail and error, see checkBox_UseDDF)
+    fdk_options.updateAfterDDF = false;//Hardcoded value (from trail and error, see checkBox_UpdateAfterFiltering)
+    fdk_options.ParkerShortScan = true;//Hardcoded value (from trail and error, see checkBox_UsePSSF)
+    fdk_options.ct_spacing[0] = 1;//Hardcoded value (from trail and error, see lineEdit_outImgSp_AP)
+    fdk_options.ct_spacing[1] = 1;//Hardcoded value (from trail and error, see lineEdit_outImgSp_SI)
+    fdk_options.ct_spacing[2] = 1;//Hardcoded value (from trail and error, see lineEdit_outImgSp_LR)
+    fdk_options.ct_size[0] = 400;//Hardcoded value (from trail and error, see lineEdit_outImgDim_AP)
+    fdk_options.ct_size[1] = 200;//Hardcoded value (from trail and error, see lineEdit_outImgDim_SI)
+    fdk_options.ct_size[2] = 400;//Hardcoded value (from trail and error, see lineEdit_outImgDim_LR)
+    fdk_options.medianRadius[0] = 0;//Hardcoded value, radius along x (from trail and error, see lineEdit_PostMedSizeX)
+    fdk_options.medianRadius[1] = 0;//Hardcoded value, radius along y (from trail and error, see lineEdit_PostMedSizeY)
+    fdk_options.medianRadius[2] = 1;//Hardcoded value, radius along z (from trail and error, see lineEdit_PostMedSizeZ)
+    fdk_options.medianFilter = true;//Hardcoded value (from trail and error, see checkBox_PostMedianOn)
+    fdk_options.outputFilePath = QString("");//Hardcoded value (from trail and error, see lineEdit_OutputFilePath)
     return fdk_options;
 }
 

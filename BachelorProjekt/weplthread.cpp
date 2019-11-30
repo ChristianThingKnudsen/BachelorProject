@@ -24,10 +24,10 @@ void WEPLThread::SLT_WEPLcalc(QString structure) {
 
   const auto voi_name = structure.toStdString();
 
-  const auto gantry_angle = 0;//this->ui.spinBox_GantryAngle->value(); //Hardcoded value
-  const auto couch_angle = 0;//this->ui.spinBox_CouchAngle->value(); //Hardcoded value
+  const auto gantry_angle = 0;//Hardcoded value (from spinBox_GantryAngle)
+  const auto couch_angle = 0;//Hardcoded value (from spinBox_CouchAngle)
 
-  const auto ct_type = get_ctType("COR_CBCT");//ui.comboBoxImgMoving->currentText());
+  const auto ct_type = get_ctType("COR_CBCT");// from (comboBoxImgMoving)
   const auto ss = m_cbctrecon->m_structures->get_ss(ct_type);
   m_cbctregistration->cur_voi = ss->get_roi_by_name(voi_name);
   emit Signal_UpdateProgressBarWEPL(60);
