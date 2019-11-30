@@ -226,6 +226,21 @@ QString get_dcm_uid(QString &dcm_path){ // Small method for extracting the DICOM
 return QString(seriesItr->c_str());
 }
 
+QString getStructureFile(QString path){
+    QDir directory(path);
+    QStringList images = directory.entryList(QStringList() << "*.dcm" << "*.DCM",QDir::Files);
+    foreach(QString filename, images) {
+    //do whatever you need to do
+    bool a = filename.contains(QString("RN"));
+            if(a==true){
+                std::cout << filename.toStdString() << std::endl;
+                return filename;
+            }
+    }
+    std::cout << "No structure file found" << std::endl;
+    return QString("");
+}
+
 void Scui::SLT_StartLoadingThread(){
     /*
     SLT_GetCBCTPath();
@@ -239,7 +254,13 @@ void Scui::SLT_StartLoadingThread(){
     ui->label_Id->setText("ID: "+dcm_uid_str); // Sets the ID based on the unique ID
     //m_cbctrecon->m_strDCMUID = dcm_uid_str; //Maybe incomment this later
     ui->btnLoadData->setEnabled(false);
-    lThread->start();
+    QString structureFilename = getStructureFile(CTPath);
+    StructurePath = CTPath + "\\" + structureFilename;
+    if(CBCTPath != QString("") && CTPath != QString("") && StructurePath != QString("")){
+        lThread->start();
+    }else{
+        std::cout << "An Error occured. Try restart the program" << std::endl;
+    }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_GetCBCTPath(){ // Opens file dialog for CBCT-projections

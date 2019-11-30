@@ -112,6 +112,7 @@ public:
     AG17RGBAImage *m_AGDisp_Overlay;
     QString CBCTPath = QString("");
     QString CTPath = QString("");
+    QString StructurePath = QString("");
     QString Structure = QString("");
     int View = 0;
     int RegionChosen = 0;

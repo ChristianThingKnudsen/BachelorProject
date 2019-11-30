@@ -34,7 +34,7 @@ void ScatterCorrectingThread::run(){
 
 void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() { // Method is only needed in this class for testing reasons
   //Hardcoded value
-  auto filePath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan\\RN.1.2.246.352.71.5.361940808526.11351.20190611075823.dcm");
+  auto filePath = m_parent->StructurePath;//QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan\\RN.1.2.246.352.71.5.361940808526.11351.20190611075823.dcm");
 
   if (filePath.length() < 1) {
     return;
