@@ -70,12 +70,6 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->btnLoadData->setIcon(ButtonLoad);
     ui->btnLoadData->setIconSize(QSize(20,20));//pixmap.rect().size();
 
-    // Icon for Info button
-    QPixmap pixmapInfo(Root+"\\pictures\\information.png");
-    QIcon ButtonInfo(pixmapInfo);
-    ui->btnInfo->setIcon(ButtonInfo);
-    ui->btnInfo->setIconSize(QSize(30,30));
-
     //Color for combobox // Maybe not used..
     QPalette p = ui->comboBox_region->palette();
     p.setColor(QPalette::Highlight, Qt::transparent);
@@ -130,6 +124,9 @@ Scui::Scui(QWidget *parent) // Constructor
     ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
     ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
     ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
+
+    ui->labelTitle1->setAlignment(Qt::AlignRight);
+    ui->labelTitle2->setAlignment(Qt::AlignLeft);
 }
 
 Scui::~Scui() // Destructor
@@ -224,6 +221,11 @@ void::Scui::SLT_RestartSCUI(){
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 }
+void::Scui::SLT_CallPhysicist(){
+    QMessageBox msgBox;
+    msgBox.setText("Physicist has been notified");
+    msgBox.exec();
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-----------------------------------------------------------------Loading methods ---------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -257,14 +259,15 @@ QString getStructureFile(QString path){ // Small method for finding the structur
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_StartLoadingThread(){
-    /*
+
     SLT_GetCBCTPath();
     SLT_GetCTPath();
-    */
+    /*
     // Only used for testing. Comment in the two upper methods
     CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
     CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
     //
+    */
     ui->btnLoadData->setEnabled(false);
     ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     auto dcm_uid_str = get_dcm_uid(CTPath); // Get the unique DICOM ID from the CT images

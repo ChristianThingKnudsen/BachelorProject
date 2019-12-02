@@ -88,6 +88,7 @@ public slots:
     void SLT_SliderValueChanged();
     void SLT_DrawReconImageInSlices();
     void SLT_RestartSCUI();
+    void SLT_CallPhysicist();
     void UpdateVOICombobox(const ctType ct_type) const;
 
 private:
