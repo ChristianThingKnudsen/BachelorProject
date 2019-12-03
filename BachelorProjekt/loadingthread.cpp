@@ -28,10 +28,10 @@ void LoadingThread::SLT_SetHisDir() // Initialize all image buffer
     return;
   }
 
-  //auto tmp_dcm_uid = this->m_cbctrecon->m_strDCMUID;
+  auto tmp_dcm_uid = this->m_cbctrecon->m_strDCMUID;
   this->m_cbctrecon->SetProjDir(dirPath);
-  init_DlgRegistration(this->m_cbctrecon->m_strDCMUID);//tmp_dcm_uid);
-  //this->m_cbctrecon->m_strDCMUID = tmp_dcm_uid;
+  init_DlgRegistration(tmp_dcm_uid);
+  this->m_cbctrecon->m_strDCMUID = tmp_dcm_uid;
 
   float kVp = 0.0;
   float mA = 0.0;

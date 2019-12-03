@@ -48,21 +48,36 @@ Scui::Scui(QWidget *parent) // Constructor
 {   
     ui->setupUi(this); // Sets up the ui
 
-    // Adding ellements to the threatment region combobox
+    //Getting application root folder
+    QDir tempCurrDir = QDir::current();
+    std::cout << tempCurrDir.path().toStdString() << std::endl;
+    tempCurrDir.cdUp();
+    Root = QString::fromStdString(tempCurrDir.path().toStdString().substr(1).substr(1));// First two characters removed
+
+    //Setting title and icon
+    this->setWindowTitle("SCUI");
+    this->setWindowIcon(QIcon(Root+QString("/pictures/logo.png")));
+
+    // Setting the title Scatter Correcting User Interface
+    ui->labelTitle1->setAlignment(Qt::AlignRight);
+    ui->labelTitle2->setAlignment(Qt::AlignLeft);
+    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font><font color=\"#FFBE38\">      C</font><font color=\"white\">orrecting</font>");
+    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font><font color=\"#FFBE38\">      I</font><font color=\"white\">nterface</font>");
+
+    //Initialising comboboxes with values
     ui->comboBox_region->addItem("Head-Neck");
     ui->comboBox_region->addItem("Pelvis");
     ui->comboBox_region->addItem("Thorax");
-
-    // Initialising the structure combobox
     ui->comboBoxWEPL->addItem("No structures");
-
-    // Adding elements to the plan view combobox
     ui->comboBoxPlanView->addItem("Axial");
     ui->comboBoxPlanView->addItem("Frontal");
     ui->comboBoxPlanView->addItem("Sagital");
 
-    //Getting application root folder
-    Root = QCoreApplication::applicationDirPath() + QString("\\..");
+    // Setting stylesheet for comboboxes
+    DownArrow = Root+QString("/pictures/down.png");
+    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
+    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
+    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
 
     // Icon for Physicist
     QPixmap pixmapPhysicist(Root+"\\pictures\\call.png");
@@ -75,11 +90,6 @@ Scui::Scui(QWidget *parent) // Constructor
     QIcon ButtonNewPatient(pixmapNewPatient);
     ui->btnRestart ->setIcon(ButtonNewPatient);
     ui->btnRestart->setIconSize(QSize(20,20));//pixmap.rect().size();
-
-    //Color for combobox // Maybe not used..
-    QPalette p = ui->comboBox_region->palette();
-    p.setColor(QPalette::Highlight, Qt::transparent);
-    ui->comboBox_region->setPalette(p);
 
     this->m_cbctrecon = std::make_unique<CbctRecon>(); // Creates a unique object of cbctrecon
     this->m_cbctregistration =
@@ -97,15 +107,13 @@ Scui::Scui(QWidget *parent) // Constructor
     m_DoseImgMoving = &m_cbctregistration->m_DoseImgMoving[0]; // Pointer for display only
     m_AGDisp_Overlay = &m_cbctregistration->m_AGDisp_Overlay[0]; // Pointer for display only
 
-    //Loading thread and signals:
+    //Threads and signals:
     lThread = new LoadingThread(this);
     connect(lThread,SIGNAL(Signal_UpdateSlider(int)), this, SLOT(SLT_UpdateSlider(int)));
     connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
     connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
     connect(lThread,SIGNAL(Signal_LThreadIsDone()),this,SLOT(SLT_LThreadIsDone()));
-
-    //Scatter correcting thread and signals:
     scThread = new ScatterCorrectingThread(this);
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
@@ -118,23 +126,9 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(scThread,SIGNAL(Signal_FixedImageSelected(QString)),this,SLOT(SLT_FixedImageSelected(QString)));
     connect(scThread,SIGNAL(Signal_MovingImageSelected(QString)),this,SLOT(SLT_MovingImageSelected(QString)));
     connect(scThread,SIGNAL(Signal_ImageManualMoveOneShot(float,float,float)),this,SLOT(ImageManualMoveOneShot(const float,const float,const float)));
-
-    //WEPL thread and signals:
     weplThread = new WEPLThread(this);
     connect(weplThread,SIGNAL(Signal_DrawWEPL()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(weplThread,SIGNAL(Signal_UpdateProgressBarWEPL(int)),this,SLOT(SLT_UpdateProgressBarWEPL(int)));
-
-    // Setting stylesheet for comboboxes
-    DownArrow = QString("/Users/ct-10/Desktop/down.png");//Root+QString("\\pictures\\down.png");
-    std::cout << DownArrow.toStdString() << std::endl;
-    ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
-    ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
-    ui->comboBoxWEPL->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: rgba(255,255,255,60%);border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
-
-    ui->labelTitle1->setAlignment(Qt::AlignRight);
-    ui->labelTitle2->setAlignment(Qt::AlignLeft);
-    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font><font color=\"#FFBE38\">      C</font><font color=\"white\">orrecting</font>");
-    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font><font color=\"#FFBE38\">      I</font><font color=\"white\">nterface</font>");
 }
 
 Scui::~Scui() // Destructor
@@ -251,11 +245,10 @@ QString get_dcm_uid(QString &dcm_path){ // Small method for extracting the DICOM
 return QString(seriesItr->c_str());
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-QString getStructureFile(QString path){ // Small method for finding the structurefile automatic
+QString getDosisPlanFile(QString path){ // Small method for finding the dosisplan automatic
     QDir directory(path);
     QStringList images = directory.entryList(QStringList() << "*.dcm" << "*.DCM",QDir::Files);
     foreach(QString filename, images) {
-    //do whatever you need to do
     bool a = filename.contains(QString("RN"));
             if(a==true){
                 std::cout << filename.toStdString() << std::endl;
@@ -266,24 +259,17 @@ QString getStructureFile(QString path){ // Small method for finding the structur
     return QString("");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_StartLoadingThread(){
-
+void Scui::SLT_StartLoadingThread(){ // Method called when the loading button is pressed
     SLT_GetCBCTPath();
     SLT_GetCTPath();
-    /*
-    // Only used for testing. Comment in the two upper methods
-    CBCTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\2019-07-04_084333_2019-07-04 06-43-22-2985\\1ba28724-69b3-4963-9736-e8ab0788c31f\\Acquisitions\\781076550");
-    CTPath = QString("C:\\Users\\ct-10\\Desktop\\PatientWithPlan\\Plan CT\\E_PT1 plan");
-    //
-    */
     ui->btnLoadData->setEnabled(false);
     ui->btnLoadData->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
     auto dcm_uid_str = get_dcm_uid(CTPath); // Get the unique DICOM ID from the CT images
     ui->label_Id->setText("ID: "+dcm_uid_str); // Sets the ID based on the unique ID
-    //m_cbctrecon->m_strDCMUID = dcm_uid_str; //Maybe incomment this later
-    QString structureFilename = getStructureFile(CTPath);
-    StructurePath = CTPath + "\\" + structureFilename;
-    if(CBCTPath != QString("") && CTPath != QString("") && StructurePath != QString("")){
+    m_cbctrecon->m_strDCMUID = dcm_uid_str;
+    QString dosisPlanFilename = getDosisPlanFile(CTPath);
+    DosisPlanPath = CTPath + "\\" + dosisPlanFilename;
+    if(CBCTPath != QString("") && CTPath != QString("") && DosisPlanPath != QString("")){
         lThread->start();
     }else{
         std::cout << "An Error occured. Try restart the program" << std::endl;
@@ -1075,7 +1061,7 @@ void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread
     ui->comboBoxPlanView->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------N/A methods------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------Other methods----------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 FDK_options Scui::getFDKoptions() const {
   FDK_options fdk_options;
@@ -1101,16 +1087,7 @@ FDK_options Scui::getFDKoptions() const {
   return fdk_options;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-//Is called by SLT_LoadSelectedProjFiles
-void Scui::SLT_OpenElektaGeomFile() { // I don't think this is used at the moment
-  auto strPath = QFileDialog::getOpenFileName(
-      this, "Select a single file to open",
-      this->m_cbctrecon->m_strPathDirDefault, "Geometry file (*.xml)");
-  if (strPath.length() <= 1) {
-    return;
-  }
-}
+//-------------------------------------------------------------------For further use--------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_DrawReconImageInSlices(){
     // init fixed and moving images
