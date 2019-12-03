@@ -64,11 +64,17 @@ Scui::Scui(QWidget *parent) // Constructor
     //Getting application root folder
     Root = QCoreApplication::applicationDirPath() + QString("\\..");
 
-    // Icon for Load Data
-    QPixmap pixmapLoad(Root+"\\pictures\\upload.png");
-    QIcon ButtonLoad(pixmapLoad);
-    ui->btnLoadData->setIcon(ButtonLoad);
-    ui->btnLoadData->setIconSize(QSize(20,20));//pixmap.rect().size();
+    // Icon for Physicist
+    QPixmap pixmapPhysicist(Root+"\\pictures\\call.png");
+    QIcon ButtonPhysicist(pixmapPhysicist);
+    ui->btnCallPhysicist ->setIcon(ButtonPhysicist);
+    ui->btnCallPhysicist->setIconSize(QSize(40,40));//pixmap.rect().size();
+
+    // Icon for New patient
+    QPixmap pixmapNewPatient(Root+"\\pictures\\newpatient.png");
+    QIcon ButtonNewPatient(pixmapNewPatient);
+    ui->btnRestart ->setIcon(ButtonNewPatient);
+    ui->btnRestart->setIconSize(QSize(20,20));//pixmap.rect().size();
 
     //Color for combobox // Maybe not used..
     QPalette p = ui->comboBox_region->palette();
@@ -127,6 +133,8 @@ Scui::Scui(QWidget *parent) // Constructor
 
     ui->labelTitle1->setAlignment(Qt::AlignRight);
     ui->labelTitle2->setAlignment(Qt::AlignLeft);
+    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font><font color=\"#FFBE38\">      C</font><font color=\"white\">orrecting</font>");
+    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font><font color=\"#FFBE38\">      I</font><font color=\"white\">nterface</font>");
 }
 
 Scui::~Scui() // Destructor
@@ -422,13 +430,11 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   m_cbctrecon->PostApplyFOVDispParam(physPosX, physPosY, physRadius,
                                            physTablePosY);
 
-  auto p_dspykimg = m_cbctrecon->m_dspYKReconImage.get();
+  m_cbctrecon->m_dspYKReconImage->m_bDrawFOVCircle = false;
+  m_cbctrecon->m_dspYKReconImage->m_bDrawTableLine = false;
 
-  p_dspykimg->m_bDrawFOVCircle = false;
-  p_dspykimg->m_bDrawTableLine = false;
-
-  p_dspykimg->FillPixMapMinMax(0,2031);//Hardcoded value (from sliderReconImgMin and sliderReconImgMax)
-  this->ui->labelImageRaw->SetBaseImage(p_dspykimg);
+  m_cbctrecon->m_dspYKReconImage->FillPixMapMinMax(0,2031);//Hardcoded value (from sliderReconImgMin and sliderReconImgMax)
+  this->ui->labelImageRaw->SetBaseImage(m_cbctrecon->m_dspYKReconImage.get());
   this->ui->labelImageRaw->update();
 
 }

@@ -9,7 +9,7 @@
 #include "cbctrecon.h"
 #include "cbctregistration.h"
 #include "scui.h"
-#include "OpenCL/ImageFilters.h"
+#include "OpenCL/ImageFilters.hpp"
 
 enum enCOLOR {
   RED,
@@ -770,7 +770,7 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
             << std::endl;
 
   const auto scaMedian = 12.0;//Hardcoded value (from lineEdit_scaMedian)
-  const auto scaGaussian = 0.05;//Hardcoded value (from lineEdit_scaGaussian)
+  const auto scaGaussian = 1.5;//Hardcoded value (from lineEdit_scaGaussian)
   std::cout << "Generating scatter map is ongoing..." << std::endl;
 
   this->m_cbctrecon->GenScatterMap_PriorCT(

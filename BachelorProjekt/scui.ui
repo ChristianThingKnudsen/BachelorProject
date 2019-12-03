@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1714</width>
-    <height>871</height>
+    <height>890</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -74,7 +74,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButtonRestart">
+        <widget class="QPushButton" name="btnRestart">
          <property name="minimumSize">
           <size>
            <width>40</width>
@@ -89,7 +89,7 @@
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-	background-color: rgba(8,40,76,100%); 
+	background-color: rgba(255,255,255,100%); 
 	color: #ffffff;
 	font-size: 20px;
 	border-radius: 20px;
@@ -109,7 +109,7 @@ QPushButton:pressed{
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButtonCallPhysicist">
+        <widget class="QPushButton" name="btnCallPhysicist">
          <property name="maximumSize">
           <size>
            <width>40</width>
@@ -118,7 +118,7 @@ QPushButton:pressed{
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-	background-color: rgba(120,175,43,100%); 
+	background-color: rgba(130,187,63,100%); 
 	color: #ffffff;
 	font-size: 20px;
 	border-radius: 20px;
@@ -426,6 +426,39 @@ QPushButton:pressed{
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>150</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>150</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QLabel{
+	font-size: 63px;
+	font-weight: bold;
+	color:#ffffff;
+	background-color: rgba(0,0,0,0%);
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -492,25 +525,25 @@ QPushButton:pressed{
            <property name="minimumSize">
             <size>
              <width>675</width>
-             <height>55</height>
+             <height>80</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>675</width>
-             <height>55</height>
+             <height>80</height>
             </size>
            </property>
            <property name="styleSheet">
             <string notr="true">QLabel{
-	font-size: 40px;
+	font-size: 63px;
 	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%);
 }</string>
            </property>
            <property name="text">
-            <string>User      Interfaceg</string>
+            <string>User      Interface</string>
            </property>
           </widget>
          </item>
@@ -587,18 +620,18 @@ QPushButton:pressed{
            <property name="minimumSize">
             <size>
              <width>675</width>
-             <height>55</height>
+             <height>80</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>675</width>
-             <height>55</height>
+             <height>80</height>
             </size>
            </property>
            <property name="styleSheet">
             <string notr="true">QLabel{
-	font-size: 40px;
+	font-size: 63px;
 	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%);
@@ -1866,7 +1899,7 @@ QPushButton:pressed{
    </hints>
   </connection>
   <connection>
-   <sender>pushButtonRestart</sender>
+   <sender>btnRestart</sender>
    <signal>clicked()</signal>
    <receiver>Scui</receiver>
    <slot>SLT_RestartSCUI()</slot>
@@ -1882,7 +1915,7 @@ QPushButton:pressed{
    </hints>
   </connection>
   <connection>
-   <sender>pushButtonCallPhysicist</sender>
+   <sender>btnCallPhysicist</sender>
    <signal>clicked()</signal>
    <receiver>Scui</receiver>
    <slot>SLT_CallPhysicist()</slot>

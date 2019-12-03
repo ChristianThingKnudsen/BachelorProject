@@ -257,7 +257,7 @@ void LoadingThread::SLT_LoadSelectedProjFiles(QString &path) // Main loading fuc
   }
 
   this->m_cbctrecon->m_spProjImgRaw3D =
-      this->m_cbctrecon->ConvertLineInt2Intensity(
+      this->m_cbctrecon->ConvertLineInt2Intensity_ushort(
           this->m_cbctrecon->m_spProjImg3DFloat);
 
   this->m_cbctrecon
