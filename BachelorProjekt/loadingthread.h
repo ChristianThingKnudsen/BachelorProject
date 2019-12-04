@@ -22,8 +22,8 @@ public:
     // Relevant variables
     CbctRecon* m_cbctrecon; // Main object to acces
     CbctRegistration* m_cbctregistration; // just for convienience
-    std::unique_ptr<QStandardItemModel> m_pTableModel;
-    std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
+    QStandardItemModel* m_pTableModel;
+    CbctRegistrationTest *m_dlgRegistration;
     void init_DlgRegistration(QString &str_dcm_uid) const;
     FilterReaderType::Pointer ReadBowtieFileWhileProbing(const QString &proj_path, std::tuple<bool, bool> &answers);
     std::tuple<bool, bool> probeUser(const QString);

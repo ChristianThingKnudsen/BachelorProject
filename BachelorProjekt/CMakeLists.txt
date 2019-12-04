@@ -88,4 +88,5 @@ include_directories(
     ${CbctReconLib_INCLUDE_DIR}/rtkExtension
     ${CbctReconLib_BUILD_INCLUDE_DIR}
     ${ITK_INCLUDE_DIRS}
+	${DCMTK_INCLUDE_DIRS}
     )

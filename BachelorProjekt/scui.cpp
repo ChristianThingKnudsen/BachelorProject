@@ -419,6 +419,10 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   extractFilter->Update();
 
   UShortImage2DType::Pointer pCrnt2D = extractFilter->GetOutput();
+
+  // Make sure no other thread tries to access our unique ptrs:
+  const std::lock_guard<std::mutex> lock(m_mutex);
+
   m_cbctrecon->m_dspYKReconImage = YK16GrayImage::CopyItkImage2YKImage(
       pCrnt2D,
       std::move(m_cbctrecon->m_dspYKReconImage)); // dimension should be same automatically.
@@ -436,7 +440,6 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   m_cbctrecon->m_dspYKReconImage->FillPixMapMinMax(0,2031);//Hardcoded value (from sliderReconImgMin and sliderReconImgMax)
   this->ui->labelImageRaw->SetBaseImage(m_cbctrecon->m_dspYKReconImage.get());
   this->ui->labelImageRaw->update();
-
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
