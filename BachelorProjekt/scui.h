@@ -54,7 +54,6 @@ public slots:
     void SLT_DrawReconImage();
 
     // Gain/ Offset correction
-    void SLT_OpenElektaGeomFile();
     void SLT_FixedImageSelected(QString selText);
     void SLT_MovingImageSelected(QString selText);
     void SLT_DrawImageWhenSliceChange();
@@ -110,7 +109,7 @@ public:
     AG17RGBAImage *m_AGDisp_Overlay;
     QString CBCTPath = QString("");
     QString CTPath = QString("");
-    QString StructurePath = QString("");
+    QString DosisPlanPath = QString("");
     QString Structure = QString("");
     int View = 0;
     int RegionChosen = 0;

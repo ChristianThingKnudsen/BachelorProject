@@ -33,7 +33,7 @@ void ScatterCorrectingThread::run(){
 }
 
 void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() { // Method is only needed in this class for testing reasons
-  auto filePath = m_parent->StructurePath;
+  auto filePath = m_parent->DosisPlanPath;
 
   if (filePath.length() < 1) {
     return;

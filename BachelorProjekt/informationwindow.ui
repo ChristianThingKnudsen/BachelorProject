@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>949</width>
-    <height>299</height>
+    <width>1202</width>
+    <height>462</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,10 +25,10 @@
       <number>9</number>
      </property>
      <property name="verticalSpacing">
-      <number>15</number>
+      <number>12</number>
      </property>
      <item row="1" column="0" colspan="2">
-      <widget class="QLabel" name="label_13">
+      <widget class="QLabel" name="labelTitle">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -43,19 +43,17 @@
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
-	text-decoration: underline;
 	font-size: 20px;
-	color: rgba(255,190,56,100%); 
 	font-weight: bold;
-	alignment: center;
-}
-</string>
+	color:#ffffff;
+	background-color: rgba(0,0,0,0%);
+}</string>
        </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>Scui Information </string>
+        <string>Information Window</string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
@@ -101,7 +99,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This field indicates which patient is being processed at the moment</string>
+        <string>1. This field indicates which patient is being processed at the moment</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -137,7 +135,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This button will open two file explorers. One path for the CBCT-projections to be declared, and another for the CT-projections to be declared.</string>
+        <string>2. This button will open two file explorers. One path for the CBCT-projections to be declared, and another for the CT-projections to be declared.</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -173,7 +171,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This option allows to choose which part of the body that is up for treatment. The program then selects the appropriate values based on the selected region. </string>
+        <string>3. This option allows to choose which part of the body that is up for treatment. The program then selects the appropriate values based on the selected region. </string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -215,7 +213,7 @@
 }</string>
        </property>
        <property name="text">
-        <string>This button will run an algorithm which will remove the scatter from the CBCT image and plot it. This might take some time. </string>
+        <string>4. This button will run an algorithm which will remove the scatter from the CBCT image and plot it. This might take some time. </string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -233,7 +231,7 @@
 </string>
        </property>
        <property name="text">
-        <string>WEPL</string>
+        <string>Structure</string>
        </property>
       </widget>
      </item>
@@ -245,11 +243,38 @@
 }</string>
        </property>
        <property name="text">
-        <string>Here you choose which structure you want to calculate the WEPL on. After you select the structure click WEPL</string>
+        <string>5. Here you choose which structure you want to calculate the WEPL on. After you select the structure click WEPL</string>
        </property>
       </widget>
      </item>
      <item row="7" column="0">
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 15px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Plan view</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLabel" name="label_10">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>6. Controls the slices orientation. The options are 'Axial', 'Frontal' and 'Sagital'</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
       <widget class="QLabel" name="label_9">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -264,7 +289,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QLabel" name="labelShowOrgansInfo">
        <property name="maximumSize">
         <size>
@@ -278,14 +303,141 @@
 }</string>
        </property>
        <property name="text">
-        <string>This button opens a new form where more values behind the scene can be accessed. This is only recommended for  physicists </string>
+        <string>7. This button opens a new form where more values behind the scene can be accessed. This is only recommended for  physicists </string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
        </property>
       </widget>
      </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 15px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>New Patient</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLabel" name="label_12">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>8. This button clears the data on the user interface and makes it ready for the next patient</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_14">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 15px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Call Physicist</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLabel" name="label_15">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>9. This button will notify the physicist </string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_16">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 15px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Information</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QLabel" name="label_17">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>10. This button wil open this dialog</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="label_18">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 15px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QLabel" name="label_19">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>11. This button will close the program</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="labelImage">
+     <property name="minimumSize">
+      <size>
+       <width>660</width>
+       <height>360</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>660</width>
+       <height>360</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -2,6 +2,7 @@
 #define INFORMATIONWINDOW_H
 
 #include <QDialog>
+#include "scui.h"
 
 namespace Ui {
 class InformationWindow;
@@ -14,6 +15,8 @@ class InformationWindow : public QDialog
 public:
     explicit InformationWindow(QWidget *parent = nullptr);
     ~InformationWindow();
+
+
 
 private:
     Ui::InformationWindow *ui;
