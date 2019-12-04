@@ -12,6 +12,8 @@ LoadingThread::LoadingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(pare
     this->m_parent = parent; // Object of scui (Same object)
     this->m_cbctrecon = parent->m_cbctrecon.get(); // Object of cbctrecon (Same object)
     this->m_cbctregistration = parent->m_cbctregistration.get(); // Object of cbctregistration (Same object)
+	this->m_dlgRegistration = parent->m_dlgRegistration.get();
+	this->m_pTableModel = parent->m_pTableModel.get();
 }
 
 void LoadingThread::run(){ // Method which is called when the start method is called on the thread
