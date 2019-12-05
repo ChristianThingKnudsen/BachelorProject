@@ -450,6 +450,7 @@ void Scui::SLT_UpdateProgressBarWEPL(int progress){ // Updates the progressbar f
 
 void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
   //Get VIO
+  m_spMovingImg = m_cbctrecon->m_spDeformedCT_Final.GetPointer();
   const auto voi_name = structure.toStdString();
 
   const auto gantry_angle = 0;//Hardcoded value (from spinBox_GantryAngle)
@@ -464,6 +465,7 @@ void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
                          couch_angle, m_spMovingImg, m_spFixedImg);
   m_cbctregistration->WEPL_voi = std::make_unique<Rtss_roi_modern>(*wepl_voi);
   // Draw WEPL
+  m_spMovingImg = m_cbctrecon->m_spScatCorrReconImg.GetPointer();
   SLT_DrawImageWhenSliceChange();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
