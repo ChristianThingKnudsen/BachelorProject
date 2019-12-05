@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1202</width>
-    <height>462</height>
+    <width>1480</width>
+    <height>1124</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
       <number>9</number>
      </property>
      <property name="verticalSpacing">
-      <number>12</number>
+      <number>9</number>
      </property>
      <item row="1" column="0" colspan="2">
       <widget class="QLabel" name="labelTitle">
@@ -43,7 +43,7 @@
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 20px;
+	font-size: 40px;
 	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%);
@@ -64,7 +64,7 @@
       <widget class="QLabel" name="labelRegion">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -75,42 +75,11 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="labelRegionInfo">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>800</width>
-         <height>120</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	color: #ffffff;
-	width: 20px;
-}</string>
-       </property>
-       <property name="text">
-        <string>1. This field indicates which patient is being processed at the moment</string>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="labelLoadCT">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%);  
 	font-weight: bold;
 }
@@ -125,12 +94,14 @@
       <widget class="QLabel" name="label_2">
        <property name="maximumSize">
         <size>
-         <width>800</width>
-         <height>800</height>
+         <width>16777215</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -146,7 +117,7 @@
       <widget class="QLabel" name="label_3">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -161,12 +132,14 @@
       <widget class="QLabel" name="label_4">
        <property name="maximumSize">
         <size>
-         <width>800</width>
+         <width>16777215</width>
          <height>16777215</height>
         </size>
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -188,7 +161,7 @@
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -203,12 +176,14 @@
       <widget class="QLabel" name="label_6">
        <property name="maximumSize">
         <size>
-         <width>800</width>
-         <height>120</height>
+         <width>16777215</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -224,7 +199,7 @@
       <widget class="QLabel" name="label_7">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -239,6 +214,8 @@
       <widget class="QLabel" name="label_8">
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -251,7 +228,7 @@
       <widget class="QLabel" name="label">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -266,6 +243,8 @@
       <widget class="QLabel" name="label_10">
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -278,7 +257,7 @@
       <widget class="QLabel" name="label_9">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -293,12 +272,14 @@
       <widget class="QLabel" name="labelShowOrgansInfo">
        <property name="maximumSize">
         <size>
-         <width>800</width>
+         <width>16777215</width>
          <height>16777215</height>
         </size>
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -314,7 +295,7 @@
       <widget class="QLabel" name="label_11">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -329,6 +310,8 @@
       <widget class="QLabel" name="label_12">
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -341,7 +324,7 @@
       <widget class="QLabel" name="label_14">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -356,6 +339,8 @@
       <widget class="QLabel" name="label_15">
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -368,7 +353,7 @@
       <widget class="QLabel" name="label_16">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -383,6 +368,8 @@
       <widget class="QLabel" name="label_17">
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -395,7 +382,7 @@
       <widget class="QLabel" name="label_18">
        <property name="styleSheet">
         <string notr="true">QLabel{
-	font-size: 15px;
+	font-size: 22px;
 	color: rgba(255,190,56,100%); 
 	font-weight: bold;
 }
@@ -410,6 +397,8 @@
       <widget class="QLabel" name="label_19">
        <property name="styleSheet">
         <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
 	color: #ffffff;
 }</string>
        </property>
@@ -418,26 +407,43 @@
        </property>
       </widget>
      </item>
+     <item row="13" column="1">
+      <widget class="QLabel" name="labelImage">
+       <property name="minimumSize">
+        <size>
+         <width>930</width>
+         <height>530</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>930</width>
+         <height>530</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="label_13">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>1. This field indicates which patient is being processed at the moment</string>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="labelImage">
-     <property name="minimumSize">
-      <size>
-       <width>660</width>
-       <height>360</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>660</width>
-       <height>360</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

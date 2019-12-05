@@ -61,8 +61,8 @@ Scui::Scui(QWidget *parent) // Constructor
     // Setting the title Scatter Correcting User Interface
     ui->labelTitle1->setAlignment(Qt::AlignRight);
     ui->labelTitle2->setAlignment(Qt::AlignLeft);
-    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font><font color=\"#FFBE38\">      C</font><font color=\"white\">orrecting</font>");
-    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font><font color=\"#FFBE38\">      I</font><font color=\"white\">nterface</font>");
+    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font><font color=\"#FFBE38\"> C</font><font color=\"white\">orrecting</font>");
+    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font><font color=\"#FFBE38\">  I</font><font color=\"white\">nterface</font>");
 
     //Initialising comboboxes with values
     ui->comboBox_region->addItem("Head-Neck");
