@@ -1,6 +1,5 @@
 #include "scui.h"
 #include "ui_scui.h"
-
 #include "qyklabel.h"
 #include "progressbar.h"
 #include "informationwindow.h"
@@ -118,8 +117,8 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
     connect(scThread,SIGNAL(Signal_PassFixedImg()),this, SLOT(SLT_PassFixedImgForAnalysis()));
-    connect(scThread,SIGNAL(SignalDrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
-    connect(scThread,SIGNAL(SignalDrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
+    connect(scThread,SIGNAL(Signal_DrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
+    connect(scThread,SIGNAL(Signal_DrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
     connect(scThread,SIGNAL(Signal_SCThreadIsDone()),this,SLOT(SLT_SCThreadIsDone()));
     connect(scThread,SIGNAL(Signal_UpdateVOICombobox(ctType)),this,SLOT(UpdateVOICombobox(const ctType)));
@@ -198,7 +197,7 @@ void Scui::on_comboBoxPlanView_currentIndexChanged(const QString &planView) // I
     }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::on_comboBox_region_currentIndexChanged(const QString &region)
+void Scui::on_comboBox_region_currentIndexChanged(const QString &region) // Sets the Region property based on the combobox
 {
  if(region.compare("Head-Neck")==0){
      RegionChosen = 0;
@@ -219,11 +218,12 @@ void Scui::on_comboBoxWEPL_currentIndexChanged(const QString &structure) // Is c
     }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void::Scui::SLT_RestartSCUI(){
+void::Scui::SLT_RestartSCUI(){ // Restarts the application
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 }
-void::Scui::SLT_CallPhysicist(){
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+void::Scui::SLT_CallPhysicist(){// Notifys the physicist
     QMessageBox msgBox;
     msgBox.setText("Physicist has been notified");
     msgBox.exec();
@@ -470,7 +470,7 @@ void Scui::SLT_WEPLcalc(QString structure) { // Calculates the WEPL
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_MovingImageSelected
-void Scui::UpdateVOICombobox(const ctType ct_type) const {
+void Scui::UpdateVOICombobox(const ctType ct_type) const { // Updates the combox with structures
   auto struct_set =
       m_cbctregistration->m_pParent->m_structures->get_ss(ct_type);
   if (struct_set == nullptr) {
@@ -487,7 +487,7 @@ void Scui::UpdateVOICombobox(const ctType ct_type) const {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by set_points_by_slice(). Is used to visualize WEPL
-template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
+template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) { // Sets the color for WEPL
   switch (color) {
   case RED:
     return &window->m_vPt;
@@ -562,7 +562,6 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //----------------------------------------------------------Scatter correcting methods -----------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
 void Scui::SLT_StartScatterCorrectingThread(){ // Set buttons and starts the scatter correcting thread
     ui->btnScatterCorrect->setEnabled(false);
     ui->btnScatterCorrect->setStyleSheet("QPushButton{color: rgba(255,255,255,60%);font-size: 18px;border-width: 1.4px; border-color: rgba(0,0,0,60%);border-style: solid; border-radius: 7px;}");
@@ -584,7 +583,7 @@ void Scui::SLT_UpdateProgressBarSC(int progress){ // Updates the scatter correct
     ui->progressBarSC->setValue(progress);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-ctType Scui::get_ctType(const QString &selText) {
+ctType Scui::get_ctType(const QString &selText) { // Determent the CT type
   if (selText.compare("REF_CT") == 0) {
     return PLAN_CT;
   }
@@ -601,11 +600,11 @@ ctType Scui::get_ctType(const QString &selText) {
   return PLAN_CT;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_FixedImageSelected(QString selText) {
+void Scui::SLT_FixedImageSelected(QString selText) { // Sets the fixed image
   LoadImgFromComboBox(0, selText); // here, m_spMovingImg and Fixed images are determined
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::SLT_MovingImageSelected(QString selText) {
+void Scui::SLT_MovingImageSelected(QString selText) { // Sets the moving image
   LoadImgFromComboBox(1, selText);
   const auto cur_ct = get_ctType(selText);
   UpdateVOICombobox(cur_ct);
@@ -660,7 +659,7 @@ void Scui::LoadImgFromComboBox(const int idx, QString &strSelectedComboTxt) // -
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by LoadImgFromComboBox()
-void Scui::SLT_DrawImageWhenSliceChange() {
+void Scui::SLT_DrawImageWhenSliceChange() { // Draw image when slice changes. Is used on the right image
   if (m_spFixedImg == nullptr || m_cbctrecon->m_spRawReconImg == nullptr) {
     return;
   }
@@ -897,7 +896,7 @@ void Scui::SLT_DrawImageWhenSliceChange() {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DrawImageWhenSliceChange()
-void Scui::SLT_DrawImageInFixedSlice() const
+void Scui::SLT_DrawImageInFixedSlice() const // Splits image into plans and draws
 // Display Swap here!
 {
   // Constitute m_YKDisp from Fixed and Moving
@@ -994,7 +993,7 @@ void Scui::SLT_DrawImageInFixedSlice() const
 //Is called by LoadImgFromComboBox()
 
 // Display is not included here
-void Scui::whenFixedImgLoaded() const {
+void Scui::whenFixedImgLoaded() const { // Sets pointers
   if (m_cbctrecon->m_spRawReconImg == nullptr) {
     return;
   }
@@ -1019,7 +1018,7 @@ void Scui::whenFixedImgLoaded() const {
   SLT_DrawImageInFixedSlice();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void Scui::ImageManualMoveOneShot(
+void Scui::ImageManualMoveOneShot( // Moves CBCT and CT so it is in the same place.
     const float shiftX, const float shiftY,
     const float shiftZ) // DICOM coordinate
 {
@@ -1068,7 +1067,7 @@ void Scui::SLT_SCThreadIsDone(){ // Is called when the scatter correction thread
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------Other methods----------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-FDK_options Scui::getFDKoptions() const {
+FDK_options Scui::getFDKoptions() const { // FDK options
   FDK_options fdk_options;
   fdk_options.TruncCorFactor = 1.0;//Hardcoded value(from trail and error, see lineEdit_Ramp_TruncationCorrection)
   fdk_options.HannCutX = 5.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_HannCut)

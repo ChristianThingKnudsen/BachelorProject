@@ -86,7 +86,7 @@ void LoadingThread::init_DlgRegistration(QString &str_dcm_uid) const// init dlgR
 
 }
 //Is needed for the next method SLT_LoadSelectedProjFiles()
-std::tuple<bool, bool> LoadingThread::probeUser(const QString) {
+std::tuple<bool, bool> LoadingThread::probeUser(const QString) { // Probing user
   auto dirPath = m_parent->CTPath;
 
   auto dcm_success = false;

@@ -82,7 +82,7 @@ public slots:
     void SLT_GetCBCTPath();
     void SLT_GetCTPath();
     void SLT_StartWEPLThread();
-    //void SLT_DrawReconInFixedSlice();
+    //void SLT_DrawReconInFixedSlice(); // For further use
     void SLT_UpdateProgressBarWEPL(int progress);
     void SLT_LThreadIsDone();
     void SLT_SliderValueChanged();
@@ -133,7 +133,6 @@ public:
 #endif
 
 private slots:
-
     void on_comboBoxPlanView_currentIndexChanged(const QString &arg1);
     void on_comboBox_region_currentIndexChanged(const QString &arg1);
 };

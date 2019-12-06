@@ -13,13 +13,10 @@ class LoadingThread : public QThread
 {
     Q_OBJECT
 public:
-    // For threading
     explicit LoadingThread(Scui *parent=nullptr);
     void run();
     Scui* m_parent; // Used to call objects and methods in the main class
     bool Stop = false;
-
-    // Relevant variables
     CbctRecon* m_cbctrecon; // Main object to acces
     CbctRegistration* m_cbctregistration; // just for convienience
     QStandardItemModel* m_pTableModel;

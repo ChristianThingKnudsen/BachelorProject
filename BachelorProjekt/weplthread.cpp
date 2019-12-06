@@ -7,19 +7,19 @@
 #include "cbctrecon_io.h"
 #include "scui.h"
 
-WEPLThread::WEPLThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))
+WEPLThread::WEPLThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent)) // Constructor
 {
     this->m_parent = parent;
     this->m_cbctrecon = parent->m_cbctrecon.get();
     this->m_cbctregistration = parent->m_cbctregistration.get();
 }
 
-void WEPLThread::run(){
+void WEPLThread::run(){ // Run method
     emit Signal_UpdateProgressBarWEPL(20);
     this->SLT_WEPLcalc(m_parent->Structure);
 }
 
-void WEPLThread::SLT_WEPLcalc(QString structure) {
+void WEPLThread::SLT_WEPLcalc(QString structure) { // Method for calc WEPL
   //Get VIO
   m_parent->m_spMovingImg = m_parent->m_cbctrecon->m_spDeformedCT_Final.GetPointer();
   const auto voi_name = structure.toStdString();
@@ -40,10 +40,9 @@ void WEPLThread::SLT_WEPLcalc(QString structure) {
   m_parent->m_spMovingImg = m_parent->m_cbctrecon->m_spScatCorrReconImg.GetPointer();
   emit Signal_DrawWEPL();
   emit Signal_UpdateProgressBarWEPL(100);
-
 }
 
-ctType WEPLThread::get_ctType(const QString &selText) {
+ctType WEPLThread::get_ctType(const QString &selText) { // Returns the CT type
   emit Signal_UpdateProgressBarWEPL(40);
   if (selText.compare("REF_CT") == 0) {
     return PLAN_CT;

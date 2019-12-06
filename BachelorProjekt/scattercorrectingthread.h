@@ -15,8 +15,6 @@ public:
     explicit ScatterCorrectingThread(Scui *parent=nullptr);
     void run();
     bool Stop;
-
-    // Relevant variables
     Scui* m_parent; // Used to call objects and methods in the main class
     CbctRecon* m_cbctrecon; // Main object to acces
     CbctRegistration* m_cbctregistration; // just for convienience
@@ -28,7 +26,7 @@ private slots:
     void SLT_IntensityNormCBCT();
     void SLT_DoScatterCorrection_APRIORI();
     void SLT_IntensityNormCBCT_COR_CBCT();
-    FDK_options getFDKoptions() const; // This is not implemented...
+    FDK_options getFDKoptions() const;
     void SLT_ManualMoveByDCMPlanOpen();
     void SLT_ConfirmManualRegistration();
 
@@ -36,8 +34,8 @@ signals:
     void Signal_UpdateLabelRaw(QString);
     void Signal_UpdateLabelCor(QString);
     void Signal_PassFixedImg();
-    void SignalDrawImageInFixedSlice() const;
-    void SignalDrawImageWhenSliceChange();
+    void Signal_DrawImageInFixedSlice() const;
+    void Signal_DrawImageWhenSliceChange();
     void Signal_UpdateProgressBarSC(int);
     void Signal_SCThreadIsDone();
     void Signal_UpdateVOICombobox(ctType);

@@ -16,13 +16,13 @@ enum enCOLOR {
   GREEN,
 };
 
-ScatterCorrectingThread::ScatterCorrectingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))
+ScatterCorrectingThread::ScatterCorrectingThread(Scui *parent) : QThread(dynamic_cast<QObject*>(parent))// Constructur
 {
     this->m_parent = parent;
     this->m_cbctrecon = parent->m_cbctrecon.get();
     this->m_cbctregistration = parent->m_cbctregistration.get();
 }
-void ScatterCorrectingThread::run(){
+void ScatterCorrectingThread::run(){ // Run Method
     emit Signal_FixedImageSelected(QString("RAW_CBCT"));
     emit Signal_UpdateLabelCor(QString("Raw CBCT"));
     emit Signal_MovingImageSelected(QString("MANUAL_RIGID_CT"));
@@ -59,7 +59,7 @@ void ScatterCorrectingThread::SLT_ManualMoveByDCMPlanOpen() { // Method is only 
   m_parent->ImageManualMoveOneShot(static_cast<float>(planIso.x),static_cast<float>(planIso.y),static_cast<float>(planIso.z));
 }
 
-void ScatterCorrectingThread::SLT_ConfirmManualRegistration() {
+void ScatterCorrectingThread::SLT_ConfirmManualRegistration() { // Confirms the manual registration
   if (m_parent->m_spFixedImg == nullptr || m_parent->m_spMovingImg == nullptr) {
     return;
   }
@@ -279,7 +279,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationRigid() // plastimatch auto regi
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_MovingImageSelected
-ctType ScatterCorrectingThread::get_ctType(const QString &selText) {
+ctType ScatterCorrectingThread::get_ctType(const QString &selText) { // Returns CT type
   if (selText.compare("REF_CT") == 0) {
     return PLAN_CT;
   }
@@ -297,7 +297,7 @@ ctType ScatterCorrectingThread::get_ctType(const QString &selText) {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by set_points_by_slice()
-template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
+template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) { // Sets color for WEPL
   switch (color) {
   case RED:
     return &window->m_vPt;
@@ -309,7 +309,7 @@ template <enCOLOR color> auto get_qtpoint_vector(qyklabel *window) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //Is called by SLT_DrawImageWhenSliceChange()
 template <typename ImageBase, enPLANE plane, enCOLOR color>
-auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi,
+auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi, // Sets points for WEPL
                          std::array<double, 3> curPhysPos,
                          typename ImageBase::SpacingType imgSpacing,
                          typename ImageBase::PointType imgOriginFixed,
@@ -615,7 +615,7 @@ void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
   SLT_IntensityNormCBCT();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void ScatterCorrectingThread::SLT_IntensityNormCBCT() {
+void ScatterCorrectingThread::SLT_IntensityNormCBCT() { // Normalising CBCT
   emit Signal_FixedImageSelected(QString("RAW_CBCT"));
   emit Signal_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
   emit Signal_UpdateProgressBarSC(60);
@@ -650,7 +650,7 @@ void ScatterCorrectingThread::SLT_IntensityNormCBCT() {
   SLT_DoScatterCorrection_APRIORI();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() {
+void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() { // Normalises the Corrected CBCT
   emit Signal_FixedImageSelected(QString("COR_CBCT"));
   emit Signal_MovingImageSelected(QString("DEFORMED_CT_FINAL"));
   const auto fROI_Radius = 30;//Hardcoded value (from lineEditNormRoiRadius)
@@ -692,7 +692,7 @@ void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() {
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // In Andreases code this method is called when Scatter correct button is pushed. Find out where to implement this!
-void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
+void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() { // Scatter correcting method
   emit Signal_UpdateProgressBarSC(70);
   if ((this->m_cbctrecon->m_spRefCTImg == nullptr &&
        m_parent->m_spMovingImg == nullptr) ||
@@ -840,7 +840,7 @@ void ScatterCorrectingThread::SLT_DoScatterCorrection_APRIORI() {
   SLT_IntensityNormCBCT_COR_CBCT();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-FDK_options ScatterCorrectingThread::getFDKoptions() const {
+FDK_options ScatterCorrectingThread::getFDKoptions() const { // FDK options
     FDK_options fdk_options;
     fdk_options.TruncCorFactor = 1.0;//Hardcoded value(from trail and error, see lineEdit_Ramp_TruncationCorrection)
     fdk_options.HannCutX = 5.0;//Hardcoded value (from trail and error, see lineEdit_Ramp_HannCut)
