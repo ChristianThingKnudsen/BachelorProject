@@ -159,8 +159,7 @@ void Scui::SLT_OpenAdvancedMode() // Is called when the advanced button is pushe
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_Exit() // Is called when the exit button is pushed
 {
-    delete ui;
-    delete ui; // Needs to delete to times before this is working...
+    qApp->quit();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_IncreaseSliderValue() // Is called when the + button is pushed
