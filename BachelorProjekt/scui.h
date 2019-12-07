@@ -29,7 +29,6 @@ public:
     ~Scui();
 
 public:
-  std::mutex m_mutex;
   std::unique_ptr<CbctRecon> m_cbctrecon;
   std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
   std::unique_ptr<QStandardItemModel> m_pTableModel;

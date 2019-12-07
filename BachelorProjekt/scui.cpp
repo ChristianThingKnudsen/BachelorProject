@@ -8,6 +8,8 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qstandarditemmodel.h>
+#include <QMutex>
+#include <QTimer>
 
 // ITK
 #ifdef OF
@@ -128,6 +130,8 @@ Scui::Scui(QWidget *parent) // Constructor
     weplThread = new WEPLThread(this);
     connect(weplThread,SIGNAL(Signal_DrawWEPL()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(weplThread,SIGNAL(Signal_UpdateProgressBarWEPL(int)),this,SLOT(SLT_UpdateProgressBarWEPL(int)));
+    //Enables fullScreen
+    QTimer::singleShot(0, this, SLOT(showFullScreen()));
 }
 
 Scui::~Scui() // Destructor
@@ -406,8 +410,10 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
 
   UShortImage2DType::Pointer pCrnt2D = extractFilter->GetOutput();
 
+
   // Make sure no other thread tries to access our unique ptrs:
-  const std::lock_guard<std::mutex> lock(m_mutex);
+  QMutex mutex;
+  mutex.lock();
 
   m_cbctrecon->m_dspYKReconImage = YK16GrayImage::CopyItkImage2YKImage(
       pCrnt2D,
