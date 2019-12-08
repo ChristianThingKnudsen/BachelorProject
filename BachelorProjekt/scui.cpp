@@ -440,6 +440,12 @@ void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finishe
     ui->btnScatterCorrect->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
     ui->comboBox_region->setEnabled(true);
     ui->comboBox_region->setStyleSheet("QComboBox{font-weight: bold;font-size: 18px;background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));color: #ffffff;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QComboBox QAbstractItemView{selection-background-color: rgba(255,190,56,100%);}QComboBox::drop-down{border: 0px;}QComboBox::down-arrow {image: url("+DownArrow+");width: 14px;height: 14px;}");
+    ui->btnPlus->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
+    ui->btnPlus->setEnabled(true);
+    ui->btnMinus->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
+    ui->btnMinus->setEnabled(true);
+    ui->verticalSlider->setEnabled(true);
+    ui->labelSliderIdx->setStyleSheet("QLabel{font-size: 20px;font-weight: bold;color: rgba(255,255,255,100%);background-color: rgba(0,0,0,0%)}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------WEPL methods ----------------------------------------------------------------------------------------//

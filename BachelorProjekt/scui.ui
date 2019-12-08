@@ -276,10 +276,10 @@ QPushButton:pressed{
              <number>6</number>
             </property>
             <property name="topMargin">
-             <number>60</number>
+             <number>89</number>
             </property>
             <property name="bottomMargin">
-             <number>145</number>
+             <number>179</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout">
@@ -295,12 +295,12 @@ QPushButton:pressed{
                  <string notr="true">QLabel{
 	font-size: 20px;
 	font-weight: bold;
-	color:#ffffff;
+	color: rgba(255,255,255,60%);
 	background-color: rgba(0,0,0,0%)
 }</string>
                 </property>
                 <property name="text">
-                 <string>Slice: 100 </string>
+                 <string>Slice: </string>
                 </property>
                </widget>
               </item>
@@ -319,6 +319,9 @@ QPushButton:pressed{
               </property>
               <item alignment="Qt::AlignHCenter">
                <widget class="QPushButton" name="btnPlus">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -342,14 +345,14 @@ QPushButton:pressed{
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton{
-	background-color: #1367AB;
-	color: #ffffff;
-	font-size: 23px;
+	background-color: rgba(19,103,171,60%);
+	font-weight: bold;
+	color: rgba(255,255,255,60%);
+	font-size: 18px;
 	border-width: 1.4px;
-	border-color: #000000;
+	border-color: rgba(0,0,0,60%);
 	border-style: solid;
 	border-radius: 7px;
-	width: 13 px;
 }
 QPushButton:pressed{
 	background-color: #E4A115
@@ -362,6 +365,9 @@ QPushButton:pressed{
               </item>
               <item alignment="Qt::AlignHCenter">
                <widget class="QSlider" name="verticalSlider">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>40</width>
@@ -377,7 +383,8 @@ QPushButton:pressed{
                 <property name="styleSheet">
                  <string notr="true">QSlider:{
 	background-color: rgba(0,0,0,0%)
-}</string>
+}
+</string>
                 </property>
                 <property name="maximum">
                  <number>200</number>
@@ -398,6 +405,9 @@ QPushButton:pressed{
               </item>
               <item alignment="Qt::AlignHCenter">
                <widget class="QPushButton" name="btnMinus">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -421,11 +431,12 @@ QPushButton:pressed{
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton{
-	background-color: #1367AB;
-	color: #ffffff;
-	font-size: 23px;
+	background-color: rgba(19,103,171,60%);
+	font-weight: bold;
+	color: rgba(255,255,255,60%);
+	font-size: 18px;
 	border-width: 1.4px;
-	border-color: #000000;
+	border-color: rgba(0,0,0,60%);
 	border-style: solid;
 	border-radius: 7px;
 }
