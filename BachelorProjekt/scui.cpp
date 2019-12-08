@@ -229,6 +229,7 @@ void::Scui::SLT_RestartSCUI(){ // Restarts the application
 void::Scui::SLT_CallPhysicist(){// Notifys the physicist
     QMessageBox msgBox;
     msgBox.setText("Physicist has been notified");
+    msgBox.setWindowIcon(QIcon(Root+QString("/pictures/logo.png")));
     msgBox.exec();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
