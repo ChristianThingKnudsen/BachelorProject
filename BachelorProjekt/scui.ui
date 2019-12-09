@@ -279,7 +279,7 @@ QPushButton:pressed{
              <number>89</number>
             </property>
             <property name="bottomMargin">
-             <number>179</number>
+             <number>184</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout">
@@ -381,13 +381,49 @@ QPushButton:pressed{
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">QSlider:{
-	background-color: rgba(0,0,0,0%)
+                 <string notr="true">QSlider:focus {
+border: none;
 }
-</string>
+
+QSlider::groove:vertical {
+background: rgba(255,255,255,60%);
+border: 1px solid #32414B;
+width: 4px;
+margin: 0px;
+border-radius: 4px;
+}
+
+QSlider::add-page:vertical {
+background: rgba(255,255,255,10%);
+border: 1px solid #32414B;
+width: 4px;
+margin: 0px;
+border-radius: 4px;
+}
+
+QSlider::add-page:vertical :disabled {
+background: #14506E;
+}
+
+QSlider::handle:vertical {
+background: rgba(120,120,120,80%);
+border: 1px solid #32414B;
+width: 8px;
+height: 8px;
+margin: 0 -8px;
+border-radius: 4px;
+}
+
+QSlider::handle:vertical:hover {
+background: #148CD2;
+border: 1px solid #148CD2;
+}</string>
                 </property>
                 <property name="maximum">
                  <number>200</number>
+                </property>
+                <property name="pageStep">
+                 <number>10</number>
                 </property>
                 <property name="value">
                  <number>100</number>

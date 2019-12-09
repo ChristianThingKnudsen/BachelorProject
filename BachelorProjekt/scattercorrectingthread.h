@@ -37,7 +37,6 @@ signals:
     void Signal_DrawImageInFixedSlice() const;
     void Signal_DrawImageWhenSliceChange();
     void Signal_UpdateProgressBarSC(int);
-    void Signal_SCThreadIsDone();
     void Signal_UpdateVOICombobox(ctType);
     void Signal_FixedImageSelected(QString);
     void Signal_MovingImageSelected(QString);

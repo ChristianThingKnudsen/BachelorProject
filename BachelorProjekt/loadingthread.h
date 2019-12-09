@@ -44,6 +44,5 @@ signals:
     void Signal_DisconnectSlider();
     void Signal_ReConnectSlider(int);
     void Signal_UpdateProgressBarLoad(int);
-    void Signal_LThreadIsDone();
 };
 #endif // LOADINGTHREAD_H

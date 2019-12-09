@@ -687,7 +687,6 @@ void ScatterCorrectingThread::SLT_IntensityNormCBCT_COR_CBCT() { // Normalises t
   const auto cur_ct2 = get_ctType("COR_CBCT");
   emit Signal_UpdateVOICombobox(cur_ct2);
   emit Signal_UpdateProgressBarSC(100);
-  emit Signal_SCThreadIsDone();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

@@ -114,7 +114,7 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(lThread,SIGNAL(Signal_DisconnectSlider()), this, SLOT(SLT_DisconnectSlider()));
     connect(lThread,SIGNAL(Signal_ReConnectSlider(int)),this,SLOT(SLT_ReConnectSlider(int)));
     connect(lThread,SIGNAL(Signal_UpdateProgressBarLoad(int)),this,SLOT(SLT_UpdateProgressBarLoad(int)));
-    connect(lThread,SIGNAL(Signal_LThreadIsDone()),this,SLOT(SLT_LThreadIsDone()));
+    connect(lThread,SIGNAL(finished()),this,SLOT(SLT_LThreadIsDone()));
     scThread = new ScatterCorrectingThread(this);
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
@@ -122,7 +122,7 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(scThread,SIGNAL(Signal_DrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
     connect(scThread,SIGNAL(Signal_DrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
-    connect(scThread,SIGNAL(Signal_SCThreadIsDone()),this,SLOT(SLT_SCThreadIsDone()));
+    connect(scThread,SIGNAL(finished()),this,SLOT(SLT_SCThreadIsDone()));
     connect(scThread,SIGNAL(Signal_UpdateVOICombobox(ctType)),this,SLOT(UpdateVOICombobox(const ctType)));
     connect(scThread,SIGNAL(Signal_FixedImageSelected(QString)),this,SLOT(SLT_FixedImageSelected(QString)));
     connect(scThread,SIGNAL(Signal_MovingImageSelected(QString)),this,SLOT(SLT_MovingImageSelected(QString)));
@@ -445,6 +445,7 @@ void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finishe
     ui->btnMinus->setStyleSheet("QPushButton{background-color: #1367AB; color: #ffffff;font-size: 18px;border-width: 1.4px;border-color: #000000;border-style: solid;border-radius: 7px;}QPushButton:pressed{background-color: #E4A115}");
     ui->btnMinus->setEnabled(true);
     ui->verticalSlider->setEnabled(true);
+    ui->verticalSlider->setStyleSheet("QSlider:focus {border: none;}QSlider::groove:vertical {background: rgba(255,255,255,100%);border: 1px solid #32414B;width: 4px;margin: 0px;border-radius: 4px; }QSlider::add-page:vertical {background: rgba(255,255,255,100%);border: 1px solid #32414B;width: 4px;margin: 0px;border-radius: 4px;}QSlider::add-page:vertical :disabled {background: #14506E; }QSlider::handle:vertical {background: rgba(120,120,120,100%); border: 1px solid #32414B;width: 8px;height: 8px;margin: 0 -8px;border-radius: 4px; }QSlider::handle:vertical:hover {background: #148CD2;border: 1px solid #148CD2;}");
     ui->labelSliderIdx->setStyleSheet("QLabel{font-size: 20px;font-weight: bold;color: rgba(255,255,255,100%);background-color: rgba(0,0,0,0%)}");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
