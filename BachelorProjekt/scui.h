@@ -11,6 +11,7 @@
 #include "cbctregistration_test.hpp"
 //Qt
 #include <QStandardItemModel>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Scui; }
@@ -48,7 +49,7 @@ public:
   ScatterCorrectingThread *scThread;
   WEPLThread *weplThread;
   bool scatterCorrectingIsDone = false;
-
+  QMutex mutex;
 public slots:
     void SLT_DrawReconImage();
 

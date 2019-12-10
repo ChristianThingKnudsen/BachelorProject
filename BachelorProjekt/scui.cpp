@@ -416,7 +416,6 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
 
 
   // Make sure no other thread tries to access our unique ptrs:
-  QMutex mutex;
   mutex.lock();
 
   m_cbctrecon->m_dspYKReconImage = YK16GrayImage::CopyItkImage2YKImage(
@@ -436,6 +435,7 @@ void Scui::SLT_DrawReconImage() { //Draws the image on the left by using the cur
   m_cbctrecon->m_dspYKReconImage->FillPixMapMinMax(0,2031);//Hardcoded value (from sliderReconImgMin and sliderReconImgMax)
   this->ui->labelImageRaw->SetBaseImage(m_cbctrecon->m_dspYKReconImage.get());
   this->ui->labelImageRaw->update();
+  mutex.unlock();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_LThreadIsDone(){ // Is called when the loading thread has finished. Sets buttons.
