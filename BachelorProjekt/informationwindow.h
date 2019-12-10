@@ -13,10 +13,8 @@ class InformationWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit InformationWindow(QWidget *parent = nullptr);
+    explicit InformationWindow(Scui *parent);
     ~InformationWindow();
-
-
 
 private:
     Ui::InformationWindow *ui;

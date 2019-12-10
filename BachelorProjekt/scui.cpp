@@ -146,9 +146,13 @@ Scui::~Scui() // Destructor
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_OpenInfo() // Is called when the info button is pushed
 {
-    InformationWindow infoWindow;
-    infoWindow.setModal(true);
-    infoWindow.exec();
+    InformationWindow *infoWindow;
+    infoWindow = new InformationWindow(this);
+    infoWindow->setModal(false);
+    infoWindow->show();
+    //InformationWindow infoWindow;
+    //infoWindow.setModal(true);
+    //infoWindow.exec();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 void Scui::SLT_OpenAdvancedMode() // Is called when the advanced button is pushed
