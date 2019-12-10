@@ -16,6 +16,7 @@
   <property name="styleSheet">
    <string notr="true">QDialog{
 	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.7, fx:0.499, fy:0.505682, stop:0 rgba(20, 106, 173, 253), stop:0.756757 rgba(20, 69, 109, 255));
+	border: 2px solid white;
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
