@@ -52,7 +52,6 @@ public:
   QMutex mutex;
 public slots:
     void SLT_DrawReconImage();
-
     // Gain/ Offset correction
     void SLT_FixedImageSelected(QString selText);
     void SLT_MovingImageSelected(QString selText);

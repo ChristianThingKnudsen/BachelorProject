@@ -61,9 +61,15 @@ Scui::Scui(QWidget *parent) // Constructor
 
     // Setting the title Scatter Correcting User Interface
     ui->labelTitle1->setAlignment(Qt::AlignRight);
+    ui->labelTitle11->setAlignment(Qt::AlignRight);
     ui->labelTitle2->setAlignment(Qt::AlignLeft);
-    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font><font color=\"#FFBE38\"> C</font><font color=\"white\">orrecting</font>");
-    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font><font color=\"#FFBE38\">  I</font><font color=\"white\">nterface</font>");
+    ui->labelTitle21->setAlignment(Qt::AlignLeft);
+    ui->labelTitle1->setText("<font color=\"#FFBE38\">S</font><font color=\"white\">catter</font>");
+    ui->labelTitle11->setText("<font color=\"#FFBE38\">C</font><font color=\"white\">orrecting</font>");
+    ui->labelTitle2->setText("<font color=\"#FFBE38\">U</font><font color=\"white\">ser</font>");
+    ui->labelTitle21->setText("<font color=\"#FFBE38\">I</font><font color=\"white\">nterface</font>");
+    ui->labelRawImgTitle->setAlignment(Qt::AlignCenter);
+    ui->labelCorImgTitle->setAlignment(Qt::AlignCenter);
 
     //Initialising comboboxes with values
     ui->comboBox_region->addItem("Head-Neck");
@@ -119,14 +125,11 @@ Scui::Scui(QWidget *parent) // Constructor
     connect(scThread,SIGNAL(Signal_UpdateLabelRaw(QString)), this, SLOT(SLT_UpdateLabelRaw(QString)));
     connect(scThread,SIGNAL(Signal_UpdateLabelCor(QString)), this, SLOT(SLT_UpdateLabelCor(QString)));
     connect(scThread,SIGNAL(Signal_PassFixedImg()),this, SLOT(SLT_PassFixedImgForAnalysis()));
-    connect(scThread,SIGNAL(Signal_DrawImageInFixedSlice()),this,SLOT(SLT_DrawImageInFixedSlice()));
-    connect(scThread,SIGNAL(Signal_DrawImageWhenSliceChange()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(scThread,SIGNAL(Signal_UpdateProgressBarSC(int)),this,SLOT(SLT_UpdateProgressBarSC(int)));
-    connect(scThread,SIGNAL(finished()),this,SLOT(SLT_SCThreadIsDone()));
     connect(scThread,SIGNAL(Signal_UpdateVOICombobox(ctType)),this,SLOT(UpdateVOICombobox(const ctType)));
     connect(scThread,SIGNAL(Signal_FixedImageSelected(QString)),this,SLOT(SLT_FixedImageSelected(QString)));
     connect(scThread,SIGNAL(Signal_MovingImageSelected(QString)),this,SLOT(SLT_MovingImageSelected(QString)));
-    connect(scThread,SIGNAL(Signal_ImageManualMoveOneShot(float,float,float)),this,SLOT(ImageManualMoveOneShot(const float,const float,const float)));
+    connect(scThread,SIGNAL(finished()),this,SLOT(SLT_SCThreadIsDone()));
     weplThread = new WEPLThread(this);
     connect(weplThread,SIGNAL(Signal_DrawWEPL()),this,SLOT(SLT_DrawImageWhenSliceChange()));
     connect(weplThread,SIGNAL(Signal_UpdateProgressBarWEPL(int)),this,SLOT(SLT_UpdateProgressBarWEPL(int)));

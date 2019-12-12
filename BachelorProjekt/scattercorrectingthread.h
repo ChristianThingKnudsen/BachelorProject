@@ -34,13 +34,10 @@ signals:
     void Signal_UpdateLabelRaw(QString);
     void Signal_UpdateLabelCor(QString);
     void Signal_PassFixedImg();
-    void Signal_DrawImageInFixedSlice() const;
-    void Signal_DrawImageWhenSliceChange();
     void Signal_UpdateProgressBarSC(int);
     void Signal_UpdateVOICombobox(ctType);
     void Signal_FixedImageSelected(QString);
     void Signal_MovingImageSelected(QString);
-    void Signal_ImageManualMoveOneShot(float,float,float);
 
 private:
     int m_enViewArrange{};
