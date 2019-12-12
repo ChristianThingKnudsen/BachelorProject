@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1787</width>
-    <height>904</height>
+    <height>953</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -89,7 +89,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">QLabel{
-	font-size: 50px;
+	font-size: 40px;
 	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%)
@@ -137,13 +137,13 @@
             <widget class="QLabel" name="labelTitle2">
              <property name="minimumSize">
               <size>
-               <width>200</width>
+               <width>195</width>
                <height>80</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>200</width>
+               <width>195</width>
                <height>80</height>
               </size>
              </property>
@@ -191,13 +191,13 @@
             <widget class="QLabel" name="labelTitle21">
              <property name="minimumSize">
               <size>
-               <width>450</width>
+               <width>455</width>
                <height>80</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>450</width>
+               <width>455</width>
                <height>80</height>
               </size>
              </property>
@@ -270,7 +270,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">QLabel{
-	font-size: 50px;
+	font-size: 40px;
 	font-weight: bold;
 	color:#ffffff;
 	background-color: rgba(0,0,0,0%)
@@ -287,13 +287,13 @@
             <widget class="QLabel" name="labelTitle1">
              <property name="minimumSize">
               <size>
-               <width>280</width>
+               <width>285</width>
                <height>80</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>280</width>
+               <width>285</width>
                <height>80</height>
               </size>
              </property>
@@ -341,13 +341,13 @@
             <widget class="QLabel" name="labelTitle11">
              <property name="minimumSize">
               <size>
-               <width>370</width>
+               <width>365</width>
                <height>80</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>370</width>
+               <width>365</width>
                <height>80</height>
               </size>
              </property>
@@ -403,7 +403,7 @@
              <number>111</number>
             </property>
             <property name="bottomMargin">
-             <number>162</number>
+             <number>160</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout">
