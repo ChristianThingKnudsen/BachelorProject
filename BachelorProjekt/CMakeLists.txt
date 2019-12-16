@@ -45,9 +45,6 @@ add_executable(BachelorProjekt
   scui.ui
   qyklabel.cpp
   qyklabel.h
-  #progressbar.cpp
-  #progressbar.h
-  #progressbar.ui
   informationwindow.cpp
   informationwindow.h
   informationwindow.ui

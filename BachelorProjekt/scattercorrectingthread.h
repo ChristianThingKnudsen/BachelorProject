@@ -11,7 +11,6 @@ class ScatterCorrectingThread : public QThread
 {
     Q_OBJECT
 public:
-    // For threading
     explicit ScatterCorrectingThread(Scui *parent=nullptr);
     void run();
     bool Stop;

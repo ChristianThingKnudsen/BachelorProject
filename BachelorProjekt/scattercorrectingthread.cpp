@@ -370,7 +370,7 @@ auto set_points_by_slice(qyklabel *window, Rtss_roi_modern *voi, // Sets points 
   window->m_bDrawPoints = true;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-void ScatterCorrectingThread::SLT_DoRegistrationDeform() {
+void ScatterCorrectingThread::SLT_DoRegistrationDeform() { // Method for Deform registration
   if (m_cbctrecon->m_spRawReconImg == nullptr || m_cbctrecon->m_spRefCTImg == nullptr) {
     return;
   }

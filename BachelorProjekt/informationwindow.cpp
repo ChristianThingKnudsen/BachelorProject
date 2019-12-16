@@ -12,6 +12,7 @@ InformationWindow::InformationWindow(Scui *parent) :
     this->setWindowTitle("Information Window");
     this->setWindowIcon(QIcon(parent->Root+QString("/pictures/logo.png")));
     QPixmap pix(parent->Root+QString("/pictures/scui.png"));
+    // Setting image with flow
     int w = ui->labelImage->width(); // Width
     int h = ui->labelImage->height(); // Height
     ui->labelImage->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio)); // Scaling

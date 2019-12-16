@@ -37,7 +37,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
+// Imported from CBCTRecon
 #ifndef MYQCOMBOBOX_H
 #define MYQCOMBOBOX_H
 #include <qglobal.h>

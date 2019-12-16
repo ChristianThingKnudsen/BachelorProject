@@ -1,3 +1,4 @@
+// Label class for displaying images. Imported from CBCTRecon
 #ifndef QYKLABEL_H
 #define QYKLABEL_H
 

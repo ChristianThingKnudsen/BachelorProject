@@ -28,12 +28,12 @@ class Scui : public QMainWindow
 public:
     Scui(QWidget *parent = nullptr);
     ~Scui();
-
-public:
+  // Uniqe pointers
   std::unique_ptr<CbctRecon> m_cbctrecon;
   std::unique_ptr<CbctRegistration> m_cbctregistration; // just for convienience
   std::unique_ptr<QStandardItemModel> m_pTableModel;
   std::unique_ptr<CbctRegistrationTest> m_dlgRegistration;
+
   FDK_options getFDKoptions() const;
   void UpdateReconImage(UShortImageType::Pointer &spNewImg);
   void init_DlgRegistration(QString &str_dcm_uid) const;
@@ -50,6 +50,47 @@ public:
   WEPLThread *weplThread;
   bool scatterCorrectingIsDone = false;
   QMutex mutex;
+
+  YK16GrayImage *m_YKDisp;
+  YK16GrayImage *m_YKImgFixed;
+  YK16GrayImage *m_YKImgMoving;
+  UShortImageType::Pointer m_spFixedImg;  // pointer only, for display
+  UShortImageType::Pointer m_spMovingImg; // pointer only, for display
+  UShortImageType::Pointer m_spFixedDose;  // pointer only, for display
+  UShortImageType::Pointer m_spMovingDose; // pointer only, for display
+  AG17RGBAImage *m_DoseImgFixed;
+  AG17RGBAImage *m_DoseImgMoving;
+  AG17RGBAImage *m_AGDisp_Overlay;
+  QString CBCTPath = QString("");
+  QString CTPath = QString("");
+  QString DosisPlanPath = QString("");
+  QString Structure = QString("");
+  int View = 0;
+  int RegionChosen = 0;
+  QString Root;
+  QString DownArrow;
+  YK16GrayImage *m_YKDispRaw;
+  YK16GrayImage *m_YKImgRawFixed;
+  YK16GrayImage *m_YKImgRawMoving;
+  UShortImageType::Pointer m_spRawFixedImg;  // pointer only, for display
+  UShortImageType::Pointer m_spRawMovingImg; // pointer only, for display
+
+#ifdef USE_CUDA
+    bool m_UseCUDA = true;
+    bool m_UseOpenCL = false;
+#elif RTK_USE_OPENCL
+    bool m_UseOpenCL = true;
+    bool m_UseCUDA = false;
+#else
+    bool m_UseOpenCL = false;
+    bool m_UseCUDA = false;
+#endif
+
+private:
+    Ui::Scui *ui;
+    int m_enViewArrange = 0;
+    int m_enViewArrangeRaw = 0;
+
 public slots:
     void SLT_DrawReconImage();
     // Gain/ Offset correction
@@ -89,47 +130,6 @@ public slots:
     void SLT_RestartSCUI();
     void SLT_CallPhysicist();
     void UpdateVOICombobox(const ctType ct_type) const;
-
-private:
-    Ui::Scui *ui;
-    int m_enViewArrange = 0;
-    int m_enViewArrangeRaw = 0;
-
-public:
-    YK16GrayImage *m_YKDisp;
-    YK16GrayImage *m_YKImgFixed;
-    YK16GrayImage *m_YKImgMoving;
-    UShortImageType::Pointer m_spFixedImg;  // pointer only, for display
-    UShortImageType::Pointer m_spMovingImg; // pointer only, for display
-    UShortImageType::Pointer m_spFixedDose;  // pointer only, for display
-    UShortImageType::Pointer m_spMovingDose; // pointer only, for display
-    AG17RGBAImage *m_DoseImgFixed;
-    AG17RGBAImage *m_DoseImgMoving;
-    AG17RGBAImage *m_AGDisp_Overlay;
-    QString CBCTPath = QString("");
-    QString CTPath = QString("");
-    QString DosisPlanPath = QString("");
-    QString Structure = QString("");
-    int View = 0;
-    int RegionChosen = 0;
-    QString Root;
-    QString DownArrow;
-    YK16GrayImage *m_YKDispRaw;
-    YK16GrayImage *m_YKImgRawFixed;
-    YK16GrayImage *m_YKImgRawMoving;
-    UShortImageType::Pointer m_spRawFixedImg;  // pointer only, for display
-    UShortImageType::Pointer m_spRawMovingImg; // pointer only, for display
-
-#ifdef USE_CUDA
-    bool m_UseCUDA = true;
-    bool m_UseOpenCL = false;
-#elif RTK_USE_OPENCL
-    bool m_UseOpenCL = true;
-    bool m_UseCUDA = false;
-#else
-    bool m_UseOpenCL = false;
-    bool m_UseCUDA = false;
-#endif
 
 private slots:
     void on_comboBoxPlanView_currentIndexChanged(const QString &arg1);
