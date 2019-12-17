@@ -62,7 +62,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="labelRegion">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -73,49 +73,11 @@
 </string>
        </property>
        <property name="text">
-        <string>1. ID:</string>
+        <string>4. ID:</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="labelLoadCT">
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 18px;
-	color: rgba(255,190,56,100%);  
-	font-weight: bold;
-}
-</string>
-       </property>
-       <property name="text">
-        <string>2. Load Data:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLabel" name="label_2">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 18px;
-	font-weight: bold;
-	color: #ffffff;
-}</string>
-       </property>
-       <property name="text">
-        <string>Button will open two file explorers. One path for the CBCT-projections to be declared, and another for the CT-projections to be declared.</string>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_3">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -126,11 +88,11 @@
 </string>
        </property>
        <property name="text">
-        <string>3. Region:</string>
+        <string>5. Region:</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="7" column="1">
       <widget class="QLabel" name="label_4">
        <property name="maximumSize">
         <size>
@@ -153,7 +115,7 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label_5">
        <property name="maximumSize">
         <size>
@@ -170,11 +132,11 @@
 </string>
        </property>
        <property name="text">
-        <string>4. Scatter Correct:</string>
+        <string>6. Scatter Correct:</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="8" column="1">
       <widget class="QLabel" name="label_6">
        <property name="maximumSize">
         <size>
@@ -197,7 +159,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="9" column="0">
       <widget class="QLabel" name="label_7">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -208,11 +170,11 @@
 </string>
        </property>
        <property name="text">
-        <string>5. Structure:</string>
+        <string>7. Structure:</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="9" column="1">
       <widget class="QLabel" name="label_8">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -226,7 +188,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="10" column="0">
       <widget class="QLabel" name="label">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -237,11 +199,11 @@
 </string>
        </property>
        <property name="text">
-        <string>6. Plan view:</string>
+        <string>8. Plan view:</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="10" column="1">
       <widget class="QLabel" name="label_10">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -255,7 +217,7 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="11" column="0">
       <widget class="QLabel" name="label_9">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -266,11 +228,11 @@
 </string>
        </property>
        <property name="text">
-        <string>7. Advanced Mode:</string>
+        <string>9. Advanced Mode:</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="11" column="1">
       <widget class="QLabel" name="labelShowOrgansInfo">
        <property name="maximumSize">
         <size>
@@ -293,36 +255,7 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_11">
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 18px;
-	color: rgba(255,190,56,100%); 
-	font-weight: bold;
-}
-</string>
-       </property>
-       <property name="text">
-        <string>8. New Patient:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLabel" name="label_12">
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 18px;
-	font-weight: bold;
-	color: #ffffff;
-}</string>
-       </property>
-       <property name="text">
-        <string>Button clears the data on the user interface and makes it ready for the next patient.</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
+     <item row="13" column="0">
       <widget class="QLabel" name="label_14">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -333,11 +266,11 @@
 </string>
        </property>
        <property name="text">
-        <string>9. Call Physicist:</string>
+        <string>10. Call Physicist:</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="1">
+     <item row="13" column="1">
       <widget class="QLabel" name="label_15">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -351,36 +284,7 @@
        </property>
       </widget>
      </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="label_16">
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 18px;
-	color: rgba(255,190,56,100%); 
-	font-weight: bold;
-}
-</string>
-       </property>
-       <property name="text">
-        <string>10. Information:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QLabel" name="label_17">
-       <property name="styleSheet">
-        <string notr="true">QLabel{
-	font-size: 18px;
-	font-weight: bold;
-	color: #ffffff;
-}</string>
-       </property>
-       <property name="text">
-        <string>Button wil open this dialog.</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0">
+     <item row="15" column="0">
       <widget class="QLabel" name="label_18">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -395,7 +299,7 @@
        </property>
       </widget>
      </item>
-     <item row="12" column="1">
+     <item row="15" column="1">
       <widget class="QLabel" name="label_19">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -409,7 +313,7 @@
        </property>
       </widget>
      </item>
-     <item row="13" column="1">
+     <item row="16" column="1">
       <widget class="QLabel" name="labelImage">
        <property name="minimumSize">
         <size>
@@ -431,7 +335,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="5" column="1">
       <widget class="QLabel" name="label_13">
        <property name="styleSheet">
         <string notr="true">QLabel{
@@ -442,6 +346,102 @@
        </property>
        <property name="text">
         <string>Field indicates which patient is being processed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_16">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>1. Information:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	color: rgba(255,190,56,100%); 
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>2. New Patient:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="labelLoadCT">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	color: rgba(255,190,56,100%);  
+	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>3. Load Data:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="label_17">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>Button wil open this dialog.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="label_12">
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>Button clears the data on the user interface and makes it ready for the next patient.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel{
+	font-size: 18px;
+	font-weight: bold;
+	color: #ffffff;
+}</string>
+       </property>
+       <property name="text">
+        <string>Button will open two file explorers. One path for the CBCT-projections to be declared, and another for the CT-projections to be declared.</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
